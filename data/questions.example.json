@@ -1,0 +1,32 @@
+{
+  "set": "cslb-law-business-1",
+  "title": "CSLB Law & Business — Practice (example schema)",
+  "language": "en",
+  "note": "Original practice questions in the style of the exam. NOT actual exam questions. Verify all figures against the current CSLB study guide.",
+  "questions": [
+    {
+      "id": 1,
+      "section": "Bonds & Insurance",
+      "question": "As of 2026, what is the required amount of the contractor's license bond in California?",
+      "options": ["$12,500", "$15,000", "$25,000", "$100,000"],
+      "answer": 2,
+      "explanation": "Under Business & Professions Code 7071.6, the contractor's license bond is $25,000 (set by SB 607, effective Jan 1, 2023)."
+    },
+    {
+      "id": 2,
+      "section": "Licensing Requirements",
+      "question": "A contractor's license is generally required once the aggregate price of a project (labor and materials) reaches:",
+      "options": ["$300", "$500", "$1,000", "$5,000"],
+      "answer": 2,
+      "explanation": "AB 2622 raised the minor-work exemption threshold from $500 to $1,000, effective Jan 1, 2025 (B&P Code 7048). Work at or above $1,000 requires a license."
+    },
+    {
+      "id": 3,
+      "section": "Contracts",
+      "question": "On a home improvement contract, the down payment may not exceed:",
+      "options": ["10% of the contract price or $1,000, whichever is less", "25% of the contract price", "$2,500 flat", "Half of the materials cost"],
+      "answer": 0,
+      "explanation": "California limits the home improvement down payment to $1,000 or 10% of the contract price, whichever is less."
+    }
+  ]
+}
