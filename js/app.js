@@ -6,8 +6,9 @@ const DEMO_PASS  = "test1234";          // DEMO ONLY
 
 const mem = {};
 const store = {
-  async get(k){ try{ const r = await window.storage.get(k); return r ? r.value : (k in mem ? mem[k] : null);}catch(e){ return k in mem ? mem[k] : null; } },
-  async set(k,v){ mem[k]=v; try{ await window.storage.set(k,v);}catch(e){} }
+  async get(k){ try{ return localStorage.getItem(k); }catch(e){ return (k in mem)?mem[k]:null; } },
+  async set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k]=v; } },
+  async del(k){ try{ localStorage.removeItem(k); }catch(e){ delete mem[k]; } }
 };
 const validEmail = e => /\S+@\S+\.\S+/.test(e);
 
