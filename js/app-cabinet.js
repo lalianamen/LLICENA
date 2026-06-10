@@ -4,9 +4,9 @@
 
 const mem = {};
 const store = {
-  async get(k){ try{ const r = await window.storage.get(k); return r ? r.value : (k in mem ? mem[k] : null);}catch(e){ return k in mem ? mem[k] : null; } },
-  async set(k,v){ mem[k]=v; try{ await window.storage.set(k,v);}catch(e){} },
-  async del(k){ delete mem[k]; try{ await window.storage.delete(k);}catch(e){} }
+  async get(k){ try{ return localStorage.getItem(k); }catch(e){ return (k in mem)?mem[k]:null; } },
+  async set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k]=v; } },
+  async del(k){ try{ localStorage.removeItem(k); }catch(e){ delete mem[k]; } }
 };
 const maskDev = id => id ? id.slice(0,4)+"····"+id.slice(-2) : "—";
 const code6 = () => String(Math.floor(100000+Math.random()*900000));
