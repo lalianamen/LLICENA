@@ -80,10 +80,19 @@ document.getElementById("rg_btn").addEventListener("click", async () => {
     // Email confirmation required — show check-email screen
     const sentTo = document.getElementById("sentTo");
     if (sentTo) sentTo.textContent = email;
+    history.pushState({ panel: "check-email" }, "");
     showPanel("check-email");
   } else {
     window.location.href = "app.html";
   }
+});
+
+// Back button / browser back from check-email screen → return to register panel
+document.getElementById("backToRegister").addEventListener("click", () => {
+  history.back();
+});
+window.addEventListener("popstate", () => {
+  showPanel("register");
 });
 
 applyLang();

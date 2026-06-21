@@ -15,7 +15,8 @@ const T = {
     errFields:"Fill in all required fields.", errCreds:"Wrong email or password.",
     errConsent:"Please accept the notice to continue.", errEmail:"Enter a valid email.", errName:"Enter your name.",
     errAge:"You must be 18 or older to register.",
-    checkEmail:"Check your email", checkEmailSub:"We sent a confirmation link to <strong id='sentTo'></strong>. Click the link to activate your account."},
+    checkEmail:"Check your email", checkEmailSub:"We sent a confirmation link to <strong id='sentTo'></strong>. Click the link to activate your account.",
+    backToReg:"← Back to register"},
   es:{tag:"Herramienta de práctica", eyebrow:"Exámenes de licencia de California", heroLine:"Aprueba tu examen.", heroSub:"Preguntas de práctica para el CSLB y otros exámenes de licencia de California — en inglés, español, ruso y vietnamita.",
     feat1T:"Estilo del examen real", feat1D:"Preguntas escritas con el formato y la dificultad del examen CSLB.",
     feat2T:"Estudia a tu manera", feat2D:"Exámenes simulados, práctica por tema o en puntos débiles.",
@@ -31,7 +32,8 @@ const T = {
     ageConsent:"Tengo 18 años o más.",
     errConsent:"Acepta el aviso para continuar.", errEmail:"Ingresa un correo válido.", errName:"Ingresa tu nombre.",
     errAge:"Debes tener 18 años o más para registrarte.",
-    checkEmail:"Revisa tu correo", checkEmailSub:"Enviamos un enlace de confirmación a <strong id='sentTo'></strong>. Haz clic en el enlace para activar tu cuenta."},
+    checkEmail:"Revisa tu correo", checkEmailSub:"Enviamos un enlace de confirmación a <strong id='sentTo'></strong>. Haz clic en el enlace para activar tu cuenta.",
+    backToReg:"← Volver al registro"},
   ru:{tag:"Тренажёр", eyebrow:"Лицензионные экзамены Калифорнии", heroLine:"Сдай экзамен.", heroSub:"Практические вопросы для CSLB и других лицензионных экзаменов Калифорнии — на английском, испанском, русском и вьетнамском.",
     feat1T:"Формат реального экзамена", feat1D:"Вопросы написаны в стиле и сложности настоящего экзамена CSLB.",
     feat2T:"Учись как удобно", feat2D:"Полный пробный экзамен, тренировка по темам или работа над ошибками.",
@@ -47,7 +49,8 @@ const T = {
     ageConsent:"Мне 18 лет или больше.",
     errConsent:"Примите уведомление, чтобы продолжить.", errEmail:"Введите корректную почту.", errName:"Введите имя.",
     errAge:"Для регистрации необходимо быть старше 18 лет.",
-    checkEmail:"Проверьте почту", checkEmailSub:"Мы отправили ссылку для подтверждения на <strong id='sentTo'></strong>. Перейдите по ссылке, чтобы активировать аккаунт."},
+    checkEmail:"Проверьте почту", checkEmailSub:"Мы отправили ссылку для подтверждения на <strong id='sentTo'></strong>. Перейдите по ссылке, чтобы активировать аккаунт.",
+    backToReg:"← Назад к регистрации"},
   vi:{tag:"Công cụ luyện tập", eyebrow:"Kỳ thi giấy phép California", heroLine:"Vượt qua kỳ thi nghề.", heroSub:"Câu hỏi luyện tập cho CSLB và các kỳ thi cấp phép California — bằng tiếng Anh, Tây Ban Nha, Nga và Việt.",
     feat1T:"Đúng định dạng đề thi", feat1D:"Câu hỏi được viết theo định dạng và độ khó của kỳ thi CSLB thực tế.",
     feat2T:"Học theo cách của bạn", feat2D:"Thi thử đầy đủ, luyện theo chủ đề hoặc tập trung vào điểm yếu.",
@@ -63,5 +66,6 @@ const T = {
     ageConsent:"Tôi đủ 18 tuổi trở lên.",
     errConsent:"Vui lòng chấp nhận thông báo để tiếp tục.", errEmail:"Nhập email hợp lệ.", errName:"Nhập tên của bạn.",
     errAge:"Bạn phải đủ 18 tuổi trở lên để đăng ký.",
-    checkEmail:"Kiểm tra email", checkEmailSub:"Chúng tôi đã gửi liên kết xác nhận tới <strong id='sentTo'></strong>. Nhấp vào liên kết để kích hoạt tài khoản."}
+    checkEmail:"Kiểm tra email", checkEmailSub:"Chúng tôi đã gửi liên kết xác nhận tới <strong id='sentTo'></strong>. Nhấp vào liên kết để kích hoạt tài khoản.",
+    backToReg:"← Quay lại đăng ký"}
 };
