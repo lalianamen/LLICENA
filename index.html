@@ -85,11 +85,22 @@
           </div>
         </div>
         <label class="consent">
+          <input type="checkbox" id="rg_age">
+          <span data-t="ageConsent">I am 18 years of age or older.</span>
+        </label>
+        <label class="consent">
           <input type="checkbox" id="rg_consent">
           <span data-t="consent">I understand LICENA is a practice tool, not a school, and does not guarantee passing any exam.</span>
         </label>
         <div class="autherr" id="rg_err"></div>
         <button class="btn btn-primary btn-block" id="rg_btn" data-t="createBtn">Create free account</button>
+      </div>
+
+      <!-- EMAIL CONFIRMATION SCREEN -->
+      <div class="authpanel" data-panel="check-email" style="text-align:center;padding:12px 0">
+        <div style="font-size:38px;margin-bottom:12px">📬</div>
+        <h2 style="font-family:'Archivo';font-size:22px;margin:0 0 10px" data-t="checkEmail">Check your email</h2>
+        <p style="color:var(--steel);font-size:14.5px;margin:0" data-t="checkEmailSub">We sent a confirmation link to <strong id="sentTo"></strong>. Click the link to activate your account.</p>
       </div>
     </div>
   </div>

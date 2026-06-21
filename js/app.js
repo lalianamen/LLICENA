@@ -11,6 +11,11 @@ function applyLang(){
   document.documentElement.lang = lang;
 }
 
+function showPanel(name){
+  document.querySelectorAll(".authpanel").forEach(p => p.classList.toggle("on", p.dataset.panel === name));
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.tab === name));
+}
+
 document.querySelectorAll(".langs button").forEach(b => b.addEventListener("click", () => {
   lang = b.dataset.lang;
   document.querySelectorAll(".langs button").forEach(x => x.setAttribute("aria-pressed", x === b));
@@ -59,17 +64,27 @@ document.getElementById("rg_btn").addEventListener("click", async () => {
   if (!name)  { err.textContent = d.errName;    return; }
   if (!email) { err.textContent = d.errEmail;   return; }
   if (!pass)  { err.textContent = d.errFields;  return; }
+  if (!document.getElementById("rg_age").checked)     { err.textContent = d.errAge;     return; }
   if (!document.getElementById("rg_consent").checked) { err.textContent = d.errConsent; return; }
   const btn = document.getElementById("rg_btn");
   btn.disabled = true; err.textContent = "";
-  const { data, error } = await supa.auth.signUp({ email, password: pass });
+  const { data, error } = await supa.auth.signUp({
+    email, password: pass,
+    options: { data: { name, target_exam: exam, lang } }
+  });
   if (error) { btn.disabled = false; err.textContent = error.message; return; }
   if (data.user) {
     await supa.from("profiles").upsert({ id: data.user.id, name, target_exam: exam, lang });
     await supa.from("user_courses").upsert({ user_id: data.user.id, course_id: "cslb-law" });
   }
   btn.disabled = false;
-  window.location.href = "app.html";
+  // If email confirmation required: no session yet → show check-email screen
+  if (!data.session) {
+    document.getElementById("sentTo").textContent = email;
+    showPanel("check-email");
+  } else {
+    window.location.href = "app.html";
+  }
 });
 
 applyLang();
