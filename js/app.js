@@ -59,7 +59,6 @@ document.getElementById("rg_btn").addEventListener("click", async () => {
   const d = T[lang], err = document.getElementById("rg_err");
   const name  = document.getElementById("rg_name").value.trim();
   const email = document.getElementById("rg_email").value.trim().toLowerCase();
-  const exam  = document.getElementById("rg_exam").value;
   const pass  = document.getElementById("rg_pass").value;
   if (!name)  { err.textContent = d.errName;    return; }
   if (!email) { err.textContent = d.errEmail;   return; }
@@ -70,11 +69,11 @@ document.getElementById("rg_btn").addEventListener("click", async () => {
   btn.disabled = true; err.textContent = "";
   const { data, error } = await supa.auth.signUp({
     email, password: pass,
-    options: { data: { name, target_exam: exam, lang } }
+    options: { data: { name, lang } }
   });
   if (error) { btn.disabled = false; err.textContent = error.message; return; }
   if (data.user) {
-    await supa.from("profiles").upsert({ id: data.user.id, name, target_exam: exam, lang });
+    await supa.from("profiles").upsert({ id: data.user.id, name, lang });
     await supa.from("user_courses").upsert({ user_id: data.user.id, course_id: "cslb-law" });
   }
   btn.disabled = false;
