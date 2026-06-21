@@ -16,14 +16,12 @@ const TAPP = {
     myH:"My tests", activeBadge:"Active", progress:"Progress", track1:"CSLB Law & Business",
     addH:"Add a test", addL:"Unlock more exams on the same account. Free while testing — payment comes later.",
     addBtn:"Add", added:"Added", soon:"Coming soon",
-    acctH:"Account", acctEmail:"Email", acctPlan:"Access", planTest:"Test access (no payment yet)",
+    acctH:"Account", acctName:"Name", acctEmail:"Email", acctPlan:"Access", planTest:"Test access (no payment yet)",
     devicesH:"Devices", slots:"Devices used", thisDevice:"this device", remove:"Remove",
-    movesLeft:"Removals left this month:",
     lockNote:"Your password opens the cabinet on any device. The questions open only on your added devices (up to 3). There's no password that unlocks content by itself.",
     rmH:"Remove device", rmL:"For security, removing a device needs a code sent to your email.",
-    codeSent:"We sent a 6-digit code to", demoNote:"Demo: the code is shown here instead of emailed.",
-    code6Ph:"6-digit code", verify:"Verify & remove", cancel:"Cancel", badCode:"Wrong code. Try again.",
-    noMoves:"You've reached this month's removal limit."
+    codeSent:"We sent a 6-digit code to",
+    code6Ph:"6-digit code", verify:"Verify & remove", cancel:"Cancel", badCode:"Wrong code. Try again."
   },
   es:{
     tag:"Mi panel", acctActive:"Activo en este dispositivo", signOut:"Cerrar sesión",
@@ -38,14 +36,12 @@ const TAPP = {
     myH:"Mis exámenes", activeBadge:"Activo", progress:"Progreso", track1:"CSLB Law & Business",
     addH:"Añadir examen", addL:"Desbloquea más exámenes en la misma cuenta. Gratis durante las pruebas — el pago viene después.",
     addBtn:"Añadir", added:"Añadido", soon:"Próximamente",
-    acctH:"Cuenta", acctEmail:"Correo", acctPlan:"Acceso", planTest:"Acceso de prueba (sin pago aún)",
+    acctH:"Cuenta", acctName:"Nombre", acctEmail:"Correo", acctPlan:"Acceso", planTest:"Acceso de prueba (sin pago aún)",
     devicesH:"Dispositivos", slots:"Dispositivos usados", thisDevice:"este dispositivo", remove:"Quitar",
-    movesLeft:"Eliminaciones restantes este mes:",
     lockNote:"Tu contraseña abre el panel en cualquier dispositivo. Las preguntas solo se abren en tus dispositivos añadidos (hasta 3). No hay contraseña que abra el contenido por sí sola.",
     rmH:"Quitar dispositivo", rmL:"Por seguridad, quitar un dispositivo requiere un código enviado a tu correo.",
-    codeSent:"Enviamos un código de 6 dígitos a", demoNote:"Demo: el código se muestra aquí en vez de enviarse por correo.",
-    code6Ph:"código de 6 dígitos", verify:"Verificar y quitar", cancel:"Cancelar", badCode:"Código incorrecto. Inténtalo de nuevo.",
-    noMoves:"Has alcanzado el límite de eliminaciones de este mes."
+    codeSent:"Enviamos un código de 6 dígitos a",
+    code6Ph:"código de 6 dígitos", verify:"Verificar y quitar", cancel:"Cancelar", badCode:"Código incorrecto. Inténtalo de nuevo."
   },
   ru:{
     tag:"Кабинет", acctActive:"Активно на этом устройстве", signOut:"Выйти",
@@ -60,14 +56,12 @@ const TAPP = {
     myH:"Мои тесты", activeBadge:"Активен", progress:"Прогресс", track1:"CSLB Law & Business",
     addH:"Добавить тест", addL:"Открой больше экзаменов на этом же аккаунте. Бесплатно на время тестов — оплата появится позже.",
     addBtn:"Добавить", added:"Добавлено", soon:"Скоро",
-    acctH:"Аккаунт", acctEmail:"Эл. почта", acctPlan:"Доступ", planTest:"Тестовый доступ (пока без оплаты)",
+    acctH:"Аккаунт", acctName:"Имя", acctEmail:"Эл. почта", acctPlan:"Доступ", planTest:"Тестовый доступ (пока без оплаты)",
     devicesH:"Устройства", slots:"Используется устройств", thisDevice:"это устройство", remove:"Удалить",
-    movesLeft:"Удалений осталось в этом месяце:",
     lockNote:"Пароль открывает кабинет на любом устройстве. Вопросы открываются только на добавленных устройствах (до 3). Пароля, который сам по себе открывает контент, нет.",
     rmH:"Удалить устройство", rmL:"Для безопасности удаление устройства требует код, отправленный на почту.",
-    codeSent:"Мы отправили 6-значный код на", demoNote:"Демо: код показан здесь вместо письма.",
-    code6Ph:"6-значный код", verify:"Подтвердить и удалить", cancel:"Отмена", badCode:"Неверный код. Попробуй ещё раз.",
-    noMoves:"Достигнут лимит удалений в этом месяце."
+    codeSent:"Мы отправили 6-значный код на",
+    code6Ph:"6-значный код", verify:"Подтвердить и удалить", cancel:"Отмена", badCode:"Неверный код. Попробуй ещё раз."
   },
   vi:{
     tag:"Trang của tôi", acctActive:"Đang hoạt động trên thiết bị này", signOut:"Đăng xuất",
@@ -82,14 +76,12 @@ const TAPP = {
     myH:"Bài thi của tôi", activeBadge:"Đang hoạt động", progress:"Tiến độ", track1:"CSLB Law & Business",
     addH:"Thêm bài thi", addL:"Mở khóa thêm bài thi trên cùng tài khoản. Miễn phí khi thử nghiệm — thanh toán sẽ thêm sau.",
     addBtn:"Thêm", added:"Đã thêm", soon:"Sắp ra mắt",
-    acctH:"Tài khoản", acctEmail:"Email", acctPlan:"Truy cập", planTest:"Truy cập thử (chưa thanh toán)",
+    acctH:"Tài khoản", acctName:"Họ tên", acctEmail:"Email", acctPlan:"Truy cập", planTest:"Truy cập thử (chưa thanh toán)",
     devicesH:"Thiết bị", slots:"Thiết bị đã dùng", thisDevice:"thiết bị này", remove:"Xóa",
-    movesLeft:"Số lần xóa còn lại tháng này:",
     lockNote:"Mật khẩu mở trang quản lý trên mọi thiết bị. Câu hỏi chỉ mở trên các thiết bị đã thêm (tối đa 3). Không có mật khẩu nào tự mở nội dung.",
     rmH:"Xóa thiết bị", rmL:"Vì bảo mật, xóa thiết bị cần một mã gửi tới email của bạn.",
-    codeSent:"Chúng tôi đã gửi mã 6 số tới", demoNote:"Demo: mã hiển thị ở đây thay vì gửi email.",
-    code6Ph:"mã 6 số", verify:"Xác minh và xóa", cancel:"Hủy", badCode:"Sai mã. Thử lại.",
-    noMoves:"Bạn đã đạt giới hạn xóa của tháng này."
+    codeSent:"Chúng tôi đã gửi mã 6 số tới",
+    code6Ph:"mã 6 số", verify:"Xác minh và xóa", cancel:"Hủy", badCode:"Sai mã. Thử lại."
   }
 };
 const SECTIONS = ["Licensing Requirements","Business Organization","Business Finances","Employment & Labor","Safety (Cal/OSHA)","Bonds & Insurance","Mechanics Liens","Contracts"];

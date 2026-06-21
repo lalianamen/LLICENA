@@ -89,10 +89,10 @@
     <section class="panel" data-panel="account">
       <h2 data-a="acctH">Account</h2>
       <div class="card" style="margin-top:18px;max-width:560px">
+        <div class="acct-line"><span class="k" data-a="acctName">Name</span><span class="v" id="aName">—</span></div>
         <div class="acct-line"><span class="k" data-a="acctEmail">Email</span><span class="v" id="aEmail">—</span></div>
         <div class="acct-line"><span class="k" data-a="acctPlan">Access</span><span class="v" data-a="planTest">Test access (no payment yet)</span></div>
         <div class="acct-line"><span class="k"><span data-a="slots">Devices used</span></span><span class="v" id="aSlots">0 / 3</span></div>
-        <div class="acct-line"><span class="k" data-a="movesLeft">Removals left this month:</span><span class="v" id="aMoves">2</span></div>
       </div>
       <p class="h3lbl" style="margin-top:22px" data-a="devicesH">Devices</p>
       <div id="deviceList" style="max-width:560px"></div>
@@ -101,13 +101,12 @@
   </main>
 </div>
 
-<!-- remove-device modal (email code) -->
+<!-- remove-device modal (email OTP) -->
 <div class="modal-bg" id="rmModal" style="display:none">
   <div class="modal">
     <h3 data-a="rmH">Remove device</h3>
     <p data-a="rmL">For security, removing a device needs a code sent to your email.</p>
     <p class="codesent"><span data-a="codeSent">We sent a 6-digit code to</span> <strong id="rmEmail">—</strong></p>
-    <div class="demohint"><span data-a="demoNote">Demo: the code is shown here instead of emailed.</span> <strong id="rmDemoCode" class="mono">000000</strong></div>
     <input id="rmCode" class="mono" maxlength="6" placeholder="6-digit code" data-a-ph="code6Ph" inputmode="numeric">
     <div class="autherr" id="rmErr"></div>
     <div class="modal-row">
@@ -117,6 +116,8 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/i18n-app.js"></script>
 <script src="js/app-cabinet.js"></script>
 </body>

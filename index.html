@@ -23,10 +23,17 @@
 </div></div>
 
 <div class="wrap">
-  <section class="hero" style="padding-bottom:14px">
+  <section class="hero">
     <div class="eyebrow" data-t="eyebrow">California licensing exams</div>
-    <h1 style="font-size:clamp(28px,5vw,42px)" data-t="heroLine">Exam practice for licensed trades.</h1>
+    <h1 data-t="heroLine">Pass your trade exam.</h1>
+    <p class="sub" data-t="heroSub">Practice questions for CSLB and other California licensing exams — available in English, Spanish, Russian, and Vietnamese.</p>
   </section>
+
+  <div class="feats">
+    <div class="feat"><div class="feat-t" data-t="feat1T">Real exam style</div><div class="feat-d" data-t="feat1D">Questions written in the format and difficulty of the actual CSLB exam.</div></div>
+    <div class="feat"><div class="feat-t" data-t="feat2T">Study your way</div><div class="feat-d" data-t="feat2D">Full mock exams, topic drills, or targeted weak-area practice.</div></div>
+    <div class="feat"><div class="feat-t" data-t="feat3T">Any language</div><div class="feat-d" data-t="feat3D">Interface and study content in EN · ES · RU · VI.</div></div>
+  </div>
 
   <div class="authwrap">
     <div class="tabs" role="group" aria-label="Auth">
@@ -50,14 +57,25 @@
         </div>
         <div class="autherr" id="li_err"></div>
         <button class="btn btn-primary btn-block" id="li_btn" data-t="loginBtn">Log in</button>
-        <div class="demohint"><strong data-t="demoHint">Demo access</strong>: test@licena.app / Licena2026!</div>
       </div>
 
       <!-- REGISTER -->
       <div class="authpanel" data-panel="register">
         <div class="field">
+          <label for="rg_name" data-t="nameL">Full name</label>
+          <input id="rg_name" type="text" autocomplete="name">
+        </div>
+        <div class="field">
           <label for="rg_email" data-t="emL">Email</label>
           <input id="rg_email" type="email" placeholder="you@email.com" autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="rg_exam" data-t="examL">Target exam</label>
+          <select id="rg_exam">
+            <option value="cslb-law" data-t="examOpt1">California — CSLB Law &amp; Business</option>
+            <option value="c20" data-t="examOpt2">California — C-20 HVAC</option>
+            <option value="other" data-t="examOpt3">Other / not sure yet</option>
+          </select>
         </div>
         <div class="field">
           <label for="rg_pass" data-t="passL">Password</label>
@@ -71,7 +89,7 @@
           <span data-t="consent">I understand LICENA is a practice tool, not a school, and does not guarantee passing any exam.</span>
         </label>
         <div class="autherr" id="rg_err"></div>
-        <button class="btn btn-primary btn-block" id="rg_btn" data-t="createBtn">Create account</button>
+        <button class="btn btn-primary btn-block" id="rg_btn" data-t="createBtn">Create free account</button>
       </div>
     </div>
   </div>
@@ -93,6 +111,8 @@
   <small>© 2026 · Made in Los Angeles</small>
 </div></footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/app.js"></script>
 </body>
