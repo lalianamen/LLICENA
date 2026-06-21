@@ -35,24 +35,98 @@ function renderPractice(){
 function renderMyTests(){
   const wrap = document.getElementById("myList"), d = TAPP[lang];
   wrap.innerHTML = "";
-  courses.forEach(c => {
-    const name = COURSE_NAMES[c.course_id] || c.course_id;
-    const el = document.createElement("div"); el.className = "card";
-    el.innerHTML = '<div class="row-between"><strong style="font-family:\'Archivo\';font-size:17px"></strong><span class="badge"></span></div><div class="bar"><i style="width:0%"></i></div><div style="font-size:13px;color:var(--steel);margin-top:8px"><span></span>: 0%</div>';
-    el.querySelector("strong").textContent = name;
-    el.querySelector(".badge").textContent = d.activeBadge;
-    el.querySelector("span").textContent   = d.progress;
-    wrap.appendChild(el);
+  const owned = new Set(courses.map(c => c.course_id));
+  let hasAny = false;
+
+  CATALOG.forEach(cat => {
+    // collect courses in this category that the user owns
+    const catCourses = [];
+    (cat.subs || []).forEach(sub => {
+      (sub.courses || []).forEach(course => {
+        if (owned.has(course.id)) catCourses.push({ sub, course });
+      });
+    });
+    if (!catCourses.length) return;
+    hasAny = true;
+
+    const catEl = document.createElement("div"); catEl.className = "my-cat";
+    catEl.innerHTML = `<div class="my-cat-hd">${cat.icon} ${cat.name[lang] || cat.name.en}</div>`;
+
+    // group by sub
+    const bySub = {};
+    catCourses.forEach(({ sub, course }) => {
+      if (!bySub[sub.id]) bySub[sub.id] = { sub, items: [] };
+      bySub[sub.id].items.push(course);
+    });
+    Object.values(bySub).forEach(({ sub, items }) => {
+      const subEl = document.createElement("div"); subEl.className = "my-sub";
+      subEl.innerHTML = `<div class="my-sub-hd">${sub.name[lang] || sub.name.en}</div>`;
+      items.forEach(course => {
+        const row = document.createElement("div"); row.className = "course-row";
+        const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
+        const langs = course.langs.map(l => l.toUpperCase()).join(" · ");
+        row.innerHTML = `
+          <div class="course-info">
+            <span class="course-name">${course.name[lang] || course.name.en}</span>
+            <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span> <span class="lang-pill">${langs}</span></span>
+          </div>
+          <div class="course-actions">
+            <span class="status-badge active">${d.activeBadge}</span>
+            <a class="btn-sm open-btn" href="#">${d.openCourse}</a>
+          </div>`;
+        subEl.appendChild(row);
+      });
+      catEl.appendChild(subEl);
+    });
+    wrap.appendChild(catEl);
   });
+
+  if (!hasAny){
+    const e = document.createElement("div"); e.className = "empty"; e.textContent = d.myEmpty;
+    wrap.appendChild(e);
+  }
 }
 
 function renderCatalog(){
-  const d = TAPP[lang];
-  document.querySelectorAll("#catalog .cat[data-course]").forEach(card => {
-    const c = card.dataset.course, btn = card.querySelector("button");
-    const owned = courses.some(x => x.course_id === c);
-    if (owned){ btn.textContent = d.added; btn.classList.add("soon"); btn.disabled = true; }
-    else { btn.textContent = d.addBtn; btn.classList.remove("soon"); btn.disabled = false; }
+  const wrap = document.getElementById("catalog"), d = TAPP[lang];
+  const owned = new Set(courses.map(c => c.course_id));
+  wrap.innerHTML = "";
+
+  CATALOG.forEach(cat => {
+    const catEl = document.createElement("div"); catEl.className = "store-cat";
+    catEl.innerHTML = `<div class="store-cat-hd">${cat.icon} ${cat.name[lang] || cat.name.en}${cat.soon ? ` <span class="soon-pill">${d.soon}</span>` : ""}</div>`;
+
+    if (!cat.soon) {
+      (cat.subs || []).forEach(sub => {
+        const subEl = document.createElement("div"); subEl.className = "store-sub";
+        subEl.innerHTML = `<div class="store-sub-hd">${sub.name[lang] || sub.name.en}</div>`;
+        (sub.courses || []).forEach(course => {
+          const isOwned = owned.has(course.id);
+          const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
+          const langs = course.langs.map(l => l.toUpperCase()).join(" · ");
+          const row = document.createElement("div"); row.className = "course-row";
+          row.innerHTML = `
+            <div class="course-info">
+              <span class="course-name">${course.name[lang] || course.name.en}</span>
+              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span> <span class="lang-pill">${langs}</span></span>
+            </div>
+            <div class="course-actions">
+              <button class="btn-sm${isOwned ? " btn-added" : ""}" data-course-id="${course.id}"${isOwned ? " disabled" : ""}>${isOwned ? d.added : d.addBtn}</button>
+            </div>`;
+          row.querySelector("button")?.addEventListener("click", async () => {
+            if (owned.has(course.id)) return;
+            const { data: { user } } = await supa.auth.getUser();
+            const { data, error } = await supa.from("user_courses")
+              .insert({ user_id: user.id, course_id: course.id })
+              .select().single();
+            if (!error && data){ courses.push(data); renderMyTests(); renderCatalog(); }
+          });
+          subEl.appendChild(row);
+        });
+        catEl.appendChild(subEl);
+      });
+    }
+    wrap.appendChild(catEl);
   });
 }
 
@@ -173,17 +247,6 @@ document.getElementById("useDevice").addEventListener("click", async () => {
     .select().single();
   if (!error && data){ devices.push(data); renderAll(); }
 });
-
-// — Add a course —
-document.querySelectorAll("#catalog .cat[data-course] button").forEach(btn => btn.addEventListener("click", async () => {
-  const c = btn.closest(".cat").dataset.course;
-  if (courses.some(x => x.course_id === c)) return;
-  const { data: { user } } = await supa.auth.getUser();
-  const { data, error } = await supa.from("user_courses")
-    .insert({ user_id: user.id, course_id: c })
-    .select().single();
-  if (!error && data){ courses.push(data); renderMyTests(); renderCatalog(); }
-}));
 
 // — Remove device modal —
 document.getElementById("rmCancel").addEventListener("click", () => {

@@ -30,8 +30,8 @@
 <div class="wrap shell" id="shell" style="display:none">
   <nav class="side" id="side">
     <button data-panel="practice" aria-current="true"><span class="ico">▦</span><span data-a="navPractice">Practice</span></button>
-    <button data-panel="mytests"><span class="ico">▤</span><span data-a="navMyTests">My tests</span></button>
-    <button data-panel="add"><span class="ico">＋</span><span data-a="navAdd">Add a test</span></button>
+    <button data-panel="mytests"><span class="ico">▤</span><span data-a="navMyTests">My courses</span></button>
+    <button data-panel="add"><span class="ico">＋</span><span data-a="navAdd">Catalog</span></button>
     <button data-panel="account"><span class="ico">◍</span><span data-a="navAccount">Account</span></button>
   </nav>
 
@@ -67,22 +67,18 @@
       </div>
     </section>
 
-    <!-- MY TESTS -->
+    <!-- MY COURSES -->
     <section class="panel" data-panel="mytests">
-      <h2 data-a="myH">My tests</h2>
+      <h2 data-a="myH">My courses</h2>
+      <p class="lead" data-a="myL">Your active courses and study materials.</p>
       <div id="myList"></div>
     </section>
 
-    <!-- ADD A TEST -->
+    <!-- CATALOG -->
     <section class="panel" data-panel="add">
-      <h2 data-a="addH">Add a test</h2>
-      <p class="lead" data-a="addL">Unlock more exams on the same account. Free while testing.</p>
-      <div class="catalog" id="catalog">
-        <div class="cat" data-course="c20"><div class="ct">C-20 HVAC Trade</div><div class="cp">$20/mo</div><button class="btn-sm" data-a="addBtn">Add</button></div>
-        <div class="cat"><div class="ct">Cosmetology</div><div class="cp">—</div><button class="btn-sm soon" data-a="soon">Coming soon</button></div>
-        <div class="cat"><div class="ct">Barber</div><div class="cp">—</div><button class="btn-sm soon" data-a="soon">Coming soon</button></div>
-        <div class="cat"><div class="ct">Real estate</div><div class="cp">—</div><button class="btn-sm soon" data-a="soon">Coming soon</button></div>
-      </div>
+      <h2 data-a="storeH">Catalog</h2>
+      <p class="lead" data-a="storeL">Add courses to your account. Free while in beta.</p>
+      <div id="catalog"></div>
     </section>
 
     <!-- ACCOUNT -->
@@ -118,6 +114,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/catalog.js"></script>
 <script src="js/i18n-app.js"></script>
 <script src="js/app-cabinet.js"></script>
 </body>
