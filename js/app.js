@@ -70,4 +70,13 @@ document.getElementById("rg_btn").addEventListener("click", async ()=>{
   return startSession(email);
 });
 
+// show/hide password
+document.querySelectorAll(".pwtoggle").forEach(btn=>btn.addEventListener("click",()=>{
+  const inp=document.getElementById(btn.dataset.target);
+  const show=inp.type==="password";
+  inp.type=show?"text":"password";
+  btn.setAttribute("aria-pressed", show?"true":"false");
+  btn.textContent=show?"🙈":"👁";
+}));
+
 applyLang();

@@ -43,7 +43,10 @@
         </div>
         <div class="field">
           <label for="li_pass" data-t="passL">Password</label>
-          <input id="li_pass" type="password" placeholder="••••••••" autocomplete="current-password">
+          <div class="pwwrap">
+            <input id="li_pass" type="password" placeholder="••••••••" autocomplete="current-password">
+            <button type="button" class="pwtoggle" data-target="li_pass" aria-label="Show password" aria-pressed="false">👁</button>
+          </div>
         </div>
         <div class="autherr" id="li_err"></div>
         <button class="btn btn-primary btn-block" id="li_btn" data-t="loginBtn">Log in</button>
@@ -58,7 +61,10 @@
         </div>
         <div class="field">
           <label for="rg_pass" data-t="passL">Password</label>
-          <input id="rg_pass" type="password" placeholder="••••••••" autocomplete="new-password">
+          <div class="pwwrap">
+            <input id="rg_pass" type="password" placeholder="••••••••" autocomplete="new-password">
+            <button type="button" class="pwtoggle" data-target="rg_pass" aria-label="Show password" aria-pressed="false">👁</button>
+          </div>
         </div>
         <label class="consent">
           <input type="checkbox" id="rg_consent">
