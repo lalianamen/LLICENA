@@ -1,73 +1,29 @@
-/* LICENA — cabinet, Supabase-backed
-   Passwords: bcrypt via Supabase Auth (never stored in plaintext).
-   Devices:   server-side binding; client only holds a random token.
-   RLS:       each user can only read/write their own rows. */
+/* LICENA — cabinet, Supabase-backed */
 
-const maskDev = id => id ? id.slice(0,4)+"····"+id.slice(-2) : "—";
-
-let lang = "en", profile = null, devices = [], courses = [], currentDevice = null, pendingRemove = null, pendingAdd = null;
+let lang = "en", profile = null, courses = [], pendingAdd = null, pendingAddLang = null;
 
 function tr(){
   const d = TAPP[lang];
   document.querySelectorAll("[data-a]").forEach(el => { const k = el.getAttribute("data-a"); if (d[k] !== undefined) el.textContent = d[k]; });
-  document.querySelectorAll("[data-a-ph]").forEach(el => { const k = el.getAttribute("data-a-ph"); if (d[k] !== undefined) el.placeholder = d[k]; });
   document.documentElement.lang = lang;
 }
 
-const deviceAuthorized = () => devices.some(x => x.device_token === currentDevice);
-
-function renderPractice(){
-  const auth = deviceAuthorized();
-  document.getElementById("practiceContent").style.display = auth ? "block" : "none";
-  document.getElementById("practiceAuth").style.display   = (!auth && devices.length < MAX_DEVICES) ? "block" : "none";
-  document.getElementById("practiceLimit").style.display  = (!auth && devices.length >= MAX_DEVICES) ? "block" : "none";
-  document.getElementById("statusChip").style.display     = auth ? "inline-flex" : "none";
-  if (auth && !document.getElementById("topics").childElementCount){
-    SECTIONS.forEach((s, i) => {
-      const b = document.createElement("button"); b.className = "topic"; b.textContent = s;
-      b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
-      b.addEventListener("click", () => document.querySelectorAll(".topic").forEach(x => x.setAttribute("aria-pressed", x === b)));
-      document.getElementById("topics").appendChild(b);
-    });
-  }
-}
-
-function buildSubSection(subEl, items, d, clickable){
-  items.forEach(course => {
-    const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
-    const langStr = course.langs.map(l => l.toUpperCase()).join(" · ");
-    const row = document.createElement("div");
-    row.className = "course-row" + (clickable ? " course-row-link" : "");
-    row.innerHTML = `
-      <div class="course-info">
-        <span class="course-name">${course.name[lang] || course.name.en}</span>
-        <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span><span class="lang-pill">${langStr}</span></span>
-      </div>`;
-    if (clickable){
-      const courseLang = localStorage.getItem("lp:course_lang:" + course.id) || course.langs[0];
-      row.innerHTML += `<div class="course-actions"><span class="status-badge active">${d.activeBadge}</span><span class="open-arrow">→</span></div>`;
-      row.addEventListener("click", () => {
-        window.location.href = `course.html?id=${course.id}&lang=${courseLang}`;
-      });
-    }
-    subEl.appendChild(row);
-  });
-}
-
-function makeSubEl(sub, items, d, clickable){
+// ─── Subcategory toggle helper ────────────────────────────────────────────────
+function makeSubEl(sub, bodyBuilder){
   const subEl = document.createElement("div"); subEl.className = "my-sub";
   const hd = document.createElement("div"); hd.className = "my-sub-hd";
   hd.innerHTML = `<span>${sub.name[lang] || sub.name.en}</span><span class="sub-chevron">▾</span>`;
-  const body = document.createElement("div"); body.className = "sub-body";
-  buildSubSection(body, items, d, clickable);
   hd.addEventListener("click", () => {
     const collapsed = subEl.classList.toggle("collapsed");
     hd.querySelector(".sub-chevron").textContent = collapsed ? "▸" : "▾";
   });
+  const body = document.createElement("div"); body.className = "sub-body";
+  bodyBuilder(body);
   subEl.appendChild(hd); subEl.appendChild(body);
   return subEl;
 }
 
+// ─── My Courses ───────────────────────────────────────────────────────────────
 function renderMyTests(){
   const wrap = document.getElementById("myList"), d = TAPP[lang];
   wrap.innerHTML = "";
@@ -87,7 +43,27 @@ function renderMyTests(){
     hasAny = true;
     const catEl = document.createElement("div"); catEl.className = "my-cat";
     catEl.innerHTML = `<div class="my-cat-hd">${cat.icon} ${cat.name[lang] || cat.name.en}</div>`;
-    Object.values(bySub).forEach(({ sub, items }) => catEl.appendChild(makeSubEl(sub, items, d, true)));
+    Object.values(bySub).forEach(({ sub, items }) => {
+      catEl.appendChild(makeSubEl(sub, body => {
+        items.forEach(course => {
+          const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
+          const langStr = course.langs.map(l => l.toUpperCase()).join(" · ");
+          const courseLang = localStorage.getItem("lp:course_lang:" + course.id) || course.langs[0];
+          const row = document.createElement("div"); row.className = "course-row course-row-link";
+          row.innerHTML = `
+            <div class="course-info">
+              <span class="course-name">${course.name[lang] || course.name.en}</span>
+              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span><span class="lang-pill">${langStr}</span></span>
+            </div>
+            <div class="course-actions">
+              <span class="status-badge active">${d.activeBadge}</span>
+              <span class="open-arrow">→</span>
+            </div>`;
+          row.addEventListener("click", () => { window.location.href = `course.html?id=${course.id}&lang=${courseLang}`; });
+          body.appendChild(row);
+        });
+      }));
+    });
     wrap.appendChild(catEl);
   });
 
@@ -97,6 +73,7 @@ function renderMyTests(){
   }
 }
 
+// ─── Catalog ──────────────────────────────────────────────────────────────────
 function renderCatalog(){
   const wrap = document.getElementById("catalog"), d = TAPP[lang];
   const owned = new Set(courses.map(c => c.course_id));
@@ -107,45 +84,45 @@ function renderCatalog(){
     catEl.innerHTML = `<div class="store-cat-hd">${cat.icon} ${cat.name[lang] || cat.name.en}${cat.soon ? ` <span class="soon-pill">${d.soon}</span>` : ""}</div>`;
     if (!cat.soon){
       (cat.subs || []).forEach(sub => {
-        const subEl = document.createElement("div"); subEl.className = "my-sub";
-        const hd = document.createElement("div"); hd.className = "my-sub-hd";
-        hd.innerHTML = `<span>${sub.name[lang] || sub.name.en}</span><span class="sub-chevron">▾</span>`;
-        hd.addEventListener("click", () => {
-          const collapsed = subEl.classList.toggle("collapsed");
-          hd.querySelector(".sub-chevron").textContent = collapsed ? "▸" : "▾";
-        });
-        const body = document.createElement("div"); body.className = "sub-body";
-        (sub.courses || []).forEach(course => {
-          const isOwned = owned.has(course.id);
-          const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
-          const langStr = course.langs.map(l => l.toUpperCase()).join(" · ");
-          const row = document.createElement("div"); row.className = "course-row";
-          row.innerHTML = `
-            <div class="course-info">
-              <span class="course-name">${course.name[lang] || course.name.en}</span>
-              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span><span class="lang-pill">${langStr}</span></span>
-            </div>
-            <div class="course-actions">
-              <button class="btn-sm${isOwned ? " btn-added" : ""}"${isOwned ? " disabled" : ""}>${isOwned ? d.added : d.addBtn}</button>
-            </div>`;
-          if (!isOwned){
-            row.querySelector("button").addEventListener("click", () => openLangPicker(course));
-          }
-          body.appendChild(row);
-        });
-        subEl.appendChild(hd); subEl.appendChild(body);
-        catEl.appendChild(subEl);
+        catEl.appendChild(makeSubEl(sub, body => {
+          (sub.courses || []).forEach(course => {
+            const isOwned = owned.has(course.id);
+            const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
+            const langStr = course.langs.map(l => l.toUpperCase()).join(" · ");
+            const row = document.createElement("div"); row.className = "course-row";
+            row.innerHTML = `
+              <div class="course-info">
+                <span class="course-name">${course.name[lang] || course.name.en}</span>
+                <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span><span class="lang-pill">${langStr}</span></span>
+              </div>
+              <div class="course-actions">
+                <button class="btn-sm${isOwned ? " btn-added" : ""}"${isOwned ? " disabled" : ""}>${isOwned ? d.added : d.addBtn}</button>
+              </div>`;
+            if (!isOwned) row.querySelector("button").addEventListener("click", () => openLangPicker(course));
+            body.appendChild(row);
+          });
+        }));
       });
     }
     wrap.appendChild(catEl);
   });
 }
 
+// ─── Account ──────────────────────────────────────────────────────────────────
+function renderAccount(){
+  document.getElementById("aEmail").textContent = profile?.email || "—";
+  const nameEl = document.getElementById("aName");
+  if (nameEl) nameEl.textContent = profile?.name || "—";
+}
+
+function renderAll(){ renderMyTests(); renderCatalog(); renderAccount(); }
+
+// ─── Lang picker ──────────────────────────────────────────────────────────────
 function openLangPicker(course){
   pendingAdd = course;
   const d = TAPP[lang];
   document.getElementById("langModalTitle").textContent = course.name[lang] || course.name.en;
-  document.getElementById("langModalSub").textContent = d.chooseLang || "Choose your study language:";
+  document.getElementById("langModalSub").textContent = d.chooseLang;
   const choices = document.getElementById("langChoices");
   choices.innerHTML = "";
   const labels = { en:"English", es:"Español", ru:"Русский", vi:"Tiếng Việt" };
@@ -153,16 +130,36 @@ function openLangPicker(course){
     const btn = document.createElement("button");
     btn.className = "lang-choice-btn" + (l === lang ? " preferred" : "");
     btn.textContent = labels[l] || l.toUpperCase();
-    btn.dataset.lang = l;
-    btn.addEventListener("click", () => confirmAddCourse(l));
+    btn.addEventListener("click", () => openPayModal(l));
     choices.appendChild(btn);
   });
   document.getElementById("langModal").style.display = "grid";
 }
 
-async function confirmAddCourse(chosenLang){
+// ─── Payment modal (beta: free) ───────────────────────────────────────────────
+function openPayModal(chosenLang){
+  pendingAddLang = chosenLang;
   document.getElementById("langModal").style.display = "none";
-  const course = pendingAdd; pendingAdd = null;
+  const course = pendingAdd, d = TAPP[lang];
+  const labels = { en:"English", es:"Español", ru:"Русский", vi:"Tiếng Việt" };
+  document.getElementById("payModalTitle").textContent = course.name[lang] || course.name.en;
+  document.getElementById("payCourseInfo").innerHTML =
+    `<div class="pay-lang-chosen">${labels[chosenLang] || chosenLang.toUpperCase()}</div>`;
+  document.getElementById("payModal").style.display = "grid";
+}
+
+document.getElementById("langCancel").addEventListener("click", () => {
+  document.getElementById("langModal").style.display = "none"; pendingAdd = null;
+});
+
+document.getElementById("payCancel").addEventListener("click", () => {
+  document.getElementById("payModal").style.display = "none"; pendingAddLang = null;
+});
+
+document.getElementById("payConfirm").addEventListener("click", async () => {
+  const course = pendingAdd, chosenLang = pendingAddLang;
+  document.getElementById("payModal").style.display = "none";
+  pendingAdd = null; pendingAddLang = null;
   if (!course) return;
   localStorage.setItem("lp:course_lang:" + course.id, chosenLang);
   const { data: { user } } = await supa.auth.getUser();
@@ -170,66 +167,40 @@ async function confirmAddCourse(chosenLang){
     .insert({ user_id: user.id, course_id: course.id })
     .select().single();
   if (!error && data){ courses.push(data); renderMyTests(); renderCatalog(); }
-}
+});
 
-function renderAccount(){
-  const d = TAPP[lang];
-  document.getElementById("aEmail").textContent = profile?.email || "—";
-  const nameEl = document.getElementById("aName");
-  if (nameEl) nameEl.textContent = profile?.name || "—";
-  document.getElementById("aSlots").textContent = devices.length + " / " + MAX_DEVICES;
-  const wrap = document.getElementById("deviceList"); wrap.innerHTML = "";
-  if (!devices.length){
-    const e = document.createElement("div"); e.className = "empty"; e.style.marginTop = "0"; e.textContent = "—"; wrap.appendChild(e);
-  }
-  devices.forEach(dev => {
-    const here = dev.device_token === currentDevice;
-    const row = document.createElement("div"); row.className = "dev";
-    row.innerHTML = '<div><span class="di"></span><span class="here" style="display:none"></span><div class="meta2"></div></div><button></button>';
-    row.querySelector(".di").textContent = maskDev(dev.device_token);
-    if (here){ const h = row.querySelector(".here"); h.style.display = "inline-block"; h.textContent = d.thisDevice; }
-    row.querySelector(".meta2").textContent = new Date(dev.added_at).toLocaleDateString();
-    const rb = row.querySelector("button"); rb.textContent = d.remove;
-    rb.addEventListener("click", () => openRemove(dev.id));
-    wrap.appendChild(row);
-  });
-}
+// ─── Nav ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll(".side button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".side button").forEach(x => x.setAttribute("aria-current", x === b ? "true" : "false"));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.dataset.panel === b.dataset.panel));
+}));
 
-function renderAll(){ renderPractice(); renderMyTests(); renderCatalog(); renderAccount(); }
+// ─── Language toggle ──────────────────────────────────────────────────────────
+document.querySelectorAll(".app-langs button").forEach(b => b.addEventListener("click", async () => {
+  lang = b.dataset.lang;
+  document.querySelectorAll(".app-langs button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  tr(); renderAll();
+  const { data: { user } } = await supa.auth.getUser();
+  if (user) await supa.from("profiles").update({ lang }).eq("id", user.id);
+}));
 
-async function openRemove(deviceId){
-  pendingRemove = deviceId;
-  document.getElementById("rmEmail").textContent = profile.email;
-  document.getElementById("rmCode").value = "";
-  document.getElementById("rmErr").textContent = "";
-  document.getElementById("rmModal").style.display = "grid";
-  // Send real OTP to user's email via Supabase Auth
-  await supa.auth.signInWithOtp({ email: profile.email, options: { shouldCreateUser: false } });
-}
+// ─── Sign out ─────────────────────────────────────────────────────────────────
+document.getElementById("signOut").addEventListener("click", async () => {
+  await supa.auth.signOut();
+  window.location.replace("index.html");
+});
 
+// ─── Init ─────────────────────────────────────────────────────────────────────
 async function init(){
   const { data: { session } } = await supa.auth.getSession();
   if (!session){ window.location.replace("index.html"); return; }
 
-  // Device token: generated once, stored in localStorage (intentionally not a hardware fingerprint)
-  let devToken = localStorage.getItem("lp:device");
-  if (!devToken){
-    devToken = "DEV" + Math.random().toString(36).slice(2, 8).toUpperCase();
-    localStorage.setItem("lp:device", devToken);
-  }
-  currentDevice = devToken;
-
-  // Load all data in parallel
   const userId = session.user.id;
-  const [profRes, devRes, courseRes] = await Promise.all([
+  const [profRes, courseRes] = await Promise.all([
     supa.from("profiles").select("*").eq("id", userId).single(),
-    supa.from("devices").select("*").eq("user_id", userId),
     supa.from("user_courses").select("*").eq("user_id", userId)
   ]);
 
-  devices = devRes.data || [];
-
-  // On first login after email confirmation: create profile from pending localStorage data
   if (!profRes.data) {
     const pendingName = localStorage.getItem("lp:pending_name") || session.user.user_metadata?.name || "";
     const pendingLang = localStorage.getItem("lp:pending_lang") || "en";
@@ -248,7 +219,6 @@ async function init(){
     courses = courseRes.data || [];
   }
 
-  // Apply saved language preference
   if (profile.lang && TAPP[profile.lang]){
     lang = profile.lang;
     document.querySelectorAll(".app-langs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
@@ -258,59 +228,5 @@ async function init(){
   document.getElementById("shell").style.display = "grid";
   renderAll();
 }
-
-// — Nav —
-document.querySelectorAll(".side button").forEach(b => b.addEventListener("click", () => {
-  document.querySelectorAll(".side button").forEach(x => x.setAttribute("aria-current", x === b ? "true" : "false"));
-  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.dataset.panel === b.dataset.panel));
-}));
-
-// — Language toggle (saves to profile) —
-document.querySelectorAll(".app-langs button").forEach(b => b.addEventListener("click", async () => {
-  lang = b.dataset.lang;
-  document.querySelectorAll(".app-langs button").forEach(x => x.setAttribute("aria-pressed", x === b));
-  tr(); renderAll();
-  const { data: { user } } = await supa.auth.getUser();
-  if (user) await supa.from("profiles").update({ lang }).eq("id", user.id);
-}));
-
-// — Sign out —
-document.getElementById("signOut").addEventListener("click", async () => {
-  await supa.auth.signOut();
-  window.location.replace("index.html");
-});
-
-// — Add this device —
-document.getElementById("useDevice").addEventListener("click", async () => {
-  if (devices.length >= MAX_DEVICES){ renderPractice(); return; }
-  const { data: { user } } = await supa.auth.getUser();
-  const { data, error } = await supa.from("devices")
-    .insert({ user_id: user.id, device_token: currentDevice })
-    .select().single();
-  if (!error && data){ devices.push(data); renderAll(); }
-});
-
-// — Lang picker modal —
-document.getElementById("langCancel").addEventListener("click", () => {
-  document.getElementById("langModal").style.display = "none"; pendingAdd = null;
-});
-
-// — Remove device modal —
-document.getElementById("rmCancel").addEventListener("click", () => {
-  document.getElementById("rmModal").style.display = "none"; pendingRemove = null;
-});
-document.getElementById("rmVerify").addEventListener("click", async () => {
-  const d = TAPP[lang], err = document.getElementById("rmErr");
-  const token = document.getElementById("rmCode").value.trim();
-  if (!token || token.length < 6){ err.textContent = d.badCode; return; }
-  // Verify OTP code sent to user's email
-  const { error: otpErr } = await supa.auth.verifyOtp({ email: profile.email, token, type: "email" });
-  if (otpErr){ err.textContent = d.badCode; return; }
-  const { error: delErr } = await supa.from("devices").delete().eq("id", pendingRemove);
-  if (!delErr){
-    devices = devices.filter(x => x.id !== pendingRemove);
-    document.getElementById("rmModal").style.display = "none"; pendingRemove = null; renderAll();
-  }
-});
 
 init();

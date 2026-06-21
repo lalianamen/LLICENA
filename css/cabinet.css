@@ -134,6 +134,14 @@
 .btn-sm.btn-added{background:var(--paper);color:var(--steel);cursor:default}
 .soon-pill{font-size:12px;font-weight:600;background:var(--paper);color:var(--steel);border:1px solid var(--line);
   padding:3px 9px;border-radius:20px;margin-left:6px}
+/* Payment modal */
+.pay-course-info{margin-bottom:16px}
+.pay-lang-chosen{display:inline-block;font-family:'Archivo';font-weight:700;font-size:14px;
+  background:var(--ink);color:#fff;padding:6px 14px;border-radius:20px}
+.beta-note{display:flex;align-items:flex-start;gap:10px;background:#f0faf4;border:1px solid #bfe0cf;
+  border-radius:11px;padding:13px 14px;margin-top:4px}
+.beta-pill{flex-shrink:0;font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.08em;
+  background:var(--verify);color:#fff;padding:3px 8px;border-radius:6px;margin-top:1px}
 /* Lang picker */
 .lang-choices{display:flex;flex-direction:column;gap:8px}
 .lang-choice-btn{width:100%;text-align:left;padding:13px 16px;border:1.5px solid var(--line);border-radius:11px;

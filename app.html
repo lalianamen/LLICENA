@@ -16,7 +16,6 @@
   <div class="brand"><span class="mk">L</span>LICENA</div>
   <span class="tag" data-a="tag">My cabinet</span>
   <div class="app-right">
-    <span class="chip" id="statusChip"><span class="dot"></span><span data-a="acctActive">Active on this device</span></span>
     <div class="app-langs" role="group" aria-label="Language">
       <button data-lang="en" aria-pressed="true">EN</button>
       <button data-lang="es" aria-pressed="false">ES</button>
@@ -29,46 +28,14 @@
 
 <div class="wrap shell" id="shell" style="display:none">
   <nav class="side" id="side">
-    <button data-panel="practice" aria-current="true"><span class="ico">▦</span><span data-a="navPractice">Practice</span></button>
-    <button data-panel="mytests"><span class="ico">▤</span><span data-a="navMyTests">My courses</span></button>
+    <button data-panel="mytests" aria-current="true"><span class="ico">▤</span><span data-a="navMyTests">My courses</span></button>
     <button data-panel="add"><span class="ico">＋</span><span data-a="navAdd">Catalog</span></button>
     <button data-panel="account"><span class="ico">◍</span><span data-a="navAccount">Account</span></button>
   </nav>
 
   <main>
-    <!-- PRACTICE -->
-    <section class="panel on" data-panel="practice">
-      <h2 data-a="practiceH">Practice</h2>
-      <p class="lead" data-a="practiceL">Pick how you want to study.</p>
-
-      <!-- content (device authorized) -->
-      <div id="practiceContent" style="display:none">
-        <div class="modes">
-          <div class="mode"><div class="mt" data-a="modeFull">Full mock exam</div><div class="md" data-a="modeFullD">Timed, all topics</div></div>
-          <div class="mode"><div class="mt" data-a="modeTopic">Practice by topic</div><div class="md" data-a="modeTopicD">One area at a time</div></div>
-          <div class="mode"><div class="mt" data-a="modeWeak">Weak areas</div><div class="md" data-a="modeWeakD">Questions you've missed</div></div>
-        </div>
-        <p class="h3lbl" data-a="chooseTopic">Choose a topic</p>
-        <div class="topics" id="topics"></div>
-        <div class="empty" data-a="soonQ">Questions for this section are coming soon.</div>
-      </div>
-
-      <!-- authorize this device -->
-      <div id="practiceAuth" class="card" style="display:none;max-width:520px;margin-top:8px">
-        <h3 style="font-family:'Archivo';margin:0 0 6px" data-a="authH">Activate this device</h3>
-        <p style="color:var(--steel);margin:0 0 16px" data-a="authL">To open the questions, this device needs to be added to your account.</p>
-        <button class="btn btn-gold" id="useDevice" data-a="useDevice">Use this device</button>
-      </div>
-
-      <!-- device limit -->
-      <div id="practiceLimit" class="card" style="display:none;max-width:520px;margin-top:8px;border-left:5px solid var(--danger)">
-        <h3 style="font-family:'Archivo';margin:0 0 6px" data-a="limitH">Device limit reached</h3>
-        <p style="color:var(--steel);margin:0" data-a="limitL">You're using the maximum of 3 devices. Remove one in Account to add this device.</p>
-      </div>
-    </section>
-
     <!-- MY COURSES -->
-    <section class="panel" data-panel="mytests">
+    <section class="panel on" data-panel="mytests">
       <h2 data-a="myH">My courses</h2>
       <p class="lead" data-a="myL">Your active courses and study materials.</p>
       <div id="myList"></div>
@@ -88,38 +55,35 @@
         <div class="acct-line"><span class="k" data-a="acctName">Name</span><span class="v" id="aName">—</span></div>
         <div class="acct-line"><span class="k" data-a="acctEmail">Email</span><span class="v" id="aEmail">—</span></div>
         <div class="acct-line"><span class="k" data-a="acctPlan">Access</span><span class="v" data-a="planTest">Test access (no payment yet)</span></div>
-        <div class="acct-line"><span class="k"><span data-a="slots">Devices used</span></span><span class="v" id="aSlots">0 / 3</span></div>
       </div>
-      <p class="h3lbl" style="margin-top:22px" data-a="devicesH">Devices</p>
-      <div id="deviceList" style="max-width:560px"></div>
-      <p class="note" data-a="lockNote">Your password opens the cabinet on any device. The questions open only on your added devices.</p>
     </section>
   </main>
 </div>
 
-<!-- remove-device modal (email OTP) -->
-<div class="modal-bg" id="rmModal" style="display:none">
-  <div class="modal">
-    <h3 data-a="rmH">Remove device</h3>
-    <p data-a="rmL">For security, removing a device needs a code sent to your email.</p>
-    <p class="codesent"><span data-a="codeSent">We sent a 6-digit code to</span> <strong id="rmEmail">—</strong></p>
-    <input id="rmCode" class="mono" maxlength="6" placeholder="6-digit code" data-a-ph="code6Ph" inputmode="numeric">
-    <div class="autherr" id="rmErr"></div>
-    <div class="modal-row">
-      <button class="btn btn-ghost" id="rmCancel" data-a="cancel">Cancel</button>
-      <button class="btn btn-primary" id="rmVerify" data-a="verify">Verify &amp; remove</button>
-    </div>
-  </div>
-</div>
-
-<!-- lang picker modal -->
+<!-- lang + activate modal -->
 <div class="modal-bg" id="langModal" style="display:none">
   <div class="modal">
     <h3 id="langModalTitle">Add course</h3>
     <p id="langModalSub" style="margin-bottom:18px">Choose your study language:</p>
     <div id="langChoices" class="lang-choices"></div>
     <div class="modal-row" style="margin-top:16px">
-      <button class="btn btn-ghost" id="langCancel">Cancel</button>
+      <button class="btn btn-ghost" id="langCancel" data-a="cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- payment placeholder modal -->
+<div class="modal-bg" id="payModal" style="display:none">
+  <div class="modal">
+    <h3 id="payModalTitle">Activate course</h3>
+    <div class="pay-course-info" id="payCourseInfo"></div>
+    <div class="beta-note" id="betaNote">
+      <span class="beta-pill">BETA</span>
+      <span data-a="betaFree">Free access during beta — no payment needed.</span>
+    </div>
+    <button class="btn btn-primary" id="payConfirm" style="width:100%;margin-top:18px" data-a="activateBtn">Activate for free</button>
+    <div class="modal-row" style="margin-top:10px">
+      <button class="btn btn-ghost" id="payCancel" data-a="cancel">Cancel</button>
     </div>
   </div>
 </div>
