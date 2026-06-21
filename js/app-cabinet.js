@@ -5,7 +5,7 @@
 
 const maskDev = id => id ? id.slice(0,4)+"····"+id.slice(-2) : "—";
 
-let lang = "en", profile = null, devices = [], courses = [], currentDevice = null, pendingRemove = null;
+let lang = "en", profile = null, devices = [], courses = [], currentDevice = null, pendingRemove = null, pendingAdd = null;
 
 function tr(){
   const d = TAPP[lang];
@@ -32,6 +32,42 @@ function renderPractice(){
   }
 }
 
+function buildSubSection(subEl, items, d, clickable){
+  items.forEach(course => {
+    const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
+    const langStr = course.langs.map(l => l.toUpperCase()).join(" · ");
+    const row = document.createElement("div");
+    row.className = "course-row" + (clickable ? " course-row-link" : "");
+    row.innerHTML = `
+      <div class="course-info">
+        <span class="course-name">${course.name[lang] || course.name.en}</span>
+        <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span><span class="lang-pill">${langStr}</span></span>
+      </div>`;
+    if (clickable){
+      const courseLang = localStorage.getItem("lp:course_lang:" + course.id) || course.langs[0];
+      row.innerHTML += `<div class="course-actions"><span class="status-badge active">${d.activeBadge}</span><span class="open-arrow">→</span></div>`;
+      row.addEventListener("click", () => {
+        window.location.href = `course.html?id=${course.id}&lang=${courseLang}`;
+      });
+    }
+    subEl.appendChild(row);
+  });
+}
+
+function makeSubEl(sub, items, d, clickable){
+  const subEl = document.createElement("div"); subEl.className = "my-sub";
+  const hd = document.createElement("div"); hd.className = "my-sub-hd";
+  hd.innerHTML = `<span>${sub.name[lang] || sub.name.en}</span><span class="sub-chevron">▾</span>`;
+  const body = document.createElement("div"); body.className = "sub-body";
+  buildSubSection(body, items, d, clickable);
+  hd.addEventListener("click", () => {
+    const collapsed = subEl.classList.toggle("collapsed");
+    hd.querySelector(".sub-chevron").textContent = collapsed ? "▸" : "▾";
+  });
+  subEl.appendChild(hd); subEl.appendChild(body);
+  return subEl;
+}
+
 function renderMyTests(){
   const wrap = document.getElementById("myList"), d = TAPP[lang];
   wrap.innerHTML = "";
@@ -39,45 +75,19 @@ function renderMyTests(){
   let hasAny = false;
 
   CATALOG.forEach(cat => {
-    // collect courses in this category that the user owns
-    const catCourses = [];
+    const bySub = {};
     (cat.subs || []).forEach(sub => {
       (sub.courses || []).forEach(course => {
-        if (owned.has(course.id)) catCourses.push({ sub, course });
+        if (!owned.has(course.id)) return;
+        if (!bySub[sub.id]) bySub[sub.id] = { sub, items: [] };
+        bySub[sub.id].items.push(course);
       });
     });
-    if (!catCourses.length) return;
+    if (!Object.keys(bySub).length) return;
     hasAny = true;
-
     const catEl = document.createElement("div"); catEl.className = "my-cat";
     catEl.innerHTML = `<div class="my-cat-hd">${cat.icon} ${cat.name[lang] || cat.name.en}</div>`;
-
-    // group by sub
-    const bySub = {};
-    catCourses.forEach(({ sub, course }) => {
-      if (!bySub[sub.id]) bySub[sub.id] = { sub, items: [] };
-      bySub[sub.id].items.push(course);
-    });
-    Object.values(bySub).forEach(({ sub, items }) => {
-      const subEl = document.createElement("div"); subEl.className = "my-sub";
-      subEl.innerHTML = `<div class="my-sub-hd">${sub.name[lang] || sub.name.en}</div>`;
-      items.forEach(course => {
-        const row = document.createElement("div"); row.className = "course-row";
-        const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
-        const langs = course.langs.map(l => l.toUpperCase()).join(" · ");
-        row.innerHTML = `
-          <div class="course-info">
-            <span class="course-name">${course.name[lang] || course.name.en}</span>
-            <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span> <span class="lang-pill">${langs}</span></span>
-          </div>
-          <div class="course-actions">
-            <span class="status-badge active">${d.activeBadge}</span>
-            <a class="btn-sm open-btn" href="#">${d.openCourse}</a>
-          </div>`;
-        subEl.appendChild(row);
-      });
-      catEl.appendChild(subEl);
-    });
+    Object.values(bySub).forEach(({ sub, items }) => catEl.appendChild(makeSubEl(sub, items, d, true)));
     wrap.appendChild(catEl);
   });
 
@@ -95,39 +105,71 @@ function renderCatalog(){
   CATALOG.forEach(cat => {
     const catEl = document.createElement("div"); catEl.className = "store-cat";
     catEl.innerHTML = `<div class="store-cat-hd">${cat.icon} ${cat.name[lang] || cat.name.en}${cat.soon ? ` <span class="soon-pill">${d.soon}</span>` : ""}</div>`;
-
-    if (!cat.soon) {
+    if (!cat.soon){
       (cat.subs || []).forEach(sub => {
-        const subEl = document.createElement("div"); subEl.className = "store-sub";
-        subEl.innerHTML = `<div class="store-sub-hd">${sub.name[lang] || sub.name.en}</div>`;
+        const subEl = document.createElement("div"); subEl.className = "my-sub";
+        const hd = document.createElement("div"); hd.className = "my-sub-hd";
+        hd.innerHTML = `<span>${sub.name[lang] || sub.name.en}</span><span class="sub-chevron">▾</span>`;
+        hd.addEventListener("click", () => {
+          const collapsed = subEl.classList.toggle("collapsed");
+          hd.querySelector(".sub-chevron").textContent = collapsed ? "▸" : "▾";
+        });
+        const body = document.createElement("div"); body.className = "sub-body";
         (sub.courses || []).forEach(course => {
           const isOwned = owned.has(course.id);
           const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
-          const langs = course.langs.map(l => l.toUpperCase()).join(" · ");
+          const langStr = course.langs.map(l => l.toUpperCase()).join(" · ");
           const row = document.createElement("div"); row.className = "course-row";
           row.innerHTML = `
             <div class="course-info">
               <span class="course-name">${course.name[lang] || course.name.en}</span>
-              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span> <span class="lang-pill">${langs}</span></span>
+              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span><span class="lang-pill">${langStr}</span></span>
             </div>
             <div class="course-actions">
-              <button class="btn-sm${isOwned ? " btn-added" : ""}" data-course-id="${course.id}"${isOwned ? " disabled" : ""}>${isOwned ? d.added : d.addBtn}</button>
+              <button class="btn-sm${isOwned ? " btn-added" : ""}"${isOwned ? " disabled" : ""}>${isOwned ? d.added : d.addBtn}</button>
             </div>`;
-          row.querySelector("button")?.addEventListener("click", async () => {
-            if (owned.has(course.id)) return;
-            const { data: { user } } = await supa.auth.getUser();
-            const { data, error } = await supa.from("user_courses")
-              .insert({ user_id: user.id, course_id: course.id })
-              .select().single();
-            if (!error && data){ courses.push(data); renderMyTests(); renderCatalog(); }
-          });
-          subEl.appendChild(row);
+          if (!isOwned){
+            row.querySelector("button").addEventListener("click", () => openLangPicker(course));
+          }
+          body.appendChild(row);
         });
+        subEl.appendChild(hd); subEl.appendChild(body);
         catEl.appendChild(subEl);
       });
     }
     wrap.appendChild(catEl);
   });
+}
+
+function openLangPicker(course){
+  pendingAdd = course;
+  const d = TAPP[lang];
+  document.getElementById("langModalTitle").textContent = course.name[lang] || course.name.en;
+  document.getElementById("langModalSub").textContent = d.chooseLang || "Choose your study language:";
+  const choices = document.getElementById("langChoices");
+  choices.innerHTML = "";
+  const labels = { en:"English", es:"Español", ru:"Русский", vi:"Tiếng Việt" };
+  course.langs.forEach(l => {
+    const btn = document.createElement("button");
+    btn.className = "lang-choice-btn" + (l === lang ? " preferred" : "");
+    btn.textContent = labels[l] || l.toUpperCase();
+    btn.dataset.lang = l;
+    btn.addEventListener("click", () => confirmAddCourse(l));
+    choices.appendChild(btn);
+  });
+  document.getElementById("langModal").style.display = "grid";
+}
+
+async function confirmAddCourse(chosenLang){
+  document.getElementById("langModal").style.display = "none";
+  const course = pendingAdd; pendingAdd = null;
+  if (!course) return;
+  localStorage.setItem("lp:course_lang:" + course.id, chosenLang);
+  const { data: { user } } = await supa.auth.getUser();
+  const { data, error } = await supa.from("user_courses")
+    .insert({ user_id: user.id, course_id: course.id })
+    .select().single();
+  if (!error && data){ courses.push(data); renderMyTests(); renderCatalog(); }
 }
 
 function renderAccount(){
@@ -246,6 +288,11 @@ document.getElementById("useDevice").addEventListener("click", async () => {
     .insert({ user_id: user.id, device_token: currentDevice })
     .select().single();
   if (!error && data){ devices.push(data); renderAll(); }
+});
+
+// — Lang picker modal —
+document.getElementById("langCancel").addEventListener("click", () => {
+  document.getElementById("langModal").style.display = "none"; pendingAdd = null;
 });
 
 // — Remove device modal —

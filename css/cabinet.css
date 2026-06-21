@@ -106,11 +106,19 @@
 /* My Courses + Catalog hierarchy */
 .my-cat,.store-cat{margin-bottom:28px}
 .my-cat-hd,.store-cat-hd{font-family:'Archivo';font-weight:800;font-size:18px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
-.my-sub,.store-sub{margin:0 0 10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
-.my-sub-hd,.store-sub-hd{font-family:'Archivo';font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--gold-deep);padding:12px 16px;background:var(--paper);border-bottom:1px solid var(--line)}
+.my-sub{margin:0 0 10px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.my-sub-hd{font-family:'Archivo';font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--gold-deep);padding:12px 16px;background:var(--paper);border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.my-sub-hd:hover{background:#eff1f4}
+.sub-chevron{font-size:16px;color:var(--steel);transition:transform .15s}
+.my-sub.collapsed .sub-body{display:none}
+.my-sub.collapsed .my-sub-hd{border-bottom:none}
+.sub-body{}
 .course-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line)}
 .course-row:last-child{border-bottom:none}
+.course-row-link{cursor:pointer;transition:background .12s}
+.course-row-link:hover{background:#f5f7fa}
 .course-info{flex:1;min-width:0}
 .course-name{display:block;font-family:'Archivo';font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .course-meta{display:flex;align-items:center;gap:7px;margin-top:4px}
@@ -121,8 +129,14 @@
 .course-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .status-badge.active{font-size:11px;font-weight:700;font-family:'Archivo';text-transform:uppercase;letter-spacing:.07em;
   color:var(--verify);background:var(--verify-soft);border:1px solid #bfe0cf;padding:4px 9px;border-radius:20px}
+.open-arrow{font-size:18px;color:var(--steel)}
 .btn-sm{font-family:'Archivo';font-weight:700;font-size:13px;padding:8px 14px;border-radius:9px;background:var(--ink);color:#fff;white-space:nowrap}
 .btn-sm.btn-added{background:var(--paper);color:var(--steel);cursor:default}
-.open-btn{text-decoration:none;font-size:13px}
 .soon-pill{font-size:12px;font-weight:600;background:var(--paper);color:var(--steel);border:1px solid var(--line);
   padding:3px 9px;border-radius:20px;margin-left:6px}
+/* Lang picker */
+.lang-choices{display:flex;flex-direction:column;gap:8px}
+.lang-choice-btn{width:100%;text-align:left;padding:13px 16px;border:1.5px solid var(--line);border-radius:11px;
+  font-family:'Archivo';font-weight:600;font-size:15px;background:#fff;cursor:pointer;transition:.12s}
+.lang-choice-btn:hover{border-color:var(--ink);background:var(--paper)}
+.lang-choice-btn.preferred{border-color:var(--ink);background:var(--ink);color:#fff}

@@ -23,7 +23,8 @@ const TAPP = {
     lockNote:"Your password opens the cabinet on any device. The questions open only on your added devices (up to 3).",
     rmH:"Remove device", rmL:"For security, removing a device needs a code sent to your email.",
     codeSent:"We sent a 6-digit code to",
-    code6Ph:"6-digit code", verify:"Verify & remove", cancel:"Cancel", badCode:"Wrong code. Try again."
+    code6Ph:"6-digit code", verify:"Verify & remove", cancel:"Cancel", badCode:"Wrong code. Try again.",
+    chooseLang:"Choose your study language:"
   },
   es:{
     tag:"Mi panel", acctActive:"Activo en este dispositivo", signOut:"Cerrar sesión",
@@ -46,7 +47,8 @@ const TAPP = {
     lockNote:"Tu contraseña abre el panel en cualquier dispositivo. Las preguntas solo se abren en tus dispositivos añadidos (hasta 3).",
     rmH:"Quitar dispositivo", rmL:"Por seguridad, quitar un dispositivo requiere un código enviado a tu correo.",
     codeSent:"Enviamos un código de 6 dígitos a",
-    code6Ph:"código de 6 dígitos", verify:"Verificar y quitar", cancel:"Cancelar", badCode:"Código incorrecto. Inténtalo de nuevo."
+    code6Ph:"código de 6 dígitos", verify:"Verificar y quitar", cancel:"Cancelar", badCode:"Código incorrecto. Inténtalo de nuevo.",
+    chooseLang:"Elige el idioma de estudio:"
   },
   ru:{
     tag:"Кабинет", acctActive:"Активно на этом устройстве", signOut:"Выйти",
@@ -69,7 +71,8 @@ const TAPP = {
     lockNote:"Пароль открывает кабинет на любом устройстве. Вопросы открываются только на добавленных устройствах (до 3).",
     rmH:"Удалить устройство", rmL:"Для безопасности удаление устройства требует код, отправленный на почту.",
     codeSent:"Мы отправили 6-значный код на",
-    code6Ph:"6-значный код", verify:"Подтвердить и удалить", cancel:"Отмена", badCode:"Неверный код. Попробуй ещё раз."
+    code6Ph:"6-значный код", verify:"Подтвердить и удалить", cancel:"Отмена", badCode:"Неверный код. Попробуй ещё раз.",
+    chooseLang:"Выбери язык для учёбы:"
   },
   vi:{
     tag:"Trang của tôi", acctActive:"Đang hoạt động trên thiết bị này", signOut:"Đăng xuất",
@@ -92,7 +95,8 @@ const TAPP = {
     lockNote:"Mật khẩu mở trang quản lý trên mọi thiết bị. Câu hỏi chỉ mở trên các thiết bị đã thêm (tối đa 3).",
     rmH:"Xóa thiết bị", rmL:"Vì bảo mật, xóa thiết bị cần một mã gửi tới email của bạn.",
     codeSent:"Chúng tôi đã gửi mã 6 số tới",
-    code6Ph:"mã 6 số", verify:"Xác minh và xóa", cancel:"Hủy", badCode:"Sai mã. Thử lại."
+    code6Ph:"mã 6 số", verify:"Xác minh và xóa", cancel:"Hủy", badCode:"Sai mã. Thử lại.",
+    chooseLang:"Chọn ngôn ngữ học của bạn:"
   }
 };
 const SECTIONS = ["Licensing Requirements","Business Organization","Business Finances","Employment & Labor","Safety (Cal/OSHA)","Bonds & Insurance","Mechanics Liens","Contracts"];
