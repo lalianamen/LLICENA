@@ -111,9 +111,26 @@ async function init(){
     supa.from("user_courses").select("*").eq("user_id", userId)
   ]);
 
-  profile = { ...(profRes.data || {}), email: session.user.email };
-  devices = devRes.data    || [];
-  courses = courseRes.data || [];
+  devices = devRes.data || [];
+
+  // On first login after email confirmation: create profile from pending localStorage data
+  if (!profRes.data) {
+    const pendingName = localStorage.getItem("lp:pending_name") || session.user.user_metadata?.name || "";
+    const pendingLang = localStorage.getItem("lp:pending_lang") || "en";
+    await supa.from("profiles").upsert({ id: userId, name: pendingName, lang: pendingLang });
+    await supa.from("user_courses").upsert({ user_id: userId, course_id: "cslb-law" });
+    localStorage.removeItem("lp:pending_name");
+    localStorage.removeItem("lp:pending_lang");
+    const [p2, c2] = await Promise.all([
+      supa.from("profiles").select("*").eq("id", userId).single(),
+      supa.from("user_courses").select("*").eq("user_id", userId)
+    ]);
+    profile = { ...(p2.data || {}), email: session.user.email };
+    courses = c2.data || [];
+  } else {
+    profile = { ...profRes.data, email: session.user.email };
+    courses = courseRes.data || [];
+  }
 
   // Apply saved language preference
   if (profile.lang && TAPP[profile.lang]){

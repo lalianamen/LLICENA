@@ -71,15 +71,15 @@ document.getElementById("rg_btn").addEventListener("click", async () => {
     email, password: pass,
     options: { data: { name, lang } }
   });
-  if (error) { btn.disabled = false; err.textContent = error.message; return; }
-  if (data.user) {
-    await supa.from("profiles").upsert({ id: data.user.id, name, lang });
-    await supa.from("user_courses").upsert({ user_id: data.user.id, course_id: "cslb-law" });
-  }
   btn.disabled = false;
-  // If email confirmation required: no session yet → show check-email screen
+  if (error) { err.textContent = error.message; return; }
+  // Save pending profile data — will be written to DB on first login (session required for RLS)
+  localStorage.setItem("lp:pending_name", name);
+  localStorage.setItem("lp:pending_lang", lang);
   if (!data.session) {
-    document.getElementById("sentTo").textContent = email;
+    // Email confirmation required — show check-email screen
+    const sentTo = document.getElementById("sentTo");
+    if (sentTo) sentTo.textContent = email;
     showPanel("check-email");
   } else {
     window.location.href = "app.html";
