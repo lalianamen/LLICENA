@@ -2,7 +2,7 @@
    DEMO ONLY: a static test login is hardcoded below. Remove before production. */
 
 const DEMO_EMAIL = "test@licena.app";   // DEMO ONLY
-const DEMO_PASS  = "Licena2026!";          // DEMO ONLY
+const DEMO_PASS  = "Licena2026!";       // DEMO ONLY
 
 const mem = {};
 const store = {
