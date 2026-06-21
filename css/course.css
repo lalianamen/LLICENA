@@ -5,11 +5,12 @@
 .back-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
 .course-top-title{font-family:'Archivo';font-weight:700;font-size:16px;color:#fff;flex:1;min-width:0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.course-top-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
-.lang-tag{font-size:12px;font-weight:600;color:#9fb2c6;display:none}
-.app-langs{display:flex;gap:3px;background:rgba(255,255,255,.08);padding:3px;border-radius:9px}
-.app-langs button{background:transparent;color:#9fb2c6;font-weight:600;font-size:12px;padding:4px 8px;border-radius:6px}
-.app-langs button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+/* Study language selector */
+.study-lang-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.study-lang-label{font-size:12px;color:#9fb2c6;font-weight:500;white-space:nowrap}
+.study-lang-seg{display:flex;gap:3px;background:rgba(255,255,255,.08);padding:3px;border-radius:9px}
+.study-lang-seg button{background:transparent;color:#9fb2c6;font-weight:700;font-size:12px;padding:4px 9px;border-radius:6px;white-space:nowrap}
+.study-lang-seg button[aria-pressed="true"]{background:#fff;color:var(--ink)}
 
 .course-shell{display:grid;grid-template-columns:220px 1fr;gap:22px;padding:26px 0 60px;align-items:start}
 

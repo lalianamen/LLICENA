@@ -1,8 +1,16 @@
-/* LICENA — course player */
+/* LICENA — course player
+   uiLang   = cabinet language (button labels, Prev/Next/Restart etc.)
+   studyLang = language the questions are displayed in (per-course choice) */
 
-const params  = new URLSearchParams(location.search);
+const params   = new URLSearchParams(location.search);
 const courseId = params.get("id") || "";
-const urlLang  = params.get("lang") || "en";
+
+// uiLang: read from cabinet profile lang stored in localStorage, else EN
+let uiLang   = localStorage.getItem("lp:ui_lang") || "en";
+let studyLang = localStorage.getItem("lp:course_lang:" + courseId) || "en";
+
+// Question bank from registry
+const QUESTIONS = (window.COURSE_REGISTRY && window.COURSE_REGISTRY[courseId]) || [];
 
 // Find course metadata in CATALOG
 let courseMeta = null;
@@ -14,77 +22,90 @@ for (const cat of CATALOG){
   if (courseMeta) break;
 }
 
-// Question data: each course file should define window.COURSE_DATA = { id, questions:[...] }
-// question shape: { id, sec, q, opts:[], correct, re (EN explanation), rr (RU explanation) }
-const QUESTIONS = (window.COURSE_DATA && window.COURSE_DATA.id === courseId)
-  ? window.COURSE_DATA.questions : [];
+const LANG_LABELS = { en:"EN", es:"ES", ru:"RU", vi:"VI" };
+const LANG_FULL   = { en:"English", es:"Español", ru:"Русский", vi:"Tiếng Việt" };
 
-const LABELS = { en:"English", es:"Español", ru:"Русский", vi:"Tiếng Việt" };
+// UI string helper (uses uiLang)
+function ui(key){ return (TAPP[uiLang] && TAPP[uiLang][key]) || (TAPP.en[key]) || key; }
 
-let lang = urlLang;
-let currentQ = 0, answered = 0, correct = 0;
-let order = [], shuffle = false;
-let userAnswers = {}; // index → chosen option index
-
-// ─── UI helpers ───────────────────────────────────────────────────────────────
-function t(key){ return (TAPP[lang] && TAPP[lang][key]) || (TAPP.en[key]) || key; }
-
-function setTitle(){
-  const name = courseMeta ? (courseMeta.name[lang] || courseMeta.name.en) : courseId;
-  document.title = "LICENA — " + name;
-  document.getElementById("courseTitle").textContent = name;
-}
-
-function buildLangSwitcher(){
-  const wrap = document.getElementById("langSwitcher");
+// ─── Study language ───────────────────────────────────────────────────────────
+function buildStudyLangSwitcher(){
+  const wrap = document.getElementById("studyLangWrap");
   wrap.innerHTML = "";
-  if (!courseMeta) return;
+  if (!courseMeta || courseMeta.langs.length <= 1) return;
+
+  const label = document.createElement("span");
+  label.className = "study-lang-label";
+  label.textContent = "Study in:";
+  wrap.appendChild(label);
+
+  const seg = document.createElement("div");
+  seg.className = "study-lang-seg";
   courseMeta.langs.forEach(l => {
     const btn = document.createElement("button");
-    btn.textContent = l.toUpperCase();
-    btn.setAttribute("aria-pressed", l === lang ? "true" : "false");
-    btn.addEventListener("click", () => switchLang(l));
-    wrap.appendChild(btn);
+    btn.textContent = LANG_LABELS[l] || l.toUpperCase();
+    btn.title = LANG_FULL[l] || l;
+    btn.setAttribute("aria-pressed", l === studyLang ? "true" : "false");
+    btn.addEventListener("click", () => {
+      studyLang = l;
+      localStorage.setItem("lp:course_lang:" + courseId, l);
+      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
+      renderQ();
+    });
+    seg.appendChild(btn);
   });
-  document.getElementById("langTag").textContent = LABELS[lang] || lang.toUpperCase();
+  wrap.appendChild(seg);
 }
 
-function switchLang(l){
-  lang = l;
-  localStorage.setItem("lp:course_lang:" + courseId, l);
-  document.getElementById("langTag").textContent = LABELS[l] || l.toUpperCase();
-  document.querySelectorAll("#langSwitcher button").forEach(b => b.setAttribute("aria-pressed", b.textContent === l.toUpperCase() ? "true" : "false"));
-  setTitle();
-  renderQ();
-  buildSections();
+// ─── Question text helpers ────────────────────────────────────────────────────
+function getQText(q){
+  if (studyLang === "ru" && q.qr) return q.qr;
+  if (studyLang === "es" && q.qs) return q.qs;
+  if (studyLang === "vi" && q.qv) return q.qv;
+  return q.q;
+}
+function getOpts(q){
+  if (studyLang === "ru" && q.optsr && q.optsr.length) return q.optsr;
+  if (studyLang === "es" && q.optss && q.optss.length) return q.optss;
+  if (studyLang === "vi" && q.optsv && q.optsv.length) return q.optsv;
+  return q.opts;
+}
+function getExplanation(q){
+  if (studyLang === "ru" && q.rr) return q.rr;
+  return q.re || "";
 }
 
-// ─── Sections sidebar ─────────────────────────────────────────────────────────
+// ─── Sections ─────────────────────────────────────────────────────────────────
+let activeSection = null;
+
 function buildSections(){
   const wrap = document.getElementById("sideSections");
   wrap.innerHTML = "";
   const secs = [...new Set(QUESTIONS.map(q => q.sec))].filter(Boolean);
   if (!secs.length) return;
-  const all = document.createElement("button"); all.className = "sec-btn active"; all.textContent = lang === "ru" ? "Все разделы" : "All sections";
-  all.addEventListener("click", () => filterSection(null, all));
+
+  const all = document.createElement("button");
+  all.className = "sec-btn active";
+  all.textContent = uiLang === "ru" ? "Все разделы" : uiLang === "es" ? "Todos" : uiLang === "vi" ? "Tất cả" : "All sections";
+  all.addEventListener("click", () => { activeSection = null; resetOrder(); renderQ(); wrap.querySelectorAll(".sec-btn").forEach(b => b.classList.remove("active")); all.classList.add("active"); });
   wrap.appendChild(all);
+
   secs.forEach(sec => {
-    const btn = document.createElement("button"); btn.className = "sec-btn"; btn.textContent = sec;
-    btn.addEventListener("click", () => filterSection(sec, btn));
+    const btn = document.createElement("button");
+    btn.className = "sec-btn";
+    btn.textContent = sec;
+    btn.addEventListener("click", () => {
+      activeSection = sec; resetOrder(); renderQ();
+      wrap.querySelectorAll(".sec-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
     wrap.appendChild(btn);
   });
 }
 
-let activeSection = null;
-function filterSection(sec, btn){
-  activeSection = sec;
-  document.querySelectorAll(".sec-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  resetOrder();
-  renderQ();
-}
+// ─── Order / progress ─────────────────────────────────────────────────────────
+let order = [], shuffle = false, userAnswers = {};
 
-// ─── Order / shuffle ──────────────────────────────────────────────────────────
 function resetOrder(){
   let pool = QUESTIONS.map((_, i) => i);
   if (activeSection) pool = pool.filter(i => QUESTIONS[i].sec === activeSection);
@@ -92,64 +113,58 @@ function resetOrder(){
   order = pool;
   currentQ = 0;
   userAnswers = {};
-  answered = 0; correct = 0;
   updateProgress();
 }
 
+let currentQ = 0;
+
 function updateProgress(){
-  const total = order.length;
-  const done = Object.keys(userAnswers).length;
+  const total = order.length, done = Object.keys(userAnswers).length;
   document.getElementById("progCount").textContent = done;
   document.getElementById("progTotal").textContent = total;
   document.getElementById("progFill").style.width = total ? (done / total * 100) + "%" : "0%";
 }
 
-// ─── Render question ──────────────────────────────────────────────────────────
+// ─── Render ───────────────────────────────────────────────────────────────────
 function renderQ(){
-  const card = document.getElementById("qCard");
-  const results = document.getElementById("resultsCard");
+  const qCard = document.getElementById("qCard");
+  const resultsCard = document.getElementById("resultsCard");
   const cs = document.getElementById("comingSoon");
 
   if (!QUESTIONS.length){
-    card.style.display = "none"; results.style.display = "none";
+    qCard.style.display = "none"; resultsCard.style.display = "none";
     cs.style.display = "block";
-    document.getElementById("csTitle").textContent = courseMeta ? (courseMeta.name[lang] || courseMeta.name.en) : courseId;
-    document.getElementById("csText").textContent = lang === "ru"
-      ? "Вопросы для этого курса скоро появятся."
-      : lang === "es" ? "Las preguntas para este curso llegan pronto."
-      : lang === "vi" ? "Câu hỏi cho khóa học này sắp ra mắt."
-      : "Questions for this course are coming soon.";
+    document.getElementById("csTitle").textContent = courseMeta ? (courseMeta.name[uiLang] || courseMeta.name.en) : courseId;
+    document.getElementById("csText").textContent =
+      uiLang === "ru" ? "Вопросы скоро появятся." :
+      uiLang === "es" ? "Las preguntas llegan pronto." :
+      uiLang === "vi" ? "Câu hỏi sắp ra mắt." : "Questions are coming soon.";
     return;
   }
 
-  if (currentQ >= order.length){
-    showResults(); return;
-  }
+  if (currentQ >= order.length){ showResults(); return; }
 
-  cs.style.display = "none"; results.style.display = "none";
-  card.style.display = "block";
+  cs.style.display = "none"; resultsCard.style.display = "none";
+  qCard.style.display = "block";
 
   const qi = order[currentQ];
   const q = QUESTIONS[qi];
-  const userPick = userAnswers[currentQ];
-  const answered = userPick !== undefined;
+  const picked = userAnswers[currentQ];
+  const isAnswered = picked !== undefined;
 
   document.getElementById("qNum").textContent = (currentQ + 1) + " / " + order.length;
   document.getElementById("qSection").textContent = q.sec || "";
-
-  // Question text: use translated if available
-  const qText = (lang === "ru" && q.qr) ? q.qr : (lang === "es" && q.qs) ? q.qs : (lang === "vi" && q.qv) ? q.qv : q.q;
-  document.getElementById("qText").textContent = qText;
+  document.getElementById("qText").textContent = getQText(q);
 
   const optsWrap = document.getElementById("qOpts");
   optsWrap.innerHTML = "";
-  const opts = (lang === "ru" && q.optsr) ? q.optsr : (lang === "es" && q.optss) ? q.optss : (lang === "vi" && q.optsv) ? q.optsv : q.opts;
-  opts.forEach((opt, i) => {
-    const btn = document.createElement("button"); btn.className = "opt-btn";
+  getOpts(q).forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn";
     btn.textContent = opt;
-    if (answered){
+    if (isAnswered){
       if (i === q.correct) btn.classList.add("correct");
-      else if (i === userPick) btn.classList.add("wrong");
+      else if (i === picked) btn.classList.add("wrong");
       btn.disabled = true;
     } else {
       btn.addEventListener("click", () => pickAnswer(i));
@@ -157,25 +172,23 @@ function renderQ(){
     optsWrap.appendChild(btn);
   });
 
-  // Explanation
   const expEl = document.getElementById("qExplanation");
-  if (answered && (q.re || q.rr)){
-    const exp = (lang === "ru" && q.rr) ? q.rr : q.re;
-    expEl.textContent = exp; expEl.style.display = "block";
-  } else { expEl.style.display = "none"; }
+  const exp = getExplanation(q);
+  if (isAnswered && exp){ expEl.textContent = exp; expEl.style.display = "block"; }
+  else { expEl.style.display = "none"; }
 
-  document.getElementById("prevBtn").disabled = currentQ === 0;
-  document.getElementById("nextBtn").textContent = currentQ === order.length - 1
-    ? (lang === "ru" ? "Результат" : lang === "es" ? "Resultado" : lang === "vi" ? "Kết quả" : "Finish")
-    : (lang === "ru" ? "Далее →" : "Next →");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  prevBtn.disabled = currentQ === 0;
+  prevBtn.textContent = uiLang === "ru" ? "← Назад" : uiLang === "es" ? "← Ant." : uiLang === "vi" ? "← Trước" : "← Prev";
+  nextBtn.textContent = currentQ === order.length - 1
+    ? (uiLang === "ru" ? "Результат" : uiLang === "es" ? "Resultado" : uiLang === "vi" ? "Kết quả" : "Finish")
+    : (uiLang === "ru" ? "Далее →" : uiLang === "es" ? "Sig. →" : uiLang === "vi" ? "Tiếp →" : "Next →");
 }
 
 function pickAnswer(i){
   if (userAnswers[currentQ] !== undefined) return;
   userAnswers[currentQ] = i;
-  const q = QUESTIONS[order[currentQ]];
-  if (i === q.correct) correct++;
-  answered++;
   updateProgress();
   renderQ();
 }
@@ -185,16 +198,25 @@ function showResults(){
   document.getElementById("comingSoon").style.display = "none";
   const card = document.getElementById("resultsCard"); card.style.display = "block";
   const total = order.length;
+  const correct = Object.entries(userAnswers).filter(([idx, pick]) => QUESTIONS[order[+idx]]?.correct === pick).length;
   const pct = total ? Math.round(correct / total * 100) : 0;
-  document.getElementById("resultScore").textContent = pct + "%";
   const pass = pct >= 70;
+  document.getElementById("resultScore").textContent = pct + "%";
   document.getElementById("resultLabel").textContent = pass
-    ? (lang === "ru" ? "✓ Сдал!" : "✓ Passed!")
-    : (lang === "ru" ? "✗ Попробуй ещё" : "✗ Keep practicing");
+    ? (uiLang === "ru" ? "✓ Сдал!" : "✓ Passed!")
+    : (uiLang === "ru" ? "✗ Продолжай практику" : "✗ Keep practicing");
   document.getElementById("resultLabel").className = "result-label " + (pass ? "pass" : "fail");
   document.getElementById("resultStats").textContent =
-    (lang === "ru" ? `Правильно: ${correct} из ${total}` : `Correct: ${correct} of ${total}`);
-  document.getElementById("retryBtn").textContent = lang === "ru" ? "Начать заново" : lang === "es" ? "Reintentar" : "Try again";
+    uiLang === "ru" ? `Правильно: ${correct} из ${total}` : `Correct: ${correct} of ${total}`;
+  document.getElementById("retryBtn").textContent =
+    uiLang === "ru" ? "Начать заново" : uiLang === "es" ? "Reintentar" : uiLang === "vi" ? "Thử lại" : "Try again";
+}
+
+// ─── Static UI labels ─────────────────────────────────────────────────────────
+function applyUiLabels(){
+  document.getElementById("backLabel").textContent = ui("navMyTests") || "My courses";
+  document.getElementById("shuffleLabel").textContent = uiLang === "ru" ? "Перемешать" : uiLang === "es" ? "Mezclar" : uiLang === "vi" ? "Xáo trộn" : "Shuffle";
+  document.getElementById("restartLabel").textContent = uiLang === "ru" ? "Сначала" : uiLang === "es" ? "Reiniciar" : uiLang === "vi" ? "Bắt đầu lại" : "Restart";
 }
 
 // ─── Events ───────────────────────────────────────────────────────────────────
@@ -204,27 +226,42 @@ document.getElementById("retryBtn").addEventListener("click", () => { resetOrder
 document.getElementById("restartBtn").addEventListener("click", () => { resetOrder(); renderQ(); });
 document.getElementById("csBack").addEventListener("click", () => history.back());
 document.getElementById("backBtn").addEventListener("click", () => { window.location.href = "app.html"; });
-document.getElementById("shuffleToggle").addEventListener("change", e => {
-  shuffle = e.target.checked; resetOrder(); renderQ();
-});
+document.getElementById("shuffleToggle").addEventListener("change", e => { shuffle = e.target.checked; resetOrder(); renderQ(); });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function initCourse(){
   const { data: { session } } = await supa.auth.getSession();
   if (!session){ window.location.replace("index.html"); return; }
 
-  // Check user owns this course
   const userId = session.user.id;
+  // Check ownership
   const { data: owned } = await supa.from("user_courses").select("course_id").eq("user_id", userId).eq("course_id", courseId).single();
   if (!owned){ window.location.replace("app.html"); return; }
 
-  setTitle();
-  buildLangSwitcher();
+  // Load uiLang from profile
+  const { data: prof } = await supa.from("profiles").select("lang").eq("id", userId).single();
+  if (prof && prof.lang && TAPP[prof.lang]){
+    uiLang = prof.lang;
+    localStorage.setItem("lp:ui_lang", uiLang);
+  }
+
+  // If studyLang not saved yet for this course, default to uiLang if available for course, else first available
+  if (!localStorage.getItem("lp:course_lang:" + courseId)){
+    const available = courseMeta ? courseMeta.langs : ["en"];
+    studyLang = available.includes(uiLang) ? uiLang : available[0];
+    localStorage.setItem("lp:course_lang:" + courseId, studyLang);
+  }
+
+  const name = courseMeta ? (courseMeta.name[uiLang] || courseMeta.name.en) : courseId;
+  document.title = "LICENA — " + name;
+  document.getElementById("courseTitle").textContent = name;
+
+  applyUiLabels();
+  buildStudyLangSwitcher();
   buildSections();
   resetOrder();
 
   document.getElementById("courseShell").style.display = "grid";
-  document.getElementById("backLabel").textContent = TAPP[lang]?.navMyTests || "My courses";
   renderQ();
 }
 
