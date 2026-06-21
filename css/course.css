@@ -1,0 +1,70 @@
+/* Course player styles */
+.course-top{position:sticky;top:0;z-index:20;background:var(--ink);border-bottom:1px solid rgba(255,255,255,.08)}
+.course-top-inner{display:flex;align-items:center;gap:14px;height:60px}
+.back-btn{background:transparent;color:#9fb2c6;font-weight:600;font-size:13px;padding:6px 10px;border-radius:8px;white-space:nowrap}
+.back-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.course-top-title{font-family:'Archivo';font-weight:700;font-size:16px;color:#fff;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.course-top-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.lang-tag{font-size:12px;font-weight:600;color:#9fb2c6;display:none}
+.app-langs{display:flex;gap:3px;background:rgba(255,255,255,.08);padding:3px;border-radius:9px}
+.app-langs button{background:transparent;color:#9fb2c6;font-weight:600;font-size:12px;padding:4px 8px;border-radius:6px}
+.app-langs button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+
+.course-shell{display:grid;grid-template-columns:220px 1fr;gap:22px;padding:26px 0 60px;align-items:start}
+
+/* Sidebar */
+.course-side{position:sticky;top:84px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;overflow:hidden}
+.progress-box{margin-bottom:14px}
+.prog-label{display:flex;justify-content:space-between;font-family:'IBM Plex Mono';font-size:13px;color:var(--steel);margin-bottom:6px}
+.prog-bar{height:7px;background:var(--paper);border-radius:6px;overflow:hidden}
+.prog-fill{height:100%;background:var(--gold);border-radius:6px;transition:width .3s}
+.side-sections{display:flex;flex-direction:column;gap:3px;max-height:45vh;overflow-y:auto;margin-bottom:14px}
+.sec-btn{text-align:left;background:transparent;color:var(--ink);font-size:13px;font-weight:500;
+  padding:8px 10px;border-radius:8px;width:100%;line-height:1.35}
+.sec-btn:hover{background:var(--paper)}
+.sec-btn.active{background:var(--ink);color:#fff;font-weight:600}
+.side-controls{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.ctrl-toggle{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink)}
+.ctrl-toggle input{accent-color:var(--ink)}
+.ctrl-btn{background:transparent;color:var(--steel);font-size:13px;font-weight:600;text-align:left;padding:6px 8px;border-radius:8px}
+.ctrl-btn:hover{background:var(--paper);color:var(--ink)}
+
+/* Question card */
+.course-main{min-height:70vh}
+.q-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:var(--shadow)}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.q-num{font-family:'IBM Plex Mono';font-size:13px;color:var(--steel)}
+.q-section{font-size:12px;font-weight:700;font-family:'Archivo';text-transform:uppercase;letter-spacing:.07em;
+  color:var(--gold-deep);background:#fff7e6;padding:3px 9px;border-radius:6px}
+.q-text{font-family:'Archivo';font-weight:600;font-size:18px;line-height:1.5;margin-bottom:22px}
+.q-opts{display:flex;flex-direction:column;gap:10px}
+.opt-btn{text-align:left;padding:14px 16px;border:1.5px solid var(--line);border-radius:11px;
+  font-size:15px;font-weight:500;background:#fff;cursor:pointer;transition:.12s;line-height:1.4}
+.opt-btn:hover:not(:disabled){border-color:var(--ink);background:var(--paper)}
+.opt-btn.correct{border-color:#2e7d5b;background:#f0faf4;color:#1a5c3e;font-weight:600}
+.opt-btn.wrong{border-color:var(--danger);background:#fff5f5;color:#b91c1c}
+.opt-btn:disabled{cursor:default}
+.q-explanation{margin-top:18px;background:#f5f7ff;border-left:4px solid #3955be;border-radius:0 10px 10px 0;
+  padding:13px 16px;font-size:14px;line-height:1.6;color:var(--ink)}
+.q-nav{display:flex;justify-content:space-between;margin-top:24px}
+
+/* Results */
+.results-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:40px;text-align:center;box-shadow:var(--shadow)}
+.result-score{font-family:'Archivo';font-weight:900;font-size:72px;line-height:1}
+.result-label{font-family:'Archivo';font-weight:700;font-size:22px;margin:10px 0 6px}
+.result-label.pass{color:#2e7d5b}
+.result-label.fail{color:var(--danger)}
+.result-stats{font-size:15px;color:var(--steel)}
+
+/* Coming soon */
+.coming-soon-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:60px 40px;text-align:center;box-shadow:var(--shadow)}
+.cs-icon{font-size:52px;margin-bottom:16px}
+.coming-soon-card h2{font-family:'Archivo';font-weight:800;font-size:24px;margin:0 0 10px}
+.coming-soon-card p{color:var(--steel);font-size:15px;margin:0 0 24px}
+
+@media(max-width:760px){
+  .course-shell{grid-template-columns:1fr;gap:14px}
+  .course-side{position:static}
+  .side-sections{max-height:none}
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LICENA — Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/course.css">
+</head>
+<body>
+
+<div class="course-top">
+  <div class="wrap course-top-inner">
+    <button class="back-btn" id="backBtn">← <span id="backLabel">My courses</span></button>
+    <div class="course-top-title" id="courseTitle"></div>
+    <div class="course-top-right">
+      <span class="lang-tag" id="langTag"></span>
+      <div class="app-langs" role="group" id="langSwitcher"></div>
+    </div>
+  </div>
+</div>
+
+<div class="course-shell wrap" id="courseShell" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="course-side">
+    <div class="progress-box">
+      <div class="prog-label"><span id="progCount">0</span> / <span id="progTotal">0</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    </div>
+    <div class="side-sections" id="sideSections"></div>
+    <div class="side-controls">
+      <label class="ctrl-toggle"><input type="checkbox" id="shuffleToggle"> <span id="shuffleLabel">Shuffle</span></label>
+      <button class="ctrl-btn" id="restartBtn">↺ <span id="restartLabel">Restart</span></button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="course-main">
+    <!-- Question card -->
+    <div class="q-card" id="qCard" style="display:none">
+      <div class="q-meta">
+        <span class="q-num" id="qNum"></span>
+        <span class="q-section" id="qSection"></span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-opts" id="qOpts"></div>
+      <div class="q-explanation" id="qExplanation" style="display:none"></div>
+      <div class="q-nav">
+        <button class="btn btn-ghost" id="prevBtn">← Prev</button>
+        <button class="btn btn-primary" id="nextBtn">Next →</button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-card" id="resultsCard" style="display:none">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div class="result-stats" id="resultStats"></div>
+      <button class="btn btn-primary" id="retryBtn" style="margin-top:24px">Try again</button>
+    </div>
+
+    <!-- Coming soon placeholder -->
+    <div class="coming-soon-card" id="comingSoon" style="display:none">
+      <div class="cs-icon">📚</div>
+      <h2 id="csTitle"></h2>
+      <p id="csText"></p>
+      <button class="btn btn-ghost" id="csBack">← Back</button>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/i18n-app.js"></script>
+<!-- Course question data files (loaded dynamically) -->
+<script src="js/questions/cslb-law.js" onerror="window._qLoadErr=true"></script>
+<script src="js/app-course.js"></script>
+</body>
+</html>
