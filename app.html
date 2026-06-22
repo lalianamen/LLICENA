@@ -20,12 +20,7 @@
   </div>
   <span class="tag" data-a="tag">My cabinet</span>
   <div class="app-right">
-    <div class="app-langs" role="group" aria-label="Language">
-      <button data-lang="en" aria-pressed="true">EN</button>
-      <button data-lang="es" aria-pressed="false">ES</button>
-      <button data-lang="ru" aria-pressed="false">RU</button>
-      <button data-lang="vi" aria-pressed="false">VI</button>
-    </div>
+    <div class="app-langs" id="appLangs" role="group" aria-label="Language"></div>
     <button class="linkbtn" id="signOut" data-a="signOut">Sign out</button>
   </div>
 </div></div>
@@ -59,6 +54,10 @@
         <div class="acct-line"><span class="k" data-a="acctName">Name</span><span class="v" id="aName">—</span></div>
         <div class="acct-line"><span class="k" data-a="acctEmail">Email</span><span class="v" id="aEmail">—</span></div>
         <div class="acct-line"><span class="k" data-a="acctPlan">Access</span><span class="v" data-a="planTest">Test access (no payment yet)</span></div>
+        <div class="acct-line">
+          <span class="k" data-a="chooseLang">Language</span>
+          <div class="acct-lang-picker" id="acctLangPicker"></div>
+        </div>
       </div>
     </section>
   </main>

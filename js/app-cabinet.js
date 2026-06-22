@@ -306,14 +306,53 @@ document.querySelectorAll(".side button").forEach(b => b.addEventListener("click
   document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.dataset.panel === b.dataset.panel));
 }));
 
-// ─── Language toggle ──────────────────────────────────────────────────────────
-document.querySelectorAll(".app-langs button").forEach(b => b.addEventListener("click", async () => {
-  lang = b.dataset.lang;
-  document.querySelectorAll(".app-langs button").forEach(x => x.setAttribute("aria-pressed", x === b));
+// ─── Language pickers ─────────────────────────────────────────────────────────
+const ALL_LANGS = [
+  { key:"en", label:"EN", name:"English" },
+  { key:"ru", label:"RU", name:"Русский" },
+  { key:"es", label:"ES", name:"Español" },
+  { key:"vi", label:"VI", name:"Tiếng Việt" }
+];
+
+async function setLang(newLang){
+  lang = newLang;
   tr(); renderStateBadge(); renderAll();
+  renderHeaderLangs();
+  renderAcctLangPicker();
   const { data: { user } } = await supa.auth.getUser();
   if (user) await supa.from("profiles").update({ lang }).eq("id", user.id);
-}));
+}
+
+function renderHeaderLangs(){
+  const wrap = document.getElementById("appLangs");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  // Show EN always; show chosen lang only if it differs from EN
+  const visible = lang === "en"
+    ? [{ key:"en", label:"EN" }]
+    : [{ key:"en", label:"EN" }, { key:lang, label:lang.toUpperCase() }];
+  visible.forEach(l => {
+    const btn = document.createElement("button");
+    btn.dataset.lang = l.key;
+    btn.textContent = l.label;
+    btn.setAttribute("aria-pressed", l.key === lang ? "true" : "false");
+    btn.addEventListener("click", () => setLang(l.key));
+    wrap.appendChild(btn);
+  });
+}
+
+function renderAcctLangPicker(){
+  const wrap = document.getElementById("acctLangPicker");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  ALL_LANGS.forEach(l => {
+    const btn = document.createElement("button");
+    btn.className = "acct-lang-btn" + (l.key === lang ? " active" : "");
+    btn.innerHTML = `<span class="acct-lang-code">${l.label}</span><span class="acct-lang-name">${l.name}</span>`;
+    btn.addEventListener("click", () => setLang(l.key));
+    wrap.appendChild(btn);
+  });
+}
 
 // ─── Sign out ─────────────────────────────────────────────────────────────────
 document.getElementById("signOut").addEventListener("click", async () => {
@@ -350,13 +389,12 @@ async function init(){
     courses = courseRes.data || [];
   }
 
-  if (profile.lang && TAPP[profile.lang]){
-    lang = profile.lang;
-    document.querySelectorAll(".app-langs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
-  }
+  if (profile.lang && TAPP[profile.lang]) lang = profile.lang;
 
   tr();
   renderStateBadge();
+  renderHeaderLangs();
+  renderAcctLangPicker();
   document.getElementById("shell").style.display = "grid";
   renderAll();
 }

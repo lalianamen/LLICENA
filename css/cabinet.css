@@ -81,10 +81,19 @@
 .cat .cp{font-size:13px;color:var(--steel);margin:4px 0 14px}
 .btn-sm{font-family:'Archivo';font-weight:700;font-size:13px;padding:9px 16px;border-radius:9px;background:var(--ink);color:#fff}
 .btn-sm.soon{background:var(--paper);color:var(--steel);cursor:default}
-.acct-line{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+.acct-line{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
 .acct-line:last-of-type{border-bottom:none}
-.acct-line .k{color:var(--steel);font-size:14px}
+.acct-line .k{color:var(--steel);font-size:14px;flex-shrink:0}
 .acct-line .v{font-family:'IBM Plex Mono';font-size:14px}
+.acct-lang-picker{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.acct-lang-btn{display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:7px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;
+  cursor:pointer;transition:.12s;min-width:62px}
+.acct-lang-btn:hover{border-color:var(--ink)}
+.acct-lang-btn.active{border-color:var(--ink);background:var(--ink)}
+.acct-lang-btn.active .acct-lang-code,.acct-lang-btn.active .acct-lang-name{color:#fff}
+.acct-lang-code{font-family:'Archivo';font-weight:800;font-size:14px;color:var(--ink)}
+.acct-lang-name{font-size:11px;color:var(--steel);white-space:nowrap}
 .note{font-size:13px;color:var(--steel);margin-top:14px;max-width:50ch}
 
 /* locked gate */
