@@ -142,6 +142,13 @@
   border-radius:11px;padding:13px 14px;margin-top:4px}
 .beta-pill{flex-shrink:0;font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.08em;
   background:var(--verify);color:#fff;padding:3px 8px;border-radius:6px;margin-top:1px}
+/* Course delete button */
+.course-del-btn{background:transparent;color:var(--steel);font-size:14px;font-weight:700;
+  width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .12s,background .12s,color .12s;flex-shrink:0}
+.course-row:hover .course-del-btn{opacity:1}
+.course-del-btn:hover{background:var(--danger-soft);color:var(--danger) !important}
+
 /* Lang picker */
 .lang-choices{display:flex;flex-direction:column;gap:8px}
 .lang-choice-btn{width:100%;text-align:left;padding:13px 16px;border:1.5px solid var(--line);border-radius:11px;

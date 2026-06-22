@@ -47,18 +47,22 @@ function renderMyTests(){
       catEl.appendChild(makeSubEl(sub, body => {
         items.forEach(course => {
           const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
-          const langStr = course.langs.map(l => l.toUpperCase()).join(" · ");
           const courseLang = localStorage.getItem("lp:course_lang:" + course.id) || course.langs[0];
           const row = document.createElement("div"); row.className = "course-row course-row-link";
           row.innerHTML = `
             <div class="course-info">
               <span class="course-name">${course.name[lang] || course.name.en}</span>
-              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span><span class="lang-pill">${langStr}</span></span>
+              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span></span>
             </div>
             <div class="course-actions">
               <span class="status-badge active">${d.activeBadge}</span>
               <span class="open-arrow">→</span>
+              <button class="course-del-btn" title="${d.removeBtn || 'Remove'}" data-id="${course.id}">✕</button>
             </div>`;
+          row.querySelector(".course-del-btn").addEventListener("click", e => {
+            e.stopPropagation();
+            openRemoveCourseModal(course);
+          });
           row.addEventListener("click", () => { window.location.href = `course.html?id=${course.id}&lang=${courseLang}`; });
           body.appendChild(row);
         });
@@ -147,6 +151,34 @@ function openPayModal(chosenLang){
     `<div class="pay-lang-chosen">${labels[chosenLang] || chosenLang.toUpperCase()}</div>`;
   document.getElementById("payModal").style.display = "grid";
 }
+
+// ─── Remove course modal ──────────────────────────────────────────────────────
+let pendingRemove = null;
+
+function openRemoveCourseModal(course){
+  pendingRemove = course;
+  const d = TAPP[lang];
+  document.getElementById("removeCourseTitle").textContent = course.name[lang] || course.name.en;
+  document.getElementById("removeCourseModal").style.display = "grid";
+}
+
+document.getElementById("removeCourseCancel").addEventListener("click", () => {
+  document.getElementById("removeCourseModal").style.display = "none"; pendingRemove = null;
+});
+
+document.getElementById("removeCourseConfirm").addEventListener("click", async () => {
+  const course = pendingRemove;
+  document.getElementById("removeCourseModal").style.display = "none";
+  pendingRemove = null;
+  if (!course) return;
+  const { data: { user } } = await supa.auth.getUser();
+  const { error } = await supa.from("user_courses")
+    .delete().eq("user_id", user.id).eq("course_id", course.id);
+  if (!error){
+    courses = courses.filter(c => c.course_id !== course.id);
+    renderMyTests(); renderCatalog();
+  }
+});
 
 document.getElementById("langCancel").addEventListener("click", () => {
   document.getElementById("langModal").style.display = "none"; pendingAdd = null;

@@ -60,6 +60,19 @@
   </main>
 </div>
 
+<!-- remove course modal -->
+<div class="modal-bg" id="removeCourseModal" style="display:none">
+  <div class="modal">
+    <h3 data-a="removeCourseConfirm">Remove course</h3>
+    <p><strong id="removeCourseTitle"></strong></p>
+    <p data-a="removeCourseText" style="color:var(--steel);font-size:14px;margin-top:6px">This will remove the course from your account. You can add it again anytime.</p>
+    <div class="modal-row" style="margin-top:16px">
+      <button class="btn btn-ghost" id="removeCourseCancel" data-a="cancel">Cancel</button>
+      <button class="btn" id="removeCourseConfirm" style="background:var(--danger);color:#fff" data-a="removeYes">Remove</button>
+    </div>
+  </div>
+</div>
+
 <!-- lang + activate modal -->
 <div class="modal-bg" id="langModal" style="display:none">
   <div class="modal">
