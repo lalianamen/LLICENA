@@ -24,6 +24,7 @@ create table if not exists public.user_courses (
   id           uuid default gen_random_uuid() primary key,
   user_id      uuid references auth.users(id) on delete cascade not null,
   course_id    text not null,
+  status       text not null default 'active',  -- 'active' | 'inactive' (subscription expired)
   activated_at timestamptz default now(),
   unique(user_id, course_id)
 );
@@ -46,3 +47,5 @@ create policy "devices: own delete" on public.devices for delete using (auth.uid
 -- User courses policies
 create policy "courses: own select" on public.user_courses for select using (auth.uid() = user_id);
 create policy "courses: own insert" on public.user_courses for insert with check (auth.uid() = user_id);
+create policy "courses: own update" on public.user_courses for update using (auth.uid() = user_id);
+create policy "courses: own delete" on public.user_courses for delete using (auth.uid() = user_id);

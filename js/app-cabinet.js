@@ -30,6 +30,10 @@ function renderMyTests(){
   const owned = new Set(courses.map(c => c.course_id));
   let hasAny = false;
 
+  // Map course_id -> status row
+  const statusOf = {};
+  courses.forEach(c => { statusOf[c.course_id] = c.status || "active"; });
+
   CATALOG.forEach(cat => {
     const bySub = {};
     (cat.subs || []).forEach(sub => {
@@ -48,22 +52,30 @@ function renderMyTests(){
         items.forEach(course => {
           const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
           const courseLang = localStorage.getItem("lp:course_lang:" + course.id) || course.langs[0];
-          const row = document.createElement("div"); row.className = "course-row course-row-link";
+          const status = statusOf[course.id] || "active";
+          const isActive = status === "active";
+          const statusBadge = isActive
+            ? `<span class="status-badge active">${d.activeBadge}</span>`
+            : `<span class="status-badge inactive">${d.inactiveBadge}</span>`;
+          const row = document.createElement("div");
+          row.className = "course-row" + (isActive ? " course-row-link" : " course-row-inactive");
           row.innerHTML = `
             <div class="course-info">
               <span class="course-name">${course.name[lang] || course.name.en}</span>
               <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span></span>
             </div>
             <div class="course-actions">
-              <span class="status-badge active">${d.activeBadge}</span>
-              <span class="open-arrow">→</span>
+              ${statusBadge}
+              ${isActive ? `<span class="open-arrow">→</span>` : ""}
               <button class="course-del-btn" title="${d.removeBtn || 'Remove'}" data-id="${course.id}">✕</button>
             </div>`;
           row.querySelector(".course-del-btn").addEventListener("click", e => {
             e.stopPropagation();
             openRemoveCourseModal(course);
           });
-          row.addEventListener("click", () => { window.location.href = `course.html?id=${course.id}&lang=${courseLang}`; });
+          if (isActive){
+            row.addEventListener("click", () => { window.location.href = `course.html?id=${course.id}&lang=${courseLang}`; });
+          }
           body.appendChild(row);
         });
       }));
@@ -218,10 +230,15 @@ document.getElementById("payConfirm").addEventListener("click", async () => {
   if (!course) return;
   localStorage.setItem("lp:course_lang:" + course.id, chosenLang);
   const { data: { user } } = await supa.auth.getUser();
+  // Upsert: re-adding a removed course (or new) sets status back to active.
   const { data, error } = await supa.from("user_courses")
-    .insert({ user_id: user.id, course_id: course.id })
+    .upsert({ user_id: user.id, course_id: course.id, status: "active" }, { onConflict: "user_id,course_id" })
     .select().single();
-  if (!error && data){ courses.push(data); renderMyTests(); renderCatalog(); }
+  if (!error && data){
+    const idx = courses.findIndex(c => c.course_id === course.id);
+    if (idx >= 0) courses[idx] = data; else courses.push(data);
+    renderMyTests(); renderCatalog();
+  }
 });
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
