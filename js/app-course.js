@@ -51,6 +51,7 @@ function buildStudyLangSwitcher(){
       localStorage.setItem("lp:course_lang:" + courseId, l);
       seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
       buildHonestChances();
+      buildBlockCards();
       renderQ();
     });
     seg.appendChild(btn);
@@ -89,13 +90,53 @@ function buildHonestChances(){
   wrap.style.display = "block";
 }
 
+// ─── Blocks ─────────────────────────────────────────────────────────────────
+let activeBlock = null;  // null = course has no blocks
+
+function hasBlocks(){ return QUESTIONS.some(q => q.block !== undefined); }
+
+function buildBlockCards(){
+  const wrap = document.getElementById("blockCards");
+  if (!wrap) return;
+  if (!hasBlocks()){ wrap.style.display = "none"; return; }
+
+  const nums = [...new Set(QUESTIONS.map(q => q.block))].filter(n => n !== undefined).sort((a,b) => a-b);
+  if (activeBlock === null) activeBlock = nums[0];
+  const meta = (window.COURSE_BLOCKS || {})[courseId] || [];
+  const sl = (m) => (m && (m[studyLang] || m.en)) || "";
+
+  wrap.innerHTML = "";
+  nums.forEach(n => {
+    const m = meta.find(x => x.n === n);
+    const card = document.createElement("button");
+    card.className = "block-card" + (n === activeBlock ? " active" : "");
+    card.innerHTML = `
+      <span class="block-roman">${m ? m.roman : n}</span>
+      <span class="block-txt">
+        <span class="block-title">${m ? sl(m.title) : ("Block " + n)}</span>
+        <span class="block-sub">${m ? sl(m.sub) : ""}</span>
+      </span>`;
+    card.addEventListener("click", () => {
+      activeBlock = n;
+      activeSection = null;
+      wrap.querySelectorAll(".block-card").forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      buildSections(); resetOrder(); renderQ();
+    });
+    wrap.appendChild(card);
+  });
+  wrap.style.display = "grid";
+}
+
 // ─── Sections ─────────────────────────────────────────────────────────────────
 let activeSection = null;
+
+function inActiveBlock(q){ return activeBlock === null || q.block === activeBlock; }
 
 function buildSections(){
   const wrap = document.getElementById("sideSections");
   wrap.innerHTML = "";
-  const secs = [...new Set(QUESTIONS.map(q => q.sec))].filter(Boolean);
+  const secs = [...new Set(QUESTIONS.filter(inActiveBlock).map(q => q.sec))].filter(Boolean);
   if (!secs.length) return;
 
   const all = document.createElement("button");
@@ -122,6 +163,7 @@ let order = [], shuffle = false, userAnswers = {};
 
 function resetOrder(){
   let pool = QUESTIONS.map((_, i) => i);
+  if (activeBlock !== null) pool = pool.filter(i => QUESTIONS[i].block === activeBlock);
   if (activeSection) pool = pool.filter(i => QUESTIONS[i].sec === activeSection);
   if (shuffle) pool = pool.sort(() => Math.random() - .5);
   order = pool;
@@ -273,6 +315,7 @@ async function initCourse(){
   applyUiLabels();
   buildStudyLangSwitcher();
   buildHonestChances();
+  buildBlockCards();
   buildSections();
   resetOrder();
 
