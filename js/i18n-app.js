@@ -15,7 +15,18 @@ const TAPP = {
     cancel:"Cancel", chooseLang:"Choose your study language:",
     betaFree:"Free access during beta — no payment needed.", activateBtn:"Activate for free",
     removeBtn:"Remove", removeCourseConfirm:"Remove course", removeCourseText:"This will remove the course from your account. You can add it again anytime.", removeYes:"Remove",
-    stateLabel:"State", chooseState:"Choose your state", stateSoon:"Coming soon", stateEmpty:"No courses for this state yet — coming soon."
+    stateLabel:"State", chooseState:"Choose your state", stateSoon:"Coming soon", stateEmpty:"No courses for this state yet — coming soon.",
+    /* Course player */
+    courseAllSections:"All sections",
+    courseRestart:"Restart", courseResetProgress:"Reset progress",
+    courseResetConfirm:"Reset all progress for this course?",
+    courseWrongOff:"✗ Wrong only", courseWrongOn:"✓ Wrong only",
+    coursePrev:"← Prev", courseNext:"Next →", courseFinish:"Finish",
+    coursePassed:"✓ Passed!", courseFail:"✗ Keep practicing",
+    courseCorrect:"Correct:", courseOf:"of",
+    courseRetry:"Try again",
+    courseStudyIn:"Study in:",
+    courseSoon:"Questions are coming soon."
   },
   es:{
     tag:"Mi panel", signOut:"Cerrar sesión",
@@ -30,7 +41,18 @@ const TAPP = {
     cancel:"Cancelar", chooseLang:"Elige el idioma de estudio:",
     betaFree:"Acceso gratuito durante la beta — sin pago.", activateBtn:"Activar gratis",
     removeBtn:"Eliminar", removeCourseConfirm:"Eliminar curso", removeCourseText:"Esto eliminará el curso de tu cuenta. Puedes volver a añadirlo en cualquier momento.", removeYes:"Eliminar",
-    stateLabel:"Estado", chooseState:"Elige tu estado", stateSoon:"Próximamente", stateEmpty:"Aún no hay cursos para este estado — próximamente."
+    stateLabel:"Estado", chooseState:"Elige tu estado", stateSoon:"Próximamente", stateEmpty:"Aún no hay cursos para este estado — próximamente.",
+    /* Course player */
+    courseAllSections:"Todas las secciones",
+    courseRestart:"Reiniciar", courseResetProgress:"Borrar progreso",
+    courseResetConfirm:"¿Borrar todo el progreso de este curso?",
+    courseWrongOff:"✗ Solo errores", courseWrongOn:"✓ Solo errores",
+    coursePrev:"← Ant.", courseNext:"Sig. →", courseFinish:"Resultado",
+    coursePassed:"✓ ¡Aprobado!", courseFail:"✗ Sigue practicando",
+    courseCorrect:"Correctas:", courseOf:"de",
+    courseRetry:"Reintentar",
+    courseStudyIn:"Estudiar en:",
+    courseSoon:"Las preguntas llegan pronto."
   },
   ru:{
     tag:"Кабинет", signOut:"Выйти",
@@ -45,7 +67,18 @@ const TAPP = {
     cancel:"Отмена", chooseLang:"Выбери язык для учёбы:",
     betaFree:"Бесплатный доступ в период бета-тестирования — оплата не нужна.", activateBtn:"Активировать бесплатно",
     removeBtn:"Удалить", removeCourseConfirm:"Удалить курс", removeCourseText:"Курс будет удалён из твоего аккаунта. Ты сможешь добавить его снова в любой момент.", removeYes:"Удалить",
-    stateLabel:"Штат", chooseState:"Выбери свой штат", stateSoon:"Скоро", stateEmpty:"Для этого штата пока нет курсов — скоро добавим."
+    stateLabel:"Штат", chooseState:"Выбери свой штат", stateSoon:"Скоро", stateEmpty:"Для этого штата пока нет курсов — скоро добавим.",
+    /* Course player */
+    courseAllSections:"Все разделы",
+    courseRestart:"Сначала", courseResetProgress:"Сбросить прогресс",
+    courseResetConfirm:"Сбросить весь прогресс по этому курсу?",
+    courseWrongOff:"✗ Показать ошибки", courseWrongOn:"✓ Только ошибки",
+    coursePrev:"← Назад", courseNext:"Далее →", courseFinish:"Результат",
+    coursePassed:"✓ Сдал!", courseFail:"✗ Продолжай практику",
+    courseCorrect:"Правильно:", courseOf:"из",
+    courseRetry:"Начать заново",
+    courseStudyIn:"Язык:",
+    courseSoon:"Вопросы скоро появятся."
   },
   vi:{
     tag:"Trang của tôi", signOut:"Đăng xuất",
@@ -60,7 +93,18 @@ const TAPP = {
     cancel:"Hủy", chooseLang:"Chọn ngôn ngữ học của bạn:",
     betaFree:"Truy cập miễn phí trong giai đoạn beta — không cần thanh toán.", activateBtn:"Kích hoạt miễn phí",
     removeBtn:"Xóa", removeCourseConfirm:"Xóa khóa học", removeCourseText:"Khóa học sẽ bị xóa khỏi tài khoản của bạn. Bạn có thể thêm lại bất cứ lúc nào.", removeYes:"Xóa",
-    stateLabel:"Tiểu bang", chooseState:"Chọn tiểu bang của bạn", stateSoon:"Sắp ra mắt", stateEmpty:"Chưa có khóa học cho tiểu bang này — sắp ra mắt."
+    stateLabel:"Tiểu bang", chooseState:"Chọn tiểu bang của bạn", stateSoon:"Sắp ra mắt", stateEmpty:"Chưa có khóa học cho tiểu bang này — sắp ra mắt.",
+    /* Course player */
+    courseAllSections:"Tất cả các phần",
+    courseRestart:"Làm lại", courseResetProgress:"Xóa tiến trình",
+    courseResetConfirm:"Xóa toàn bộ tiến trình của khóa học này?",
+    courseWrongOff:"✗ Chỉ sai", courseWrongOn:"✓ Chỉ sai",
+    coursePrev:"← Trước", courseNext:"Tiếp →", courseFinish:"Kết quả",
+    coursePassed:"✓ Đạt!", courseFail:"✗ Tiếp tục luyện tập",
+    courseCorrect:"Đúng:", courseOf:"trên",
+    courseRetry:"Thử lại",
+    courseStudyIn:"Ngôn ngữ:",
+    courseSoon:"Câu hỏi sắp ra mắt."
   }
 };
 const SECTIONS = ["Licensing Requirements","Business Organization","Business Finances","Employment & Labor","Safety (Cal/OSHA)","Bonds & Insurance","Mechanics Liens","Contracts"];

@@ -23,23 +23,30 @@ function ui(key){ return (TAPP[uiLang] && TAPP[uiLang][key]) || (TAPP.en[key]) |
 function esc(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 // ─── Study language ───────────────────────────────────────────────────────────
-// For courses with RU: EN / EN·RU / RU
-// For single-lang courses: no switcher
+// Modes based on uiLang: if course has uiLang translations → EN / EN·LANG / LANG
+// Otherwise just EN (no switcher shown).
+const LANG_LABEL = { ru:"RU", es:"ES", vi:"VI", hy:"HY", ar:"AR", zh:"ZH", ko:"KO" };
+const LANG_FIELD = { ru:"r",  es:"s",  vi:"v",  hy:"hy", ar:"ar", zh:"zh", ko:"ko" };
+
 function buildStudyLangModes(){
-  if (!courseMeta) return [];
-  const avail = courseMeta.langs;
-  if (avail.length <= 1) return [];
-  const modes = [{ key:"en", label:"EN" }];
-  if (avail.includes("ru")) modes.push({ key:"en+ru", label:"EN·RU" });
-  avail.filter(l => l !== "en").forEach(l => modes.push({ key:l, label:l.toUpperCase() }));
-  return modes;
+  if (!courseMeta) return [{ key:"en", label:"EN" }];
+  const avail = courseMeta.langs || ["en"];
+  if (uiLang === "en" || !avail.includes(uiLang)){
+    return [{ key:"en", label:"EN" }];
+  }
+  const ll = LANG_LABEL[uiLang] || uiLang.toUpperCase();
+  return [
+    { key:"en",              label:"EN" },
+    { key:"en+" + uiLang,   label:`EN·${ll}` },
+    { key:uiLang,           label:ll }
+  ];
 }
 
 function buildStudyLangSwitcher(){
   const wrap = document.getElementById("studyLangWrap");
   wrap.innerHTML = "";
   const modes = buildStudyLangModes();
-  if (!modes.length) return;
+  if (modes.length <= 1) return;
 
   // Validate stored studyLang
   if (!modes.find(m => m.key === studyLang)){
@@ -49,7 +56,7 @@ function buildStudyLangSwitcher(){
 
   const label = document.createElement("span");
   label.className = "study-lang-label";
-  label.textContent = uiLang === "ru" ? "Язык:" : "Study in:";
+  label.textContent = ui("courseStudyIn");
   wrap.appendChild(label);
 
   const seg = document.createElement("div");
@@ -71,23 +78,22 @@ function buildStudyLangSwitcher(){
 }
 
 // ─── Question text helpers ────────────────────────────────────────────────────
-const isBilingual = () => studyLang === "en+ru";
+const isBilingual = () => studyLang.includes("+");
+function secondaryLang(){ return studyLang.replace("en+","").replace("+en",""); }
+function lf(lang){ return LANG_FIELD[lang] || lang; }
 
 function getQText(q){
-  if (studyLang === "ru") return q.qr || q.q;
-  if (studyLang === "es") return q.qs || q.q;
-  if (studyLang === "vi") return q.qv || q.q;
-  return q.q;
+  const f = lf(studyLang);
+  return q["q"+f] || q.q;
 }
 function getOpts(q){
-  if (studyLang === "ru" && q.optsr && q.optsr.length) return q.optsr;
-  if (studyLang === "es" && q.optss && q.optss.length) return q.optss;
-  if (studyLang === "vi" && q.optsv && q.optsv.length) return q.optsv;
-  return q.opts;
+  const f = lf(studyLang);
+  const t = q["opts"+f];
+  return (t && t.length) ? t : q.opts;
 }
 function getExplanation(q){
-  if (studyLang === "ru") return q.rr || q.re || "";
-  return q.re || "";
+  const f = lf(studyLang);
+  return q["r"+f] || q.re || "";
 }
 
 // ─── Progress persistence ─────────────────────────────────────────────────────
@@ -101,8 +107,7 @@ function saveAnswers(){
   localStorage.setItem("lp:answers:" + courseId, JSON.stringify(userAnswers));
 }
 function resetAllProgress(){
-  const msg = uiLang === "ru" ? "Сбросить весь прогресс по этому курсу?" : "Reset all progress for this course?";
-  if (!confirm(msg)) return;
+  if (!confirm(ui("courseResetConfirm"))) return;
   userAnswers = {};
   localStorage.removeItem("lp:answers:" + courseId);
   resetOrder(); renderQ(); buildBlockCards();
@@ -128,7 +133,7 @@ function buildBlockCards(){
   const nums = [...new Set(QUESTIONS.map(q => q.block))].filter(n => n !== undefined).sort((a,b) => a-b);
   if (activeBlock === null) activeBlock = nums[0];
   const meta = (window.COURSE_BLOCKS || {})[courseId] || [];
-  const sl = m => (m && (m[studyLang === "en+ru" ? "en" : studyLang] || m.en)) || "";
+  const sl = m => (m && (m[isBilingual() ? "en" : studyLang] || m.en)) || "";
 
   wrap.innerHTML = "";
   nums.forEach(n => {
@@ -171,7 +176,7 @@ function buildSections(){
   const secs = [...new Set(QUESTIONS.filter(inActiveBlock).map(q => q.sec))].filter(Boolean);
   if (!secs.length) return;
 
-  const allLbl = uiLang === "ru" ? "Все разделы" : uiLang === "es" ? "Todos" : uiLang === "vi" ? "Tất cả" : "All sections";
+  const allLbl = ui("courseAllSections");
   const all = document.createElement("button");
   all.className = "sec-btn active";
   all.textContent = allLbl;
@@ -200,7 +205,7 @@ function buildSideResources(){
   if (!wrap) return;
   const res = (typeof COURSE_RESOURCES !== "undefined") ? COURSE_RESOURCES[courseId] : null;
   if (!res || !res.links || !res.links.length){ wrap.style.display = "none"; return; }
-  const lang = uiLang === "ru" ? "ru" : "en";
+  const lang = (uiLang !== "en" && TAPP[uiLang]) ? uiLang : "en";
   const title = res.title[lang] || res.title.en;
   let html = `<div class="side-res-title">${title}</div>`;
   res.links.forEach(lnk => {
@@ -250,10 +255,7 @@ function renderQ(){
     qCard.style.display = "none"; resultsCard.style.display = "none";
     cs.style.display = "block";
     document.getElementById("csTitle").textContent = courseMeta ? (courseMeta.name[uiLang] || courseMeta.name.en) : courseId;
-    document.getElementById("csText").textContent =
-      uiLang === "ru" ? "Вопросы скоро появятся." :
-      uiLang === "es" ? "Las preguntas llegan pronto." :
-      uiLang === "vi" ? "Câu hỏi sắp ra mắt." : "Questions are coming soon.";
+    document.getElementById("csText").textContent = ui("courseSoon");
     return;
   }
 
@@ -274,7 +276,9 @@ function renderQ(){
   // Question text
   const qTextEl = document.getElementById("qText");
   if (bilingual){
-    qTextEl.innerHTML = `<span class="lx-en">${esc(q.q)}</span>${q.qr ? `<span class="lx-ru">${esc(q.qr)}</span>` : ""}`;
+    const sf = lf(secondaryLang());
+    const qTrans = q["q"+sf];
+    qTextEl.innerHTML = `<span class="lx-en">${esc(q.q)}</span>${qTrans ? `<span class="lx-ru">${esc(qTrans)}</span>` : ""}`;
   } else {
     qTextEl.textContent = getQText(q);
   }
@@ -287,8 +291,14 @@ function renderQ(){
   enOpts.forEach((_, i) => {
     const btn = document.createElement("button");
     btn.className = "opt-btn";
-    if (bilingual && q.optsr && q.optsr[i]){
-      btn.innerHTML = `<span class="lx-en">${esc(enOpts[i])}</span><span class="lx-ru">${esc(q.optsr[i])}</span>`;
+    if (bilingual){
+      const sf = lf(secondaryLang());
+      const transOpts = q["opts"+sf];
+      if (transOpts && transOpts[i]){
+        btn.innerHTML = `<span class="lx-en">${esc(enOpts[i])}</span><span class="lx-ru">${esc(transOpts[i])}</span>`;
+      } else {
+        btn.textContent = enOpts[i];
+      }
     } else {
       btn.textContent = localOpts[i] !== undefined ? localOpts[i] : enOpts[i];
     }
@@ -305,10 +315,14 @@ function renderQ(){
   // Explanation
   const expEl = document.getElementById("qExplanation");
   if (isAnswered){
-    if (bilingual && (q.re || q.rr)){
-      expEl.innerHTML = (q.re ? `<div class="lx-en">${esc(q.re)}</div>` : "") +
-                        (q.rr ? `<div class="lx-ru">${esc(q.rr)}</div>` : "");
-      expEl.style.display = "block";
+    if (bilingual){
+      const sf = lf(secondaryLang());
+      const rTrans = q["r"+sf];
+      if (q.re || rTrans){
+        expEl.innerHTML = (q.re ? `<div class="lx-en">${esc(q.re)}</div>` : "") +
+                          (rTrans ? `<div class="lx-ru">${esc(rTrans)}</div>` : "");
+        expEl.style.display = "block";
+      } else expEl.style.display = "none";
     } else {
       const exp = getExplanation(q);
       if (exp){ expEl.textContent = exp; expEl.style.display = "block"; }
@@ -322,10 +336,8 @@ function renderQ(){
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   prevBtn.disabled = currentQ === 0;
-  prevBtn.textContent = uiLang === "ru" ? "← Назад" : uiLang === "es" ? "← Ant." : uiLang === "vi" ? "← Trước" : "← Prev";
-  nextBtn.textContent = currentQ === order.length - 1
-    ? (uiLang === "ru" ? "Результат" : uiLang === "es" ? "Resultado" : uiLang === "vi" ? "Kết quả" : "Finish")
-    : (uiLang === "ru" ? "Далее →" : uiLang === "es" ? "Sig. →" : uiLang === "vi" ? "Tiếp →" : "Next →");
+  prevBtn.textContent = ui("coursePrev");
+  nextBtn.textContent = currentQ === order.length - 1 ? ui("courseFinish") : ui("courseNext");
 }
 
 function pickAnswer(i){
@@ -347,14 +359,10 @@ function showResults(){
   const pct  = total ? Math.round(correct / total * 100) : 0;
   const pass = pct >= 70;
   document.getElementById("resultScore").textContent = pct + "%";
-  document.getElementById("resultLabel").textContent = pass
-    ? (uiLang === "ru" ? "✓ Сдал!" : "✓ Passed!")
-    : (uiLang === "ru" ? "✗ Продолжай практику" : "✗ Keep practicing");
+  document.getElementById("resultLabel").textContent = pass ? ui("coursePassed") : ui("courseFail");
   document.getElementById("resultLabel").className = "result-label " + (pass ? "pass" : "fail");
-  document.getElementById("resultStats").textContent =
-    uiLang === "ru" ? `Правильно: ${correct} из ${total}` : `Correct: ${correct} of ${total}`;
-  document.getElementById("retryBtn").textContent =
-    uiLang === "ru" ? "Начать заново" : uiLang === "es" ? "Reintentar" : uiLang === "vi" ? "Thử lại" : "Try again";
+  document.getElementById("resultStats").textContent = `${ui("courseCorrect")} ${correct} ${ui("courseOf")} ${total}`;
+  document.getElementById("retryBtn").textContent = ui("courseRetry");
 }
 
 // ─── Static UI labels ─────────────────────────────────────────────────────────
@@ -369,18 +377,16 @@ function updateFilterWrongBtn(){
   const btn = document.getElementById("filterWrongBtn");
   if (!btn) return;
   const wc = wrongCount();
-  const label = uiLang === "ru"
-    ? (filterWrong ? `✓ Только ошибки (${wc})` : `✗ Показать ошибки (${wc})`)
-    : (filterWrong ? `✓ Wrong only (${wc})` : `✗ Wrong only (${wc})`);
+  const label = (filterWrong ? ui("courseWrongOn") : ui("courseWrongOff")) + ` (${wc})`;
   btn.textContent = label;
   btn.classList.toggle("active", filterWrong);
   btn.disabled = !filterWrong && wc === 0;
 }
 
 function applyUiLabels(){
-  document.getElementById("backLabel").textContent = ui("navMyTests") || "My courses";
-  document.getElementById("restartLabel").textContent      = uiLang === "ru" ? "Сначала"        : uiLang === "es" ? "Reiniciar"   : "Restart";
-  document.getElementById("resetProgressLabel").textContent = uiLang === "ru" ? "Сбросить прогресс" : uiLang === "es" ? "Borrar progreso" : "Reset progress";
+  document.getElementById("backLabel").textContent = ui("navMyTests");
+  document.getElementById("restartLabel").textContent = ui("courseRestart");
+  document.getElementById("resetProgressLabel").textContent = ui("courseResetProgress");
   updateFilterWrongBtn();
 }
 
@@ -413,11 +419,11 @@ async function initCourse(){
     localStorage.setItem("lp:ui_lang", uiLang);
   }
 
-  // Default studyLang if not stored: prefer matching uiLang if available, else "en"
+  // Default studyLang: if uiLang course has translations, default to bilingual (en+uiLang)
   if (!localStorage.getItem("lp:course_lang:" + courseId)){
     const modes = buildStudyLangModes();
-    const preferred = modes.find(m => m.key === uiLang || m.key === uiLang + "+en" || m.key === "en+" + uiLang);
-    studyLang = preferred ? preferred.key : (modes[0] ? modes[0].key : "en");
+    const preferred = modes.find(m => m.key === "en+" + uiLang) || modes[0];
+    studyLang = preferred ? preferred.key : "en";
     localStorage.setItem("lp:course_lang:" + courseId, studyLang);
   }
 
