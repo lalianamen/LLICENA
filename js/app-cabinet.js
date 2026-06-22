@@ -316,11 +316,16 @@ const ALL_LANGS = [
 
 async function setLang(newLang){
   lang = newLang;
+  if (profile) profile.lang = newLang;
+  localStorage.setItem("lp:ui_lang", newLang);
   tr(); renderStateBadge(); renderAll();
   renderHeaderLangs();
   renderAcctLangPicker();
   const { data: { user } } = await supa.auth.getUser();
-  if (user) await supa.from("profiles").update({ lang }).eq("id", user.id);
+  if (user){
+    const { error } = await supa.from("profiles").update({ lang: newLang }).eq("id", user.id);
+    if (error) console.warn("lang save failed:", error.message);
+  }
 }
 
 function renderHeaderLangs(){
@@ -389,7 +394,8 @@ async function init(){
     courses = courseRes.data || [];
   }
 
-  if (profile.lang && TAPP[profile.lang]) lang = profile.lang;
+  const savedLang = profile.lang || localStorage.getItem("lp:ui_lang");
+  if (savedLang && TAPP[savedLang]) lang = savedLang;
 
   tr();
   renderStateBadge();
