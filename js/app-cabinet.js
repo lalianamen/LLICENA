@@ -83,19 +83,19 @@ function renderMyTests(){
   wrap.innerHTML = "";
   const owned = new Set(courses.map(c => c.course_id));
 
-  // "Honest chances" block — shown first for any owned course that has HC data
-  const hcData = window.HONEST_CHANCES || {};
+  // "Honest chances" block — shown first, uses short MY version without promo links
+  const hcMy = window.HONEST_CHANCES_MY || {};
   const hcTitle = window.HONEST_CHANCES_TITLE || {};
-  const hcCourseIds = Object.keys(hcData).filter(id => owned.has(id));
+  const hcCourseIds = Object.keys(hcMy).filter(id => owned.has(id));
   if (hcCourseIds.length){
-    const l = (lang !== "en" && hcData[hcCourseIds[0]][lang]) ? lang : "en";
+    const l = (lang !== "en" && hcMy[hcCourseIds[0]][lang]) ? lang : "en";
     const titleText = hcTitle[l] || hcTitle.en || "★ Honest chances";
     const hcWrap = document.createElement("div");
     hcWrap.className = "hc-my";
     hcWrap.innerHTML = `
       <details class="hc-my-details">
         <summary class="hc-my-summary">${titleText}</summary>
-        <div class="hc-my-body">${hcData[hcCourseIds[0]][l] || hcData[hcCourseIds[0]].en}</div>
+        <div class="hc-my-body">${hcMy[hcCourseIds[0]][l]}</div>
       </details>`;
     wrap.appendChild(hcWrap);
   }

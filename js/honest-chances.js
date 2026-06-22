@@ -53,6 +53,50 @@ window.HONEST_CHANCES_TITLE = {
   en: "★ Honest chances: why questions don't guarantee a 100% pass"
 };
 
+/* Short version for My Courses — no promo links, just the honest message */
+window.HONEST_CHANCES_MY = window.HONEST_CHANCES_MY || {};
+
+window.HONEST_CHANCES_MY["cslb-law"] = {
+  ru: `
+    <div class="hc-warn-banner">⚠️ Прочитай это прежде чем начать</div>
+    <p>Эти вопросы — серьёзная подготовка, но <b>они не гарантируют сдачу</b>. Результат зависит только от тебя.</p>
+    <ol>
+      <li><b>~20–30% вопросов экзамена — из источников вне Law Book</b> (Cal/OSHA Title 8, IRS Pub 15, DIR Public Works Manual). Их не закрыть только этим курсом.</li>
+      <li><b>CSLB подмешивает 5–15 экспериментальных вопросов</b> — они не в счёт, но ты не знаешь, какие именно.</li>
+      <li><b>Формулировки PSI с подвохами</b> — двойные отрицания, «всё, КРОМЕ», «наименее верный». На экзамене будут другие слова.</li>
+      <li><b>Стресс PSI-центра реален</b> — таймер 3.5 часа, тишина, видеонаблюдение. Даже подготовленные ошибаются.</li>
+      <li><b>Зубрёжка ≠ понимание.</b> Запомнить ответ — не то же самое, что понять принцип.</li>
+    </ol>
+    <p>Реалистичный шанс сдать <b>с первой попытки</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Только 500 вопросов (зазубрил)</td><td>~75–80%</td></tr>
+      <tr><td>500 + 1 раз прочитал Law Book</td><td>~85–88%</td></tr>
+      <tr><td>500 + книга + понимание логики</td><td>~88–92%</td></tr>
+      <tr><td>Всё выше + 1 платный пробник prep-школы</td><td>~92–95%</td></tr>
+    </table>
+    <p class="hc-warn-footer">Вопросы — инструмент. Сдача — твоя работа.</p>
+  `,
+  en: `
+    <div class="hc-warn-banner">⚠️ Read this before you start</div>
+    <p>These questions are serious preparation, but <b>they don't guarantee a pass</b>. The result depends entirely on you.</p>
+    <ol>
+      <li><b>~20–30% of exam questions come from outside the Law Book</b> (Cal/OSHA Title 8, IRS Pub 15, DIR Public Works Manual). This course alone won't cover them.</li>
+      <li><b>CSLB mixes in 5–15 experimental questions</b> — they don't count, but you won't know which ones.</li>
+      <li><b>PSI uses tricky wording</b> — double negatives, "all EXCEPT", "least correct". The wording on the real exam will differ.</li>
+      <li><b>PSI test-center stress is real</b> — 3.5-hour timer, silence, video monitoring. Even well-prepared people slip.</li>
+      <li><b>Memorizing ≠ understanding.</b> Recalling an answer isn't the same as grasping the principle.</li>
+    </ol>
+    <p>Realistic chance of passing <b>on the first attempt</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Only the 500 questions (memorized)</td><td>~75–80%</td></tr>
+      <tr><td>500 + read the Law Book once</td><td>~85–88%</td></tr>
+      <tr><td>500 + book + understanding the logic</td><td>~88–92%</td></tr>
+      <tr><td>All of the above + 1 paid prep-school mock</td><td>~92–95%</td></tr>
+    </table>
+    <p class="hc-warn-footer">Questions are a tool. Passing is your job.</p>
+  `
+};
+
 window.COURSE_RESOURCES = window.COURSE_RESOURCES || {};
 
 window.COURSE_RESOURCES["cslb-law"] = {

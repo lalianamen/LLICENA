@@ -204,6 +204,10 @@
 .hc-my-body ol{margin:0 0 12px;padding-left:20px}
 .hc-my-body li{margin-bottom:5px}
 .hc-my-body a{color:var(--gold-deep);font-weight:600}
+.hc-warn-banner{background:#fff3cd;border:1px solid #f0c040;border-radius:8px;
+  padding:9px 14px;font-weight:700;font-size:13px;color:#7a5c00;margin-bottom:12px}
+.hc-warn-footer{margin-top:12px!important;font-weight:700;font-size:13px;
+  color:var(--ink);border-top:1px dashed var(--line);padding-top:10px}
 
 .hc-catalog{border-top:1px solid var(--line);background:#fffdf6}
 .hc-catalog>summary{list-style:none;cursor:pointer;padding:11px 16px;font-size:13px;font-weight:600;
