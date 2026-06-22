@@ -191,6 +191,20 @@
 .course-del-btn:hover{background:var(--danger-soft);color:var(--danger) !important}
 
 /* Honest-chances in catalog (before purchase) */
+/* Honest chances in My Courses */
+.hc-my{margin-bottom:18px}
+.hc-my-details{border:1.5px solid #f0dca8;border-radius:13px;background:#fffdf6;overflow:hidden}
+.hc-my-summary{list-style:none;cursor:pointer;padding:13px 18px;font-size:14px;font-weight:700;
+  font-family:'Archivo';color:var(--gold-deep);display:flex;align-items:center;gap:8px}
+.hc-my-summary::-webkit-details-marker{display:none}
+.hc-my-summary::after{content:"▸";margin-left:auto;color:var(--steel);font-size:12px}
+.hc-my-details[open] .hc-my-summary::after{content:"▾"}
+.hc-my-body{padding:14px 18px 18px;font-size:13px;line-height:1.65;color:var(--ink);border-top:1px solid #f0dca8}
+.hc-my-body p{margin:0 0 8px}
+.hc-my-body ol{margin:0 0 12px;padding-left:20px}
+.hc-my-body li{margin-bottom:5px}
+.hc-my-body a{color:var(--gold-deep);font-weight:600}
+
 .hc-catalog{border-top:1px solid var(--line);background:#fffdf6}
 .hc-catalog>summary{list-style:none;cursor:pointer;padding:11px 16px;font-size:13px;font-weight:600;
   font-family:'Archivo';color:var(--gold-deep);display:flex;align-items:center;gap:6px}

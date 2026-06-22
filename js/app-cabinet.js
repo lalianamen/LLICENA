@@ -82,6 +82,23 @@ function renderMyTests(){
   const wrap = document.getElementById("myList"), d = TAPP[lang];
   wrap.innerHTML = "";
   const owned = new Set(courses.map(c => c.course_id));
+
+  // "Honest chances" block — shown first for any owned course that has HC data
+  const hcData = window.HONEST_CHANCES || {};
+  const hcTitle = window.HONEST_CHANCES_TITLE || {};
+  const hcCourseIds = Object.keys(hcData).filter(id => owned.has(id));
+  if (hcCourseIds.length){
+    const l = (lang !== "en" && hcData[hcCourseIds[0]][lang]) ? lang : "en";
+    const titleText = hcTitle[l] || hcTitle.en || "★ Honest chances";
+    const hcWrap = document.createElement("div");
+    hcWrap.className = "hc-my";
+    hcWrap.innerHTML = `
+      <details class="hc-my-details">
+        <summary class="hc-my-summary">${titleText}</summary>
+        <div class="hc-my-body">${hcData[hcCourseIds[0]][l] || hcData[hcCourseIds[0]].en}</div>
+      </details>`;
+    wrap.appendChild(hcWrap);
+  }
   let hasAny = false;
 
   // Map course_id -> status row
