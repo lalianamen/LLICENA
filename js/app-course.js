@@ -195,6 +195,22 @@ function buildSections(){
   });
 }
 
+function buildSideResources(){
+  const wrap = document.getElementById("sideResources");
+  if (!wrap) return;
+  const res = (typeof COURSE_RESOURCES !== "undefined") ? COURSE_RESOURCES[courseId] : null;
+  if (!res || !res.links || !res.links.length){ wrap.style.display = "none"; return; }
+  const lang = uiLang === "ru" ? "ru" : "en";
+  const title = res.title[lang] || res.title.en;
+  let html = `<div class="side-res-title">${title}</div>`;
+  res.links.forEach(lnk => {
+    const label = lnk[lang] || lnk.en;
+    html += `<a class="side-res-link" href="${lnk.url}" target="_blank" rel="noopener"><span class="res-icon">${lnk.icon}</span>${label}</a>`;
+  });
+  wrap.innerHTML = html;
+  wrap.style.display = "flex";
+}
+
 // ─── Order / progress ─────────────────────────────────────────────────────────
 let order = [], shuffle = false, filterWrong = false;
 
@@ -399,6 +415,7 @@ async function initCourse(){
   buildStudyLangSwitcher();
   buildBlockCards();
   buildSections();
+  buildSideResources();
   resetOrder();
 
   document.getElementById("courseShell").style.display = "grid";

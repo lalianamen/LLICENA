@@ -52,3 +52,113 @@ window.HONEST_CHANCES_TITLE = {
   ru: "★ Честно о шансах: почему вопросы не гарантируют 100% сдачу",
   en: "★ Honest chances: why questions don't guarantee a 100% pass"
 };
+
+window.COURSE_RESOURCES = window.COURSE_RESOURCES || {};
+
+window.COURSE_RESOURCES["cslb-law"] = {
+  title: { en: "Resources", ru: "Источники" },
+  links: [
+    {
+      icon: "📘",
+      en: "2026 CSLB Law Book (free PDF)",
+      ru: "2026 CSLB Law Book (бесплатный PDF)",
+      url: "https://www.cslb.ca.gov/Resources/GuidesAndPublications/2026/2026_CSLB_Law_Book.pdf"
+    },
+    {
+      icon: "🏛",
+      en: "CSLB Official Website",
+      ru: "Официальный сайт CSLB",
+      url: "https://www.cslb.ca.gov"
+    },
+    {
+      icon: "⚠️",
+      en: "Cal/OSHA Title 8 Regulations",
+      ru: "Cal/OSHA Title 8 (Нормативы)",
+      url: "https://www.dir.ca.gov/title8/index.htm"
+    },
+    {
+      icon: "💼",
+      en: "IRS Pub 15 (Circular E — Employer's Tax Guide)",
+      ru: "IRS Pub 15 (Налоговое руководство работодателя)",
+      url: "https://www.irs.gov/publications/p15"
+    },
+    {
+      icon: "🏗",
+      en: "DIR Public Works Manual",
+      ru: "DIR Руководство по Public Works",
+      url: "https://www.dir.ca.gov/dlse/PublicWorksManual.pdf"
+    },
+    {
+      icon: "📝",
+      en: "PSI Exam Candidate Information Bulletin",
+      ru: "Информационный бюллетень PSI для кандидатов",
+      url: "https://candidate.psiexams.com/bulletin/display_bulletin.jsp?ro=yes&actionname=83&bulletinid=1118&bulletinurl=.pdf"
+    }
+  ]
+};
+
+window.COURSE_RESOURCES["asbestos"] = {
+  title: { en: "Resources", ru: "Источники" },
+  links: [
+    {
+      icon: "📋",
+      en: "CSLB Asbestos Certification Info",
+      ru: "Информация о сертификации по асбесту CSLB",
+      url: "https://www.cslb.ca.gov/Contractors/Applicants/Asbestos_Certification/"
+    },
+    {
+      icon: "⚠️",
+      en: "Cal/OSHA Asbestos Standard (§1529)",
+      ru: "Cal/OSHA Стандарт по асбесту (§1529)",
+      url: "https://www.dir.ca.gov/title8/1529.html"
+    },
+    {
+      icon: "🏛",
+      en: "CSLB Official Website",
+      ru: "Официальный сайт CSLB",
+      url: "https://www.cslb.ca.gov"
+    }
+  ]
+};
+
+window.COURSE_RESOURCES["c20-exam"] = {
+  title: { en: "Resources", ru: "Источники" },
+  links: [
+    {
+      icon: "❄️",
+      en: "ACCA Manual J (Residential Load Calc)",
+      ru: "ACCA Manual J (Расчёт нагрузок для жилых домов)",
+      url: "https://www.acca.org/standards/manualj"
+    },
+    {
+      icon: "📐",
+      en: "ACCA Manual D (Duct Design)",
+      ru: "ACCA Manual D (Проектирование воздуховодов)",
+      url: "https://www.acca.org/standards/manuald"
+    },
+    {
+      icon: "🌡",
+      en: "ASHRAE Fundamentals Handbook",
+      ru: "Справочник ASHRAE Fundamentals",
+      url: "https://www.ashrae.org/technical-resources/ashrae-handbook"
+    },
+    {
+      icon: "⚠️",
+      en: "Cal/OSHA Title 8 — HVAC Safety",
+      ru: "Cal/OSHA Title 8 — Безопасность HVAC",
+      url: "https://www.dir.ca.gov/title8/index.htm"
+    },
+    {
+      icon: "🔧",
+      en: "EPA Section 608 Technician Certification",
+      ru: "EPA Сертификация технологов по разделу 608",
+      url: "https://www.epa.gov/section608"
+    },
+    {
+      icon: "🏛",
+      en: "CSLB C-20 License Requirements",
+      ru: "CSLB Требования к лицензии C-20",
+      url: "https://www.cslb.ca.gov/Contractors/Applicants/Contractor_License/Classifications/C-20_Warm-Air_Heating_Ventilating_and_Air-Conditioning.aspx"
+    }
+  ]
+};
