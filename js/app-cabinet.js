@@ -1,6 +1,7 @@
 /* LICENA — cabinet, Supabase-backed */
 
-let lang = "en", profile = null, courses = [], pendingAdd = null, pendingAddLang = null;
+let lang = "en", accountLang = "en";
+let profile = null, courses = [], pendingAdd = null, pendingAddLang = null;
 let selectedState = localStorage.getItem("lp:state") || "ca";
 
 function tr(){
@@ -314,7 +315,17 @@ const ALL_LANGS = [
   { key:"vi", label:"VI", name:"Tiếng Việt" }
 ];
 
-async function setLang(newLang){
+// Toggle display lang (header EN/LANG buttons) — does NOT change account language
+function switchDisplayLang(newLang){
+  lang = newLang;
+  tr(); renderStateBadge(); renderAll();
+  renderHeaderLangs();
+  renderAcctLangPicker();
+}
+
+// Save account language (Account panel) — persists to Supabase + localStorage
+async function saveAccountLang(newLang){
+  accountLang = newLang;
   lang = newLang;
   if (profile) profile.lang = newLang;
   localStorage.setItem("lp:ui_lang", newLang);
@@ -332,16 +343,16 @@ function renderHeaderLangs(){
   const wrap = document.getElementById("appLangs");
   if (!wrap) return;
   wrap.innerHTML = "";
-  // Show EN always; show chosen lang only if it differs from EN
-  const visible = lang === "en"
+  // Buttons determined by accountLang (the saved preference), active state by current lang
+  const visible = accountLang === "en"
     ? [{ key:"en", label:"EN" }]
-    : [{ key:"en", label:"EN" }, { key:lang, label:lang.toUpperCase() }];
+    : [{ key:"en", label:"EN" }, { key:accountLang, label:accountLang.toUpperCase() }];
   visible.forEach(l => {
     const btn = document.createElement("button");
     btn.dataset.lang = l.key;
     btn.textContent = l.label;
     btn.setAttribute("aria-pressed", l.key === lang ? "true" : "false");
-    btn.addEventListener("click", () => setLang(l.key));
+    btn.addEventListener("click", () => switchDisplayLang(l.key));
     wrap.appendChild(btn);
   });
 }
@@ -352,9 +363,9 @@ function renderAcctLangPicker(){
   wrap.innerHTML = "";
   ALL_LANGS.forEach(l => {
     const btn = document.createElement("button");
-    btn.className = "acct-lang-btn" + (l.key === lang ? " active" : "");
+    btn.className = "acct-lang-btn" + (l.key === accountLang ? " active" : "");
     btn.innerHTML = `<span class="acct-lang-code">${l.label}</span><span class="acct-lang-name">${l.name}</span>`;
-    btn.addEventListener("click", () => setLang(l.key));
+    btn.addEventListener("click", () => saveAccountLang(l.key));
     wrap.appendChild(btn);
   });
 }
@@ -395,7 +406,7 @@ async function init(){
   }
 
   const savedLang = profile.lang || localStorage.getItem("lp:ui_lang");
-  if (savedLang && TAPP[savedLang]) lang = savedLang;
+  if (savedLang && TAPP[savedLang]){ lang = savedLang; accountLang = savedLang; }
 
   tr();
   renderStateBadge();
