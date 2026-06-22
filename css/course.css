@@ -31,6 +31,26 @@
 .ctrl-btn{background:transparent;color:var(--steel);font-size:13px;font-weight:600;text-align:left;padding:6px 8px;border-radius:8px}
 .ctrl-btn:hover{background:var(--paper);color:var(--ink)}
 
+/* Honest-chances block */
+.honest-chances{background:#fff;border:1px solid var(--line);border-radius:16px;
+  margin-bottom:18px;box-shadow:var(--shadow);overflow:hidden}
+.honest-chances>summary{list-style:none;cursor:pointer;padding:18px 22px;font-family:'Archivo';
+  font-weight:700;font-size:15px;color:var(--ink);display:flex;align-items:center;gap:8px;
+  background:#fffdf6;border-bottom:1px solid transparent}
+.honest-chances>summary::-webkit-details-marker{display:none}
+.honest-chances>summary::after{content:"▸";margin-left:auto;color:var(--steel);font-size:13px}
+.honest-chances[open]>summary{border-bottom-color:var(--line)}
+.honest-chances[open]>summary::after{content:"▾"}
+.honest-chances .hc-body{padding:20px 22px 24px;font-size:14px;line-height:1.65;color:var(--ink)}
+.honest-chances .hc-body p{margin:0 0 10px}
+.honest-chances .hc-body ol{margin:0 0 14px;padding-left:22px}
+.honest-chances .hc-body li{margin-bottom:7px}
+.honest-chances .hc-body a{color:var(--gold-deep);font-weight:600}
+.hc-tbl{width:100%;border-collapse:collapse;margin:6px 0 14px}
+.hc-tbl td{border:1px solid var(--line);padding:9px 12px;font-size:13.5px}
+.hc-tbl td:last-child{text-align:right;font-family:'IBM Plex Mono';font-weight:600;white-space:nowrap;width:1%}
+.hc-key{background:#fff7e6;border:1px solid #f0dca8;border-radius:10px;padding:12px 14px;font-size:13.5px;line-height:1.55}
+
 /* Question card */
 .course-main{min-height:70vh}
 .q-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:var(--shadow)}

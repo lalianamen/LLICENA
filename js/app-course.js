@@ -50,6 +50,7 @@ function buildStudyLangSwitcher(){
       studyLang = l;
       localStorage.setItem("lp:course_lang:" + courseId, l);
       seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
+      buildHonestChances();
       renderQ();
     });
     seg.appendChild(btn);
@@ -73,6 +74,19 @@ function getOpts(q){
 function getExplanation(q){
   if (studyLang === "ru" && q.rr) return q.rr;
   return q.re || "";
+}
+
+// ─── Honest-chances block ──────────────────────────────────────────────────────
+function buildHonestChances(){
+  const wrap = document.getElementById("honestChances");
+  if (!wrap) return;
+  const data = (window.HONEST_CHANCES || {})[courseId];
+  if (!data){ wrap.style.display = "none"; return; }
+  const l = data[studyLang] ? studyLang : (data.en ? "en" : Object.keys(data)[0]);
+  const titles = window.HONEST_CHANCES_TITLE || {};
+  document.getElementById("hcSummary").textContent = (titles[l] || titles.en || "Honest chances");
+  document.getElementById("hcBody").innerHTML = data[l];
+  wrap.style.display = "block";
 }
 
 // ─── Sections ─────────────────────────────────────────────────────────────────
@@ -258,6 +272,7 @@ async function initCourse(){
 
   applyUiLabels();
   buildStudyLangSwitcher();
+  buildHonestChances();
   buildSections();
   resetOrder();
 

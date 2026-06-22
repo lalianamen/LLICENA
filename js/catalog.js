@@ -10,7 +10,7 @@ const CATALOG = [
         id: "cslb-general",
         name: { en:"CSLB General", es:"CSLB General", ru:"CSLB Общее", vi:"CSLB Chung" },
         courses: [
-          { id:"cslb-law",  name:{ en:"Law & Business Exam",      es:"Examen Ley y Negocios",    ru:"Экзамен Law & Business",        vi:"Thi Luật & Kinh Doanh"      }, langs:["en"], type:"exam"  },
+          { id:"cslb-law",  name:{ en:"Law & Business Exam",      es:"Examen Ley y Negocios",    ru:"Экзамен Law & Business",        vi:"Thi Luật & Kinh Doanh"      }, langs:["en","ru"], type:"exam"  },
           { id:"asbestos",  name:{ en:"Asbestos Open-Book Exam",  es:"Examen de Asbesto",        ru:"Экзамен по асбесту",            vi:"Thi Amiăng"                 }, langs:["en"], type:"exam"  }
         ]
       },
