@@ -212,7 +212,7 @@ function buildSideResources(){
 }
 
 // ─── Order / progress ─────────────────────────────────────────────────────────
-let order = [], shuffle = false, filterWrong = false;
+let order = [], filterWrong = false;
 
 function resetOrder(){
   let pool = QUESTIONS.map((_, i) => i);
@@ -223,7 +223,7 @@ function resetOrder(){
     const picked = userAnswers[q.id];
     return picked === undefined || picked !== q.correct;
   });
-  if (shuffle) pool = pool.sort(() => Math.random() - .5);
+  pool = pool.sort(() => Math.random() - .5);
   order = pool;
   currentQ = 0;
   updateProgress();
@@ -237,6 +237,7 @@ function updateProgress(){
   document.getElementById("progCount").textContent = done;
   document.getElementById("progTotal").textContent = total;
   document.getElementById("progFill").style.width = total ? (done / total * 100) + "%" : "0%";
+  updateFilterWrongBtn();
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
@@ -357,12 +358,30 @@ function showResults(){
 }
 
 // ─── Static UI labels ─────────────────────────────────────────────────────────
+function wrongCount(){
+  return QUESTIONS.filter(q => {
+    const picked = userAnswers[q.id];
+    return picked !== undefined && picked !== q.correct;
+  }).length;
+}
+
+function updateFilterWrongBtn(){
+  const btn = document.getElementById("filterWrongBtn");
+  if (!btn) return;
+  const wc = wrongCount();
+  const label = uiLang === "ru"
+    ? (filterWrong ? `✓ Только ошибки (${wc})` : `✗ Показать ошибки (${wc})`)
+    : (filterWrong ? `✓ Wrong only (${wc})` : `✗ Wrong only (${wc})`);
+  btn.textContent = label;
+  btn.classList.toggle("active", filterWrong);
+  btn.disabled = !filterWrong && wc === 0;
+}
+
 function applyUiLabels(){
   document.getElementById("backLabel").textContent = ui("navMyTests") || "My courses";
-  document.getElementById("shuffleLabel").textContent      = uiLang === "ru" ? "Перемешать"     : uiLang === "es" ? "Mezclar"     : "Shuffle";
-  document.getElementById("filterWrongLabel").textContent  = uiLang === "ru" ? "Только ошибки/новые" : uiLang === "es" ? "Sólo errores"   : "Wrong/new only";
   document.getElementById("restartLabel").textContent      = uiLang === "ru" ? "Сначала"        : uiLang === "es" ? "Reiniciar"   : "Restart";
   document.getElementById("resetProgressLabel").textContent = uiLang === "ru" ? "Сбросить прогресс" : uiLang === "es" ? "Borrar progreso" : "Reset progress";
+  updateFilterWrongBtn();
 }
 
 // ─── Events ───────────────────────────────────────────────────────────────────
@@ -372,8 +391,11 @@ document.getElementById("retryBtn").addEventListener("click", () => { resetOrder
 document.getElementById("restartBtn").addEventListener("click", () => { resetOrder(); renderQ(); });
 document.getElementById("csBack").addEventListener("click", () => history.back());
 document.getElementById("backBtn").addEventListener("click", () => { window.location.href = "app.html"; });
-document.getElementById("shuffleToggle").addEventListener("change", e => { shuffle = e.target.checked; resetOrder(); renderQ(); });
-document.getElementById("filterWrongToggle").addEventListener("change", e => { filterWrong = e.target.checked; resetOrder(); renderQ(); });
+document.getElementById("filterWrongBtn").addEventListener("click", () => {
+  filterWrong = !filterWrong;
+  updateFilterWrongBtn();
+  resetOrder(); renderQ();
+});
 document.getElementById("resetProgressBtn").addEventListener("click", resetAllProgress);
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
