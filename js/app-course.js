@@ -1,18 +1,15 @@
 /* LICENA — course player
    uiLang   = cabinet language (button labels, Prev/Next/Restart etc.)
-   studyLang = language the questions are displayed in (per-course choice) */
+   studyLang = question display mode: "en" | "en+ru" | "ru" | "es" | "vi" */
 
 const params   = new URLSearchParams(location.search);
 const courseId = params.get("id") || "";
 
-// uiLang: read from cabinet profile lang stored in localStorage, else EN
-let uiLang   = localStorage.getItem("lp:ui_lang") || "en";
+let uiLang    = localStorage.getItem("lp:ui_lang") || "en";
 let studyLang = localStorage.getItem("lp:course_lang:" + courseId) || "en";
 
-// Question bank from registry
 const QUESTIONS = (window.COURSE_REGISTRY && window.COURSE_REGISTRY[courseId]) || [];
 
-// Find course metadata in CATALOG
 let courseMeta = null;
 for (const cat of CATALOG){
   for (const sub of (cat.subs || [])){
@@ -22,35 +19,49 @@ for (const cat of CATALOG){
   if (courseMeta) break;
 }
 
-const LANG_LABELS = { en:"EN", es:"ES", ru:"RU", vi:"VI" };
-const LANG_FULL   = { en:"English", es:"Español", ru:"Русский", vi:"Tiếng Việt" };
-
-// UI string helper (uses uiLang)
 function ui(key){ return (TAPP[uiLang] && TAPP[uiLang][key]) || (TAPP.en[key]) || key; }
+function esc(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 // ─── Study language ───────────────────────────────────────────────────────────
+// For courses with RU: EN / EN·RU / RU
+// For single-lang courses: no switcher
+function buildStudyLangModes(){
+  if (!courseMeta) return [];
+  const avail = courseMeta.langs;
+  if (avail.length <= 1) return [];
+  const modes = [{ key:"en", label:"EN" }];
+  if (avail.includes("ru")) modes.push({ key:"en+ru", label:"EN·RU" });
+  avail.filter(l => l !== "en").forEach(l => modes.push({ key:l, label:l.toUpperCase() }));
+  return modes;
+}
+
 function buildStudyLangSwitcher(){
   const wrap = document.getElementById("studyLangWrap");
   wrap.innerHTML = "";
-  if (!courseMeta || courseMeta.langs.length <= 1) return;
+  const modes = buildStudyLangModes();
+  if (!modes.length) return;
+
+  // Validate stored studyLang
+  if (!modes.find(m => m.key === studyLang)){
+    studyLang = modes[0].key;
+    localStorage.setItem("lp:course_lang:" + courseId, studyLang);
+  }
 
   const label = document.createElement("span");
   label.className = "study-lang-label";
-  label.textContent = "Study in:";
+  label.textContent = uiLang === "ru" ? "Язык:" : "Study in:";
   wrap.appendChild(label);
 
   const seg = document.createElement("div");
   seg.className = "study-lang-seg";
-  courseMeta.langs.forEach(l => {
+  modes.forEach(m => {
     const btn = document.createElement("button");
-    btn.textContent = LANG_LABELS[l] || l.toUpperCase();
-    btn.title = LANG_FULL[l] || l;
-    btn.setAttribute("aria-pressed", l === studyLang ? "true" : "false");
+    btn.textContent = m.label;
+    btn.setAttribute("aria-pressed", m.key === studyLang ? "true" : "false");
     btn.addEventListener("click", () => {
-      studyLang = l;
-      localStorage.setItem("lp:course_lang:" + courseId, l);
+      studyLang = m.key;
+      localStorage.setItem("lp:course_lang:" + courseId, studyLang);
       seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
-      buildHonestChances();
       buildBlockCards();
       renderQ();
     });
@@ -60,10 +71,12 @@ function buildStudyLangSwitcher(){
 }
 
 // ─── Question text helpers ────────────────────────────────────────────────────
+const isBilingual = () => studyLang === "en+ru";
+
 function getQText(q){
-  if (studyLang === "ru" && q.qr) return q.qr;
-  if (studyLang === "es" && q.qs) return q.qs;
-  if (studyLang === "vi" && q.qv) return q.qv;
+  if (studyLang === "ru") return q.qr || q.q;
+  if (studyLang === "es") return q.qs || q.q;
+  if (studyLang === "vi") return q.qv || q.q;
   return q.q;
 }
 function getOpts(q){
@@ -73,27 +86,39 @@ function getOpts(q){
   return q.opts;
 }
 function getExplanation(q){
-  if (studyLang === "ru" && q.rr) return q.rr;
+  if (studyLang === "ru") return q.rr || q.re || "";
   return q.re || "";
 }
 
-// ─── Honest-chances block ──────────────────────────────────────────────────────
-function buildHonestChances(){
-  const wrap = document.getElementById("honestChances");
-  if (!wrap) return;
-  const data = (window.HONEST_CHANCES || {})[courseId];
-  if (!data){ wrap.style.display = "none"; return; }
-  const l = data[studyLang] ? studyLang : (data.en ? "en" : Object.keys(data)[0]);
-  const titles = window.HONEST_CHANCES_TITLE || {};
-  document.getElementById("hcSummary").textContent = (titles[l] || titles.en || "Honest chances");
-  document.getElementById("hcBody").innerHTML = data[l];
-  wrap.style.display = "block";
+// ─── Progress persistence ─────────────────────────────────────────────────────
+// userAnswers keyed by question ID: { [qId]: pickedOptionIndex }
+let userAnswers = {};
+
+function loadAnswers(){
+  try { return JSON.parse(localStorage.getItem("lp:answers:" + courseId) || "{}"); } catch(e){ return {}; }
+}
+function saveAnswers(){
+  localStorage.setItem("lp:answers:" + courseId, JSON.stringify(userAnswers));
+}
+function resetAllProgress(){
+  const msg = uiLang === "ru" ? "Сбросить весь прогресс по этому курсу?" : "Reset all progress for this course?";
+  if (!confirm(msg)) return;
+  userAnswers = {};
+  localStorage.removeItem("lp:answers:" + courseId);
+  resetOrder(); renderQ(); buildBlockCards();
 }
 
-// ─── Blocks ─────────────────────────────────────────────────────────────────
-let activeBlock = null;  // null = course has no blocks
+// ─── Blocks ───────────────────────────────────────────────────────────────────
+let activeBlock = null;
 
 function hasBlocks(){ return QUESTIONS.some(q => q.block !== undefined); }
+
+function blockProgress(blockN){
+  const pool = QUESTIONS.filter(q => q.block === blockN);
+  const answered = pool.filter(q => userAnswers[q.id] !== undefined).length;
+  const correct  = pool.filter(q => userAnswers[q.id] === q.correct).length;
+  return { total: pool.length, answered, correct };
+}
 
 function buildBlockCards(){
   const wrap = document.getElementById("blockCards");
@@ -103,11 +128,14 @@ function buildBlockCards(){
   const nums = [...new Set(QUESTIONS.map(q => q.block))].filter(n => n !== undefined).sort((a,b) => a-b);
   if (activeBlock === null) activeBlock = nums[0];
   const meta = (window.COURSE_BLOCKS || {})[courseId] || [];
-  const sl = (m) => (m && (m[studyLang] || m.en)) || "";
+  const sl = m => (m && (m[studyLang === "en+ru" ? "en" : studyLang] || m.en)) || "";
 
   wrap.innerHTML = "";
   nums.forEach(n => {
     const m = meta.find(x => x.n === n);
+    const { total, correct } = blockProgress(n);
+    const pct = total ? Math.round(correct / total * 100) : 0;
+
     const card = document.createElement("button");
     card.className = "block-card" + (n === activeBlock ? " active" : "");
     card.innerHTML = `
@@ -115,6 +143,10 @@ function buildBlockCards(){
       <span class="block-txt">
         <span class="block-title">${m ? sl(m.title) : ("Block " + n)}</span>
         <span class="block-sub">${m ? sl(m.sub) : ""}</span>
+        <span class="block-prog">
+          <span class="block-prog-bar"><span style="width:${pct}%"></span></span>
+          <span class="block-prog-num">${correct}/${total}</span>
+        </span>
       </span>`;
     card.addEventListener("click", () => {
       activeBlock = n;
@@ -139,10 +171,15 @@ function buildSections(){
   const secs = [...new Set(QUESTIONS.filter(inActiveBlock).map(q => q.sec))].filter(Boolean);
   if (!secs.length) return;
 
+  const allLbl = uiLang === "ru" ? "Все разделы" : uiLang === "es" ? "Todos" : uiLang === "vi" ? "Tất cả" : "All sections";
   const all = document.createElement("button");
   all.className = "sec-btn active";
-  all.textContent = uiLang === "ru" ? "Все разделы" : uiLang === "es" ? "Todos" : uiLang === "vi" ? "Tất cả" : "All sections";
-  all.addEventListener("click", () => { activeSection = null; resetOrder(); renderQ(); wrap.querySelectorAll(".sec-btn").forEach(b => b.classList.remove("active")); all.classList.add("active"); });
+  all.textContent = allLbl;
+  all.addEventListener("click", () => {
+    activeSection = null; resetOrder(); renderQ();
+    wrap.querySelectorAll(".sec-btn").forEach(b => b.classList.remove("active"));
+    all.classList.add("active");
+  });
   wrap.appendChild(all);
 
   secs.forEach(sec => {
@@ -159,23 +196,28 @@ function buildSections(){
 }
 
 // ─── Order / progress ─────────────────────────────────────────────────────────
-let order = [], shuffle = false, userAnswers = {};
+let order = [], shuffle = false, filterWrong = false;
 
 function resetOrder(){
   let pool = QUESTIONS.map((_, i) => i);
   if (activeBlock !== null) pool = pool.filter(i => QUESTIONS[i].block === activeBlock);
   if (activeSection) pool = pool.filter(i => QUESTIONS[i].sec === activeSection);
+  if (filterWrong) pool = pool.filter(i => {
+    const q = QUESTIONS[i];
+    const picked = userAnswers[q.id];
+    return picked === undefined || picked !== q.correct;
+  });
   if (shuffle) pool = pool.sort(() => Math.random() - .5);
   order = pool;
   currentQ = 0;
-  userAnswers = {};
   updateProgress();
 }
 
 let currentQ = 0;
 
 function updateProgress(){
-  const total = order.length, done = Object.keys(userAnswers).length;
+  const total = order.length;
+  const done  = order.filter(i => userAnswers[QUESTIONS[i].id] !== undefined).length;
   document.getElementById("progCount").textContent = done;
   document.getElementById("progTotal").textContent = total;
   document.getElementById("progFill").style.width = total ? (done / total * 100) + "%" : "0%";
@@ -183,9 +225,9 @@ function updateProgress(){
 
 // ─── Render ───────────────────────────────────────────────────────────────────
 function renderQ(){
-  const qCard = document.getElementById("qCard");
+  const qCard       = document.getElementById("qCard");
   const resultsCard = document.getElementById("resultsCard");
-  const cs = document.getElementById("comingSoon");
+  const cs          = document.getElementById("comingSoon");
 
   if (!QUESTIONS.length){
     qCard.style.display = "none"; resultsCard.style.display = "none";
@@ -203,21 +245,36 @@ function renderQ(){
   cs.style.display = "none"; resultsCard.style.display = "none";
   qCard.style.display = "block";
 
-  const qi = order[currentQ];
-  const q = QUESTIONS[qi];
-  const picked = userAnswers[currentQ];
+  const qi  = order[currentQ];
+  const q   = QUESTIONS[qi];
+  const picked     = userAnswers[q.id];
   const isAnswered = picked !== undefined;
+  const bilingual  = isBilingual();
 
   document.getElementById("qNum").textContent = (currentQ + 1) + " / " + order.length;
   document.getElementById("qSection").textContent = q.sec || "";
-  document.getElementById("qText").textContent = getQText(q);
 
+  // Question text
+  const qTextEl = document.getElementById("qText");
+  if (bilingual){
+    qTextEl.innerHTML = `<span class="lx-en">${esc(q.q)}</span>${q.qr ? `<span class="lx-ru">${esc(q.qr)}</span>` : ""}`;
+  } else {
+    qTextEl.textContent = getQText(q);
+  }
+
+  // Options
   const optsWrap = document.getElementById("qOpts");
   optsWrap.innerHTML = "";
-  getOpts(q).forEach((opt, i) => {
+  const enOpts = q.opts;
+  const localOpts = getOpts(q);
+  enOpts.forEach((_, i) => {
     const btn = document.createElement("button");
     btn.className = "opt-btn";
-    btn.textContent = opt;
+    if (bilingual && q.optsr && q.optsr[i]){
+      btn.innerHTML = `<span class="lx-en">${esc(enOpts[i])}</span><span class="lx-ru">${esc(q.optsr[i])}</span>`;
+    } else {
+      btn.textContent = localOpts[i] !== undefined ? localOpts[i] : enOpts[i];
+    }
     if (isAnswered){
       if (i === q.correct) btn.classList.add("correct");
       else if (i === picked) btn.classList.add("wrong");
@@ -228,11 +285,23 @@ function renderQ(){
     optsWrap.appendChild(btn);
   });
 
+  // Explanation
   const expEl = document.getElementById("qExplanation");
-  const exp = getExplanation(q);
-  if (isAnswered && exp){ expEl.textContent = exp; expEl.style.display = "block"; }
-  else { expEl.style.display = "none"; }
+  if (isAnswered){
+    if (bilingual && (q.re || q.rr)){
+      expEl.innerHTML = (q.re ? `<div class="lx-en">${esc(q.re)}</div>` : "") +
+                        (q.rr ? `<div class="lx-ru">${esc(q.rr)}</div>` : "");
+      expEl.style.display = "block";
+    } else {
+      const exp = getExplanation(q);
+      if (exp){ expEl.textContent = exp; expEl.style.display = "block"; }
+      else expEl.style.display = "none";
+    }
+  } else {
+    expEl.style.display = "none";
+  }
 
+  // Nav buttons
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   prevBtn.disabled = currentQ === 0;
@@ -243,9 +312,12 @@ function renderQ(){
 }
 
 function pickAnswer(i){
-  if (userAnswers[currentQ] !== undefined) return;
-  userAnswers[currentQ] = i;
+  const q = QUESTIONS[order[currentQ]];
+  if (userAnswers[q.id] !== undefined) return;
+  userAnswers[q.id] = i;
+  saveAnswers();
   updateProgress();
+  buildBlockCards();
   renderQ();
 }
 
@@ -253,9 +325,9 @@ function showResults(){
   document.getElementById("qCard").style.display = "none";
   document.getElementById("comingSoon").style.display = "none";
   const card = document.getElementById("resultsCard"); card.style.display = "block";
-  const total = order.length;
-  const correct = Object.entries(userAnswers).filter(([idx, pick]) => QUESTIONS[order[+idx]]?.correct === pick).length;
-  const pct = total ? Math.round(correct / total * 100) : 0;
+  const total   = order.length;
+  const correct = order.filter(i => userAnswers[QUESTIONS[i].id] === QUESTIONS[i].correct).length;
+  const pct  = total ? Math.round(correct / total * 100) : 0;
   const pass = pct >= 70;
   document.getElementById("resultScore").textContent = pct + "%";
   document.getElementById("resultLabel").textContent = pass
@@ -271,8 +343,10 @@ function showResults(){
 // ─── Static UI labels ─────────────────────────────────────────────────────────
 function applyUiLabels(){
   document.getElementById("backLabel").textContent = ui("navMyTests") || "My courses";
-  document.getElementById("shuffleLabel").textContent = uiLang === "ru" ? "Перемешать" : uiLang === "es" ? "Mezclar" : uiLang === "vi" ? "Xáo trộn" : "Shuffle";
-  document.getElementById("restartLabel").textContent = uiLang === "ru" ? "Сначала" : uiLang === "es" ? "Reiniciar" : uiLang === "vi" ? "Bắt đầu lại" : "Restart";
+  document.getElementById("shuffleLabel").textContent      = uiLang === "ru" ? "Перемешать"     : uiLang === "es" ? "Mezclar"     : "Shuffle";
+  document.getElementById("filterWrongLabel").textContent  = uiLang === "ru" ? "Только ошибки/новые" : uiLang === "es" ? "Sólo errores"   : "Wrong/new only";
+  document.getElementById("restartLabel").textContent      = uiLang === "ru" ? "Сначала"        : uiLang === "es" ? "Reiniciar"   : "Restart";
+  document.getElementById("resetProgressLabel").textContent = uiLang === "ru" ? "Сбросить прогресс" : uiLang === "es" ? "Borrar progreso" : "Reset progress";
 }
 
 // ─── Events ───────────────────────────────────────────────────────────────────
@@ -283,6 +357,8 @@ document.getElementById("restartBtn").addEventListener("click", () => { resetOrd
 document.getElementById("csBack").addEventListener("click", () => history.back());
 document.getElementById("backBtn").addEventListener("click", () => { window.location.href = "app.html"; });
 document.getElementById("shuffleToggle").addEventListener("change", e => { shuffle = e.target.checked; resetOrder(); renderQ(); });
+document.getElementById("filterWrongToggle").addEventListener("change", e => { filterWrong = e.target.checked; resetOrder(); renderQ(); });
+document.getElementById("resetProgressBtn").addEventListener("click", resetAllProgress);
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function initCourse(){
@@ -290,23 +366,25 @@ async function initCourse(){
   if (!session){ window.location.replace("index.html"); return; }
 
   const userId = session.user.id;
-  // Check ownership
   const { data: owned } = await supa.from("user_courses").select("course_id").eq("user_id", userId).eq("course_id", courseId).single();
   if (!owned){ window.location.replace("app.html"); return; }
 
-  // Load uiLang from profile
   const { data: prof } = await supa.from("profiles").select("lang").eq("id", userId).single();
   if (prof && prof.lang && TAPP[prof.lang]){
     uiLang = prof.lang;
     localStorage.setItem("lp:ui_lang", uiLang);
   }
 
-  // If studyLang not saved yet for this course, default to uiLang if available for course, else first available
+  // Default studyLang if not stored: prefer matching uiLang if available, else "en"
   if (!localStorage.getItem("lp:course_lang:" + courseId)){
-    const available = courseMeta ? courseMeta.langs : ["en"];
-    studyLang = available.includes(uiLang) ? uiLang : available[0];
+    const modes = buildStudyLangModes();
+    const preferred = modes.find(m => m.key === uiLang || m.key === uiLang + "+en" || m.key === "en+" + uiLang);
+    studyLang = preferred ? preferred.key : (modes[0] ? modes[0].key : "en");
     localStorage.setItem("lp:course_lang:" + courseId, studyLang);
   }
+
+  // Load persisted answers
+  userAnswers = loadAnswers();
 
   const name = courseMeta ? (courseMeta.name[uiLang] || courseMeta.name.en) : courseId;
   document.title = "LICENA — " + name;
@@ -314,7 +392,6 @@ async function initCourse(){
 
   applyUiLabels();
   buildStudyLangSwitcher();
-  buildHonestChances();
   buildBlockCards();
   buildSections();
   resetOrder();

@@ -104,6 +104,17 @@ function renderCatalog(){
               </div>`;
             if (!isOwned) row.querySelector("button").addEventListener("click", () => openLangPicker(course));
             body.appendChild(row);
+
+            // Honest-chances block (before purchase, for courses that have it)
+            const hc = (window.HONEST_CHANCES || {})[course.id];
+            if (hc){
+              const l = hc[lang] ? lang : (hc.en ? "en" : Object.keys(hc)[0]);
+              const titles = window.HONEST_CHANCES_TITLE || {};
+              const det = document.createElement("details");
+              det.className = "hc-catalog";
+              det.innerHTML = `<summary>${titles[l] || titles.en || "Honest chances"}</summary><div class="hc-catalog-body">${hc[l]}</div>`;
+              body.appendChild(det);
+            }
           });
         }));
       });
@@ -122,6 +133,19 @@ function renderAccount(){
 function renderAll(){ renderMyTests(); renderCatalog(); renderAccount(); }
 
 // ─── Lang picker ──────────────────────────────────────────────────────────────
+// Course study-lang modes: for EN+RU courses show EN / EN·RU / RU
+function courseLangModes(course){
+  const avail = course.langs;
+  if (avail.length <= 1) return avail.map(l => ({ key:l, label:({en:"English",es:"Español",ru:"Русский",vi:"Tiếng Việt"})[l]||l.toUpperCase() }));
+  const modes = [];
+  modes.push({ key:"en", label:"English" });
+  if (avail.includes("ru")) modes.push({ key:"en+ru", label:"EN · RU (bilingual)" });
+  avail.filter(l => l !== "en").forEach(l => {
+    modes.push({ key:l, label:({es:"Español",ru:"Русский",vi:"Tiếng Việt"})[l]||l.toUpperCase() });
+  });
+  return modes;
+}
+
 function openLangPicker(course){
   pendingAdd = course;
   const d = TAPP[lang];
@@ -129,12 +153,11 @@ function openLangPicker(course){
   document.getElementById("langModalSub").textContent = d.chooseLang;
   const choices = document.getElementById("langChoices");
   choices.innerHTML = "";
-  const labels = { en:"English", es:"Español", ru:"Русский", vi:"Tiếng Việt" };
-  course.langs.forEach(l => {
+  courseLangModes(course).forEach(m => {
     const btn = document.createElement("button");
-    btn.className = "lang-choice-btn" + (l === lang ? " preferred" : "");
-    btn.textContent = labels[l] || l.toUpperCase();
-    btn.addEventListener("click", () => openPayModal(l));
+    btn.className = "lang-choice-btn" + (m.key === lang || (m.key === "en+ru" && lang === "ru") ? " preferred" : "");
+    btn.textContent = m.label;
+    btn.addEventListener("click", () => openPayModal(m.key));
     choices.appendChild(btn);
   });
   document.getElementById("langModal").style.display = "grid";

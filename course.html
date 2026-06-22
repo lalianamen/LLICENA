@@ -32,16 +32,14 @@
     <div class="side-sections" id="sideSections"></div>
     <div class="side-controls">
       <label class="ctrl-toggle"><input type="checkbox" id="shuffleToggle"> <span id="shuffleLabel">Shuffle</span></label>
+      <label class="ctrl-toggle"><input type="checkbox" id="filterWrongToggle"> <span id="filterWrongLabel">Wrong/new only</span></label>
       <button class="ctrl-btn" id="restartBtn">↺ <span id="restartLabel">Restart</span></button>
+      <button class="ctrl-btn ctrl-btn-danger" id="resetProgressBtn">🗑 <span id="resetProgressLabel">Reset progress</span></button>
     </div>
   </aside>
 
   <!-- Main -->
   <main class="course-main">
-    <details class="honest-chances" id="honestChances" style="display:none">
-      <summary id="hcSummary"></summary>
-      <div class="hc-body" id="hcBody"></div>
-    </details>
     <div class="block-cards" id="blockCards" style="display:none"></div>
     <div class="q-card" id="qCard" style="display:none">
       <div class="q-meta">
@@ -77,7 +75,6 @@
 <script src="js/supabase-client.js"></script>
 <script src="js/catalog.js"></script>
 <script src="js/i18n-app.js"></script>
-<script src="js/honest-chances.js"></script>
 <script src="js/course-blocks.js"></script>
 <!-- All question files — each sets window.COURSE_REGISTRY[id] -->
 <script src="js/questions/cslb-law.js"></script>
