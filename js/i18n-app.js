@@ -14,7 +14,8 @@ const TAPP = {
     acctH:"Account", acctName:"Name", acctEmail:"Email", acctPlan:"Access", planTest:"Beta access",
     cancel:"Cancel", chooseLang:"Choose your study language:",
     betaFree:"Free access during beta — no payment needed.", activateBtn:"Activate for free",
-    removeBtn:"Remove", removeCourseConfirm:"Remove course", removeCourseText:"This will remove the course from your account. You can add it again anytime.", removeYes:"Remove"
+    removeBtn:"Remove", removeCourseConfirm:"Remove course", removeCourseText:"This will remove the course from your account. You can add it again anytime.", removeYes:"Remove",
+    stateLabel:"State", chooseState:"Choose your state", stateSoon:"Coming soon", stateEmpty:"No courses for this state yet — coming soon."
   },
   es:{
     tag:"Mi panel", signOut:"Cerrar sesión",
@@ -28,7 +29,8 @@ const TAPP = {
     acctH:"Cuenta", acctName:"Nombre", acctEmail:"Correo", acctPlan:"Acceso", planTest:"Acceso beta",
     cancel:"Cancelar", chooseLang:"Elige el idioma de estudio:",
     betaFree:"Acceso gratuito durante la beta — sin pago.", activateBtn:"Activar gratis",
-    removeBtn:"Eliminar", removeCourseConfirm:"Eliminar curso", removeCourseText:"Esto eliminará el curso de tu cuenta. Puedes volver a añadirlo en cualquier momento.", removeYes:"Eliminar"
+    removeBtn:"Eliminar", removeCourseConfirm:"Eliminar curso", removeCourseText:"Esto eliminará el curso de tu cuenta. Puedes volver a añadirlo en cualquier momento.", removeYes:"Eliminar",
+    stateLabel:"Estado", chooseState:"Elige tu estado", stateSoon:"Próximamente", stateEmpty:"Aún no hay cursos para este estado — próximamente."
   },
   ru:{
     tag:"Кабинет", signOut:"Выйти",
@@ -42,7 +44,8 @@ const TAPP = {
     acctH:"Аккаунт", acctName:"Имя", acctEmail:"Эл. почта", acctPlan:"Доступ", planTest:"Бета-доступ",
     cancel:"Отмена", chooseLang:"Выбери язык для учёбы:",
     betaFree:"Бесплатный доступ в период бета-тестирования — оплата не нужна.", activateBtn:"Активировать бесплатно",
-    removeBtn:"Удалить", removeCourseConfirm:"Удалить курс", removeCourseText:"Курс будет удалён из твоего аккаунта. Ты сможешь добавить его снова в любой момент.", removeYes:"Удалить"
+    removeBtn:"Удалить", removeCourseConfirm:"Удалить курс", removeCourseText:"Курс будет удалён из твоего аккаунта. Ты сможешь добавить его снова в любой момент.", removeYes:"Удалить",
+    stateLabel:"Штат", chooseState:"Выбери свой штат", stateSoon:"Скоро", stateEmpty:"Для этого штата пока нет курсов — скоро добавим."
   },
   vi:{
     tag:"Trang của tôi", signOut:"Đăng xuất",
@@ -56,7 +59,8 @@ const TAPP = {
     acctH:"Tài khoản", acctName:"Họ tên", acctEmail:"Email", acctPlan:"Truy cập", planTest:"Truy cập beta",
     cancel:"Hủy", chooseLang:"Chọn ngôn ngữ học của bạn:",
     betaFree:"Truy cập miễn phí trong giai đoạn beta — không cần thanh toán.", activateBtn:"Kích hoạt miễn phí",
-    removeBtn:"Xóa", removeCourseConfirm:"Xóa khóa học", removeCourseText:"Khóa học sẽ bị xóa khỏi tài khoản của bạn. Bạn có thể thêm lại bất cứ lúc nào.", removeYes:"Xóa"
+    removeBtn:"Xóa", removeCourseConfirm:"Xóa khóa học", removeCourseText:"Khóa học sẽ bị xóa khỏi tài khoản của bạn. Bạn có thể thêm lại bất cứ lúc nào.", removeYes:"Xóa",
+    stateLabel:"Tiểu bang", chooseState:"Chọn tiểu bang của bạn", stateSoon:"Sắp ra mắt", stateEmpty:"Chưa có khóa học cho tiểu bang này — sắp ra mắt."
   }
 };
 const SECTIONS = ["Licensing Requirements","Business Organization","Business Finances","Employment & Labor","Safety (Cal/OSHA)","Bonds & Insurance","Mechanics Liens","Contracts"];

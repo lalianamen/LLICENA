@@ -5,6 +5,8 @@
 .back-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
 .course-top-title{font-family:'Archivo';font-weight:700;font-size:16px;color:#fff;flex:1;min-width:0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.course-state-pill{flex-shrink:0;font-size:11px;font-weight:700;font-family:'Archivo';letter-spacing:.04em;
+  color:var(--ink);background:var(--gold);padding:3px 9px;border-radius:12px}
 /* Study language selector */
 .study-lang-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .study-lang-label{font-size:12px;color:#9fb2c6;font-weight:500;white-space:nowrap}

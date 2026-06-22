@@ -10,11 +10,11 @@ let studyLang = localStorage.getItem("lp:course_lang:" + courseId) || "en";
 
 const QUESTIONS = (window.COURSE_REGISTRY && window.COURSE_REGISTRY[courseId]) || [];
 
-let courseMeta = null;
+let courseMeta = null, courseState = "ca";
 for (const cat of CATALOG){
   for (const sub of (cat.subs || [])){
     const found = (sub.courses || []).find(c => c.id === courseId);
-    if (found){ courseMeta = found; break; }
+    if (found){ courseMeta = found; courseState = cat.state || "ca"; break; }
   }
   if (courseMeta) break;
 }
@@ -389,6 +389,11 @@ async function initCourse(){
   const name = courseMeta ? (courseMeta.name[uiLang] || courseMeta.name.en) : courseId;
   document.title = "LICENA — " + name;
   document.getElementById("courseTitle").textContent = name;
+
+  // State pill
+  const st = (typeof STATES !== "undefined") ? STATES.find(s => s.id === courseState) : null;
+  const pill = document.getElementById("courseStatePill");
+  if (st && pill) pill.textContent = `${st.flag} ${st.abbr}`;
 
   applyUiLabels();
   buildStudyLangSwitcher();

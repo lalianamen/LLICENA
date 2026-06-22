@@ -1,9 +1,18 @@
 /* LICENA — course catalog.
-   Each course has: id, name (4 langs), langs[], type ("exam"|"guide"), soon (bool). */
+   States: every category belongs to a state. California is live; others coming soon.
+   Each course has: id, name (4 langs), langs[], type ("exam"|"guide"). */
+const STATES = [
+  { id:"ca", abbr:"CA", flag:"🌴", name:{ en:"California", es:"California", ru:"Калифорния", vi:"California" }, active:true  },
+  { id:"tx", abbr:"TX", flag:"⭐", name:{ en:"Texas",      es:"Texas",      ru:"Техас",       vi:"Texas"      }, active:false },
+  { id:"fl", abbr:"FL", flag:"🌞", name:{ en:"Florida",    es:"Florida",    ru:"Флорида",     vi:"Florida"    }, active:false },
+  { id:"ny", abbr:"NY", flag:"🗽", name:{ en:"New York",   es:"Nueva York", ru:"Нью-Йорк",    vi:"New York"   }, active:false }
+];
+
 const CATALOG = [
   {
     id: "construction",
     icon: "🏗️",
+    state: "ca",
     name: { en:"Construction", es:"Construcción", ru:"Строительство", vi:"Xây dựng" },
     subs: [
       {
@@ -29,12 +38,14 @@ const CATALOG = [
   {
     id: "transportation",
     icon: "🚛",
+    state: "ca",
     name: { en:"Transportation", es:"Transporte", ru:"Транспорт", vi:"Vận tải" },
     subs: [], soon: true
   },
   {
     id: "beauty",
     icon: "💅",
+    state: "ca",
     name: { en:"Beauty", es:"Estética", ru:"Бьюти", vi:"Làm đẹp" },
     subs: [], soon: true
   }

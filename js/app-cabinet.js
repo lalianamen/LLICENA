@@ -1,12 +1,65 @@
 /* LICENA — cabinet, Supabase-backed */
 
 let lang = "en", profile = null, courses = [], pendingAdd = null, pendingAddLang = null;
+let selectedState = localStorage.getItem("lp:state") || "ca";
 
 function tr(){
   const d = TAPP[lang];
   document.querySelectorAll("[data-a]").forEach(el => { const k = el.getAttribute("data-a"); if (d[k] !== undefined) el.textContent = d[k]; });
   document.documentElement.lang = lang;
 }
+
+// ─── State picker ───────────────────────────────────────────────────────────
+function stateById(id){ return STATES.find(s => s.id === id) || STATES[0]; }
+
+function renderStateBadge(){
+  const s = stateById(selectedState);
+  const badge = document.getElementById("stateBadge");
+  badge.innerHTML = `<span class="state-flag">${s.flag}</span><span class="state-name">${s.name[lang] || s.name.en}</span><span class="state-caret">▾</span>`;
+}
+
+function renderStateMenu(){
+  const menu = document.getElementById("stateMenu"), d = TAPP[lang];
+  menu.innerHTML = "";
+  STATES.forEach(s => {
+    const btn = document.createElement("button");
+    btn.className = "state-opt" + (s.id === selectedState ? " active" : "") + (s.active ? "" : " disabled");
+    btn.innerHTML = `<span class="state-flag">${s.flag}</span><span class="state-name">${s.name[lang] || s.name.en}</span>` +
+      (s.active ? "" : `<span class="state-soon">${d.stateSoon}</span>`);
+    if (s.active){
+      btn.addEventListener("click", () => {
+        selectedState = s.id;
+        localStorage.setItem("lp:state", selectedState);
+        closeStateMenu();
+        renderStateBadge();
+        renderAll();
+      });
+    }
+    menu.appendChild(btn);
+  });
+}
+
+function openStateMenu(){
+  document.getElementById("stateMenu").hidden = false;
+  document.getElementById("stateBadge").setAttribute("aria-expanded", "true");
+}
+function closeStateMenu(){
+  document.getElementById("stateMenu").hidden = true;
+  document.getElementById("stateBadge").setAttribute("aria-expanded", "false");
+}
+
+document.getElementById("stateBadge").addEventListener("click", e => {
+  e.stopPropagation();
+  const hidden = document.getElementById("stateMenu").hidden;
+  if (hidden){ renderStateMenu(); openStateMenu(); } else closeStateMenu();
+});
+document.addEventListener("click", e => {
+  if (!document.getElementById("statePicker").contains(e.target)) closeStateMenu();
+});
+
+// Categories for the currently-selected state
+function statesCatalog(){ return CATALOG.filter(cat => (cat.state || "ca") === selectedState); }
+function statePill(){ const s = stateById(selectedState); return `<span class="state-pill">${s.flag} ${s.abbr}</span>`; }
 
 // ─── Subcategory toggle helper ────────────────────────────────────────────────
 function makeSubEl(sub, bodyBuilder){
@@ -34,7 +87,7 @@ function renderMyTests(){
   const statusOf = {};
   courses.forEach(c => { statusOf[c.course_id] = c.status || "active"; });
 
-  CATALOG.forEach(cat => {
+  statesCatalog().forEach(cat => {
     const bySub = {};
     (cat.subs || []).forEach(sub => {
       (sub.courses || []).forEach(course => {
@@ -62,7 +115,7 @@ function renderMyTests(){
           row.innerHTML = `
             <div class="course-info">
               <span class="course-name">${course.name[lang] || course.name.en}</span>
-              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span></span>
+              <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span>${statePill()}</span>
             </div>
             <div class="course-actions">
               ${statusBadge}
@@ -95,7 +148,13 @@ function renderCatalog(){
   const owned = new Set(courses.map(c => c.course_id));
   wrap.innerHTML = "";
 
-  CATALOG.forEach(cat => {
+  const cats = statesCatalog();
+  if (!cats.length){
+    const e = document.createElement("div"); e.className = "empty"; e.textContent = d.stateEmpty;
+    wrap.appendChild(e); return;
+  }
+
+  cats.forEach(cat => {
     const catEl = document.createElement("div"); catEl.className = "store-cat";
     catEl.innerHTML = `<div class="store-cat-hd">${cat.icon} ${cat.name[lang] || cat.name.en}${cat.soon ? ` <span class="soon-pill">${d.soon}</span>` : ""}</div>`;
     if (!cat.soon){
@@ -109,7 +168,7 @@ function renderCatalog(){
             row.innerHTML = `
               <div class="course-info">
                 <span class="course-name">${course.name[lang] || course.name.en}</span>
-                <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span><span class="lang-pill">${langStr}</span></span>
+                <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span>${statePill()}<span class="lang-pill">${langStr}</span></span>
               </div>
               <div class="course-actions">
                 <button class="btn-sm${isOwned ? " btn-added" : ""}"${isOwned ? " disabled" : ""}>${isOwned ? d.added : d.addBtn}</button>
@@ -251,7 +310,7 @@ document.querySelectorAll(".side button").forEach(b => b.addEventListener("click
 document.querySelectorAll(".app-langs button").forEach(b => b.addEventListener("click", async () => {
   lang = b.dataset.lang;
   document.querySelectorAll(".app-langs button").forEach(x => x.setAttribute("aria-pressed", x === b));
-  tr(); renderAll();
+  tr(); renderStateBadge(); renderAll();
   const { data: { user } } = await supa.auth.getUser();
   if (user) await supa.from("profiles").update({ lang }).eq("id", user.id);
 }));
@@ -297,6 +356,7 @@ async function init(){
   }
 
   tr();
+  renderStateBadge();
   document.getElementById("shell").style.display = "grid";
   renderAll();
 }
