@@ -32,6 +32,13 @@ const CATALOG = [
           { id:"osha-hvac", name:{ en:"OSHA Safety (HVAC)",       es:"Seguridad OSHA (HVAC)",    ru:"Безопасность OSHA (HVAC)",      vi:"An toàn OSHA (HVAC)"        }, langs:["en","es","ru","vi"], type:"exam"  },
           { id:"c20-guide", name:{ en:"Business Setup Guide A–Z", es:"Guía de Negocio A–Z",      ru:"Гайд открытия бизнеса A–Z",    vi:"Hướng dẫn kinh doanh A–Z"  }, langs:["en","es","ru","vi"], type:"guide" }
         ]
+      },
+      {
+        id: "c10",
+        name: { en:"C-10 Electrical", es:"C-10 Eléctrico", ru:"C-10 Электрика", vi:"C-10 Điện" },
+        courses: [
+          { id:"c10-exam",  name:{ en:"C-10 Trade Exam",          es:"Examen Trade C-10",        ru:"Trade-экзамен C-10",            vi:"Thi Trade C-10"             }, langs:["en","ru"], type:"exam"  }
+        ]
       }
     ]
   },

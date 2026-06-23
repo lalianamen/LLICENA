@@ -48,6 +48,49 @@ window.HONEST_CHANCES["cslb-law"] = {
   `
 };
 
+window.HONEST_CHANCES["c10-exam"] = {
+  ru: `
+    <p>Эти вопросы реально готовят к Trade-экзамену C-10 и закрывают основную массу тем, но <b>ни один набор вопросов не даёт гарантии 100%</b> — и вот почему честно:</p>
+    <ol>
+      <li><b>Экзамен опирается на NEC (National Electrical Code) и California Electrical Code.</b> Это сотни страниц таблиц и расчётов — вопросы покрывают ключевое, но не каждую таблицу.</li>
+      <li><b>Pre-test вопросы.</b> PSI подмешивает экспериментальные вопросы — они не в счёт, но ты не знаешь, какие именно.</li>
+      <li><b>Формулировки PSI с подвохами</b> — двойные отрицания, «всё, КРОМЕ», «наименее верный». Можно сымитировать, но не один в один.</li>
+      <li><b>Расчёты под таймером</b> — voltage drop, conductor sizing, box fill, motor loads. На экзамене считать придётся быстро и без ошибок.</li>
+      <li><b>Зубрёжка ≠ понимание.</b> Запомнить ответ — не то же самое, что понять принцип; на экзамене формулировка будет другой.</li>
+    </ol>
+    <p>Реалистичный шанс сдать <b>с первой попытки</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Только эти вопросы (зазубрил)</td><td>~75–80%</td></tr>
+      <tr><td>Вопросы + 1 раз прошёл NEC по разделам</td><td>~85–88%</td></tr>
+      <tr><td>Вопросы + код + понимание расчётов</td><td>~88–92%</td></tr>
+      <tr><td>Всё выше + 1 платный пробник prep-школы</td><td>~92–95%</td></tr>
+    </table>
+    <div class="hc-key"><b>Важно:</b> это <b>Trade-экзамен C-10</b> (Electrical). Для лицензии нужно сдать ещё отдельный <b>Law &amp; Business</b> экзамен — это отдельный набор вопросов.</div>
+    <p style="margin-top:10px">⚡ <b>Первоисточник:</b> <a href="https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" target="_blank" rel="noopener">NFPA 70 — National Electrical Code (NEC)</a> и California Electrical Code (Title 24, Part 3).</p>
+    <p style="margin-top:8px">🔧 Сдаёшь Law &amp; Business? Тренажёр: <a href="course.html?id=cslb-law"><b>CSLB Law &amp; Business →</b></a></p>
+  `,
+  en: `
+    <p>These questions genuinely prepare you for the C-10 Trade exam and cover the bulk of the topics, but <b>no question set guarantees 100%</b> — and here's the honest reason why:</p>
+    <ol>
+      <li><b>The exam is built on the NEC (National Electrical Code) and the California Electrical Code.</b> That's hundreds of pages of tables and calculations — these questions cover the essentials, not every table.</li>
+      <li><b>Pre-test questions.</b> PSI mixes in experimental questions — they don't count, but you won't know which ones.</li>
+      <li><b>PSI's tricky wording</b> — double negatives, "all EXCEPT", "least correct". It can be simulated, but not one-to-one.</li>
+      <li><b>Calculations under the timer</b> — voltage drop, conductor sizing, box fill, motor loads. On the exam you have to compute fast and clean.</li>
+      <li><b>Memorizing ≠ understanding.</b> Recalling an answer isn't the same as grasping the principle; on the exam the wording will differ.</li>
+    </ol>
+    <p>Realistic chance of passing <b>on the first attempt</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Only these questions (memorized)</td><td>~75–80%</td></tr>
+      <tr><td>Questions + read through the NEC once</td><td>~85–88%</td></tr>
+      <tr><td>Questions + code + understanding the calcs</td><td>~88–92%</td></tr>
+      <tr><td>All of the above + 1 paid prep-school mock</td><td>~92–95%</td></tr>
+    </table>
+    <div class="hc-key"><b>Important:</b> this is the <b>C-10 Trade exam</b> (Electrical). For the license you must also pass a separate <b>Law &amp; Business</b> exam — that's a separate question set.</div>
+    <p style="margin-top:10px">⚡ <b>Primary source:</b> <a href="https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" target="_blank" rel="noopener">NFPA 70 — National Electrical Code (NEC)</a> and the California Electrical Code (Title 24, Part 3).</p>
+    <p style="margin-top:8px">🔧 Taking Law &amp; Business? Trainer: <a href="course.html?id=cslb-law"><b>CSLB Law &amp; Business →</b></a></p>
+  `
+};
+
 window.HONEST_CHANCES_TITLE = {
   ru: "★ Честно о шансах: почему вопросы не гарантируют 100% сдачу",
   en: "★ Honest chances: why questions don't guarantee a 100% pass"
@@ -91,6 +134,47 @@ window.HONEST_CHANCES_MY["cslb-law"] = {
       <tr><td>Only the 500 questions (memorized)</td><td>~75–80%</td></tr>
       <tr><td>500 + read the Law Book once</td><td>~85–88%</td></tr>
       <tr><td>500 + book + understanding the logic</td><td>~88–92%</td></tr>
+      <tr><td>All of the above + 1 paid prep-school mock</td><td>~92–95%</td></tr>
+    </table>
+    <p class="hc-warn-footer">Questions are a tool. Passing is your job.</p>
+  `
+};
+
+window.HONEST_CHANCES_MY["c10-exam"] = {
+  ru: `
+    <div class="hc-warn-banner">⚠️ Прочитай это прежде чем начать</div>
+    <p>Эти вопросы — серьёзная подготовка к Trade-экзамену C-10, но <b>они не гарантируют сдачу</b>. Результат зависит только от тебя.</p>
+    <ol>
+      <li><b>Экзамен опирается на NEC и California Electrical Code</b> — сотни страниц таблиц и расчётов. Этот курс закрывает ключевое, но не каждую таблицу.</li>
+      <li><b>PSI подмешивает экспериментальные вопросы</b> — они не в счёт, но ты не знаешь, какие именно.</li>
+      <li><b>Формулировки PSI с подвохами</b> — двойные отрицания, «всё, КРОМЕ», «наименее верный». На экзамене будут другие слова.</li>
+      <li><b>Расчёты под таймером реальны</b> — voltage drop, conductor sizing, box fill, motor loads. Считать придётся быстро.</li>
+      <li><b>Зубрёжка ≠ понимание.</b> Запомнить ответ — не то же самое, что понять принцип.</li>
+    </ol>
+    <p>Реалистичный шанс сдать <b>с первой попытки</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Только эти вопросы (зазубрил)</td><td>~75–80%</td></tr>
+      <tr><td>Вопросы + 1 раз прошёл NEC</td><td>~85–88%</td></tr>
+      <tr><td>Вопросы + код + понимание расчётов</td><td>~88–92%</td></tr>
+      <tr><td>Всё выше + 1 платный пробник prep-школы</td><td>~92–95%</td></tr>
+    </table>
+    <p class="hc-warn-footer">Вопросы — инструмент. Сдача — твоя работа.</p>
+  `,
+  en: `
+    <div class="hc-warn-banner">⚠️ Read this before you start</div>
+    <p>These questions are serious preparation for the C-10 Trade exam, but <b>they don't guarantee a pass</b>. The result depends entirely on you.</p>
+    <ol>
+      <li><b>The exam is built on the NEC and California Electrical Code</b> — hundreds of pages of tables and calculations. This course covers the essentials, not every table.</li>
+      <li><b>PSI mixes in experimental questions</b> — they don't count, but you won't know which ones.</li>
+      <li><b>PSI uses tricky wording</b> — double negatives, "all EXCEPT", "least correct". The wording on the real exam will differ.</li>
+      <li><b>Calculations under the timer are real</b> — voltage drop, conductor sizing, box fill, motor loads. You'll have to compute fast.</li>
+      <li><b>Memorizing ≠ understanding.</b> Recalling an answer isn't the same as grasping the principle.</li>
+    </ol>
+    <p>Realistic chance of passing <b>on the first attempt</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Only these questions (memorized)</td><td>~75–80%</td></tr>
+      <tr><td>Questions + read through the NEC once</td><td>~85–88%</td></tr>
+      <tr><td>Questions + code + understanding the calcs</td><td>~88–92%</td></tr>
       <tr><td>All of the above + 1 paid prep-school mock</td><td>~92–95%</td></tr>
     </table>
     <p class="hc-warn-footer">Questions are a tool. Passing is your job.</p>
@@ -203,6 +287,42 @@ window.COURSE_RESOURCES["c20-exam"] = {
       en: "CSLB C-20 License Requirements",
       ru: "CSLB Требования к лицензии C-20",
       url: "https://www.cslb.ca.gov/Contractors/Applicants/Contractor_License/Classifications/C-20_Warm-Air_Heating_Ventilating_and_Air-Conditioning.aspx"
+    }
+  ]
+};
+
+window.COURSE_RESOURCES["c10-exam"] = {
+  title: { en: "Resources", ru: "Источники" },
+  links: [
+    {
+      icon: "⚡",
+      en: "NFPA 70 — National Electrical Code (NEC)",
+      ru: "NFPA 70 — National Electrical Code (NEC)",
+      url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70"
+    },
+    {
+      icon: "📘",
+      en: "California Electrical Code (Title 24, Part 3)",
+      ru: "California Electrical Code (Title 24, Part 3)",
+      url: "https://www.dgs.ca.gov/BSC/Codes"
+    },
+    {
+      icon: "⚠️",
+      en: "Cal/OSHA Title 8 — Electrical Safety Orders",
+      ru: "Cal/OSHA Title 8 — Электробезопасность",
+      url: "https://www.dir.ca.gov/title8/sb5g4.html"
+    },
+    {
+      icon: "🔌",
+      en: "NFPA 70E — Electrical Safety in the Workplace",
+      ru: "NFPA 70E — Электробезопасность на рабочем месте",
+      url: "https://www.nfpa.org/codes-and-standards/nfpa-70e-standard-development/70e"
+    },
+    {
+      icon: "🏛",
+      en: "CSLB C-10 License Requirements",
+      ru: "CSLB Требования к лицензии C-10",
+      url: "https://www.cslb.ca.gov/Contractors/Applicants/Contractor_License/Classifications/C-10_Electrical.aspx"
     }
   ]
 };
