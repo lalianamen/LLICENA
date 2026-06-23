@@ -41,7 +41,7 @@ supa.auth.getSession().then(({ data: { session } }) => {
 });
 
 // LOGIN
-document.getElementById("li_btn").addEventListener("click", async () => {
+async function doLogin() {
   const d = T[lang], err = document.getElementById("li_err");
   const email = document.getElementById("li_email").value.trim().toLowerCase();
   const pass  = document.getElementById("li_pass").value;
@@ -52,10 +52,12 @@ document.getElementById("li_btn").addEventListener("click", async () => {
   btn.disabled = false;
   if (error) { err.textContent = d.errCreds; return; }
   window.location.href = "app.html";
-});
+}
+document.getElementById("li_btn").addEventListener("click", doLogin);
+document.getElementById("li_form").addEventListener("submit", doLogin);
 
 // REGISTER
-document.getElementById("rg_btn").addEventListener("click", async () => {
+async function doRegister() {
   const d = T[lang], err = document.getElementById("rg_err");
   const name  = document.getElementById("rg_name").value.trim();
   const email = document.getElementById("rg_email").value.trim().toLowerCase();
@@ -85,7 +87,9 @@ document.getElementById("rg_btn").addEventListener("click", async () => {
   } else {
     window.location.href = "app.html";
   }
-});
+}
+document.getElementById("rg_btn").addEventListener("click", doRegister);
+document.getElementById("rg_form").addEventListener("submit", doRegister);
 
 // Back button / browser back from check-email screen → return to register panel
 document.getElementById("backToRegister").addEventListener("click", () => {

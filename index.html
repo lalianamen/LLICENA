@@ -44,6 +44,7 @@
       <div class="authcard">
         <!-- LOGIN -->
         <div class="authpanel on" data-panel="login">
+          <form id="li_form" onsubmit="return false">
           <div class="field">
             <label for="li_email" data-t="emL">Email</label>
             <input id="li_email" type="email" placeholder="you@email.com" autocomplete="username">
@@ -56,11 +57,13 @@
             </div>
           </div>
           <div class="autherr" id="li_err"></div>
-          <button class="btn btn-primary btn-block" id="li_btn" data-t="loginBtn">Log in</button>
+          <button type="submit" class="btn btn-primary btn-block" id="li_btn" data-t="loginBtn">Log in</button>
+          </form>
         </div>
 
         <!-- REGISTER -->
         <div class="authpanel" data-panel="register">
+          <form id="rg_form" onsubmit="return false">
           <div class="field">
             <label for="rg_name" data-t="nameL">Full name</label>
             <input id="rg_name" type="text" autocomplete="name">
@@ -85,7 +88,8 @@
             <span data-t="consent">I understand LICENA is a practice tool, not a school, and does not guarantee passing any exam.</span>
           </label>
           <div class="autherr" id="rg_err"></div>
-          <button class="btn btn-primary btn-block" id="rg_btn" data-t="createBtn">Create free account</button>
+          <button type="submit" class="btn btn-primary btn-block" id="rg_btn" data-t="createBtn">Create free account</button>
+          </form>
         </div>
 
         <!-- EMAIL CONFIRMATION SCREEN -->
