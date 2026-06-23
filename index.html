@@ -23,11 +23,81 @@
 </div></div>
 
 <div class="wrap">
-  <section class="hero">
-    <div class="eyebrow" data-t="eyebrow">California licensing exams</div>
-    <h1 data-t="heroLine">Pass your trade exam.</h1>
-    <p class="sub" data-t="heroSub">Practice questions for CSLB and other California licensing exams — available in English, Spanish, Russian, and Vietnamese.</p>
-  </section>
+  <div class="hero-split">
+    <section class="hero">
+      <div class="eyebrow" data-t="eyebrow">California licensing exams</div>
+      <h1 data-t="heroLine">Pass your trade exam.</h1>
+      <p class="sub" data-t="heroSub">Practice questions for CSLB and other California licensing exams — available in English, Spanish, Russian, and Vietnamese.</p>
+      <ul class="hero-points">
+        <li data-t="feat1T">Real exam style</li>
+        <li data-t="feat2T">Study your way</li>
+        <li data-t="feat3T">Any language</li>
+      </ul>
+    </section>
+
+    <div class="authwrap" id="authwrap">
+      <div class="tabs" role="group" aria-label="Auth">
+        <button data-tab="login" aria-pressed="true" data-t="tabLogin">Log in</button>
+        <button data-tab="register" aria-pressed="false" data-t="tabRegister">Register</button>
+      </div>
+
+      <div class="authcard">
+        <!-- LOGIN -->
+        <div class="authpanel on" data-panel="login">
+          <div class="field">
+            <label for="li_email" data-t="emL">Email</label>
+            <input id="li_email" type="email" placeholder="you@email.com" autocomplete="username">
+          </div>
+          <div class="field">
+            <label for="li_pass" data-t="passL">Password</label>
+            <div class="pwwrap">
+              <input id="li_pass" type="password" placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="pwtoggle" data-target="li_pass" aria-label="Show password" aria-pressed="false">👁</button>
+            </div>
+          </div>
+          <div class="autherr" id="li_err"></div>
+          <button class="btn btn-primary btn-block" id="li_btn" data-t="loginBtn">Log in</button>
+        </div>
+
+        <!-- REGISTER -->
+        <div class="authpanel" data-panel="register">
+          <div class="field">
+            <label for="rg_name" data-t="nameL">Full name</label>
+            <input id="rg_name" type="text" autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="rg_email" data-t="emL">Email</label>
+            <input id="rg_email" type="email" placeholder="you@email.com" autocomplete="username">
+          </div>
+          <div class="field">
+            <label for="rg_pass" data-t="passL">Password</label>
+            <div class="pwwrap">
+              <input id="rg_pass" type="password" placeholder="••••••••" autocomplete="new-password">
+              <button type="button" class="pwtoggle" data-target="rg_pass" aria-label="Show password" aria-pressed="false">👁</button>
+            </div>
+          </div>
+          <label class="consent">
+            <input type="checkbox" id="rg_age">
+            <span data-t="ageConsent">I am 18 years of age or older.</span>
+          </label>
+          <label class="consent">
+            <input type="checkbox" id="rg_consent">
+            <span data-t="consent">I understand LICENA is a practice tool, not a school, and does not guarantee passing any exam.</span>
+          </label>
+          <div class="autherr" id="rg_err"></div>
+          <button class="btn btn-primary btn-block" id="rg_btn" data-t="createBtn">Create free account</button>
+        </div>
+
+        <!-- EMAIL CONFIRMATION SCREEN -->
+        <div class="authpanel" data-panel="check-email" style="text-align:center;padding:12px 0">
+          <div style="font-size:38px;margin-bottom:12px">📬</div>
+          <h2 style="font-family:'Archivo';font-size:22px;margin:0 0 10px" data-t="checkEmail">Check your email</h2>
+          <p style="color:var(--steel);font-size:14.5px;margin:0 0 20px" data-t="checkEmailSub">We sent a confirmation link to <strong id="sentTo"></strong>. Click the link to activate your account.</p>
+          <button class="btn btn-ghost" id="backToRegister" data-t="backToReg" style="margin:0 auto">← Back to register</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="feats">
     <div class="feat"><div class="feat-t" data-t="feat1T">Real exam style</div><div class="feat-d" data-t="feat1D">Questions written in the format and difficulty of the actual CSLB exam.</div></div>
@@ -112,69 +182,6 @@
       </div>
     </div>
   </section>
-
-  <div class="authwrap">
-    <div class="tabs" role="group" aria-label="Auth">
-      <button data-tab="login" aria-pressed="true" data-t="tabLogin">Log in</button>
-      <button data-tab="register" aria-pressed="false" data-t="tabRegister">Register</button>
-    </div>
-
-    <div class="authcard">
-      <!-- LOGIN -->
-      <div class="authpanel on" data-panel="login">
-        <div class="field">
-          <label for="li_email" data-t="emL">Email</label>
-          <input id="li_email" type="email" placeholder="you@email.com" autocomplete="username">
-        </div>
-        <div class="field">
-          <label for="li_pass" data-t="passL">Password</label>
-          <div class="pwwrap">
-            <input id="li_pass" type="password" placeholder="••••••••" autocomplete="current-password">
-            <button type="button" class="pwtoggle" data-target="li_pass" aria-label="Show password" aria-pressed="false">👁</button>
-          </div>
-        </div>
-        <div class="autherr" id="li_err"></div>
-        <button class="btn btn-primary btn-block" id="li_btn" data-t="loginBtn">Log in</button>
-      </div>
-
-      <!-- REGISTER -->
-      <div class="authpanel" data-panel="register">
-        <div class="field">
-          <label for="rg_name" data-t="nameL">Full name</label>
-          <input id="rg_name" type="text" autocomplete="name">
-        </div>
-        <div class="field">
-          <label for="rg_email" data-t="emL">Email</label>
-          <input id="rg_email" type="email" placeholder="you@email.com" autocomplete="username">
-        </div>
-        <div class="field">
-          <label for="rg_pass" data-t="passL">Password</label>
-          <div class="pwwrap">
-            <input id="rg_pass" type="password" placeholder="••••••••" autocomplete="new-password">
-            <button type="button" class="pwtoggle" data-target="rg_pass" aria-label="Show password" aria-pressed="false">👁</button>
-          </div>
-        </div>
-        <label class="consent">
-          <input type="checkbox" id="rg_age">
-          <span data-t="ageConsent">I am 18 years of age or older.</span>
-        </label>
-        <label class="consent">
-          <input type="checkbox" id="rg_consent">
-          <span data-t="consent">I understand LICENA is a practice tool, not a school, and does not guarantee passing any exam.</span>
-        </label>
-        <div class="autherr" id="rg_err"></div>
-        <button class="btn btn-primary btn-block" id="rg_btn" data-t="createBtn">Create free account</button>
-      </div>
-
-      <!-- EMAIL CONFIRMATION SCREEN -->
-      <div class="authpanel" data-panel="check-email" style="text-align:center;padding:12px 0">
-        <div style="font-size:38px;margin-bottom:12px">📬</div>
-        <h2 style="font-family:'Archivo';font-size:22px;margin:0 0 10px" data-t="checkEmail">Check your email</h2>
-        <p style="color:var(--steel);font-size:14.5px;margin:0 0 20px" data-t="checkEmailSub">We sent a confirmation link to <strong id="sentTo"></strong>. Click the link to activate your account.</p>
-        <button class="btn btn-ghost" id="backToRegister" data-t="backToReg" style="margin:0 auto">← Back to register</button>
-      </div>
-    </div>
-  </div>
 
   <section class="disc" style="max-width:560px;margin:22px auto 0">
     <div class="ic">i</div>

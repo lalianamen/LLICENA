@@ -41,6 +41,21 @@ button{font-family:inherit;cursor:pointer;border:none}
 .hero h1{font-size:clamp(34px,6vw,58px);font-weight:800;max-width:14ch}
 .hero h1 em{font-style:normal;color:var(--gold-deep)}
 .hero p.sub{font-size:18px;color:var(--steel);max-width:54ch;margin:20px 0 28px}
+
+/* hero split — copy left, auth form right */
+.hero-split{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;
+  padding:30px 0 18px}
+.hero-split .hero{padding:0}
+.hero-split .authwrap{margin:0;max-width:none}
+.hero-points{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:10px}
+.hero-points li{position:relative;padding-left:28px;font-size:15.5px;color:var(--ink);font-weight:500}
+.hero-points li::before{content:"✓";position:absolute;left:0;top:0;
+  width:20px;height:20px;border-radius:50%;background:var(--verify-soft);color:var(--verify);
+  font-size:12px;font-weight:800;display:grid;place-items:center}
+@media(max-width:860px){
+  .hero-split{grid-template-columns:1fr;gap:28px;padding:34px 0 10px}
+  .hero-points{flex-flow:row wrap;gap:8px 18px}
+}
 .cta-row{display:flex;gap:12px;flex-wrap:wrap}
 .btn{font-family:'Archivo';font-weight:700;font-size:15px;padding:14px 22px;border-radius:11px;
   transition:transform .12s ease, box-shadow .12s ease}
