@@ -1,7 +1,7 @@
 /* LICENA — cabinet, Supabase-backed */
 
 let lang = "en", accountLang = "en";
-let profile = null, courses = [], pendingAdd = null, pendingAddLang = null;
+let profile = null, courses = [], pendingAdd = null;
 let selectedState = localStorage.getItem("lp:state") || "ca";
 
 function tr(){
@@ -191,7 +191,7 @@ function renderCatalog(){
               <div class="course-actions">
                 <button class="btn-sm${isOwned ? " btn-added" : ""}"${isOwned ? " disabled" : ""}>${isOwned ? d.added : d.addBtn}</button>
               </div>`;
-            if (!isOwned) row.querySelector("button").addEventListener("click", () => openLangPicker(course));
+            if (!isOwned) row.querySelector("button").addEventListener("click", () => openPayModal(course));
             body.appendChild(row);
 
             // Honest-chances block (before purchase, for courses that have it)
@@ -221,46 +221,13 @@ function renderAccount(){
 
 function renderAll(){ renderMyTests(); renderCatalog(); renderAccount(); }
 
-// ─── Lang picker ──────────────────────────────────────────────────────────────
-// Course study-lang modes: for EN+RU courses show EN / EN·RU / RU
-function courseLangModes(course){
-  const avail = course.langs;
-  if (avail.length <= 1) return avail.map(l => ({ key:l, label:({en:"English",es:"Español",ru:"Русский"})[l]||l.toUpperCase() }));
-  const modes = [];
-  modes.push({ key:"en", label:"English" });
-  if (avail.includes("ru")) modes.push({ key:"en+ru", label:"EN · RU (bilingual)" });
-  avail.filter(l => l !== "en").forEach(l => {
-    modes.push({ key:l, label:({es:"Español",ru:"Русский"})[l]||l.toUpperCase() });
-  });
-  return modes;
-}
-
-function openLangPicker(course){
+// ─── Activate / pay modal (beta: free) ────────────────────────────────────────
+// No language is chosen at purchase — a course is study-language-agnostic, and the
+// player shows it in the account language. Adding just records the entitlement.
+function openPayModal(course){
   pendingAdd = course;
-  const d = TAPP[lang];
-  document.getElementById("langModalTitle").textContent = course.name[lang] || course.name.en;
-  document.getElementById("langModalSub").textContent = d.chooseLang;
-  const choices = document.getElementById("langChoices");
-  choices.innerHTML = "";
-  courseLangModes(course).forEach(m => {
-    const btn = document.createElement("button");
-    btn.className = "lang-choice-btn" + (m.key === lang || (m.key === "en+ru" && lang === "ru") ? " preferred" : "");
-    btn.textContent = m.label;
-    btn.addEventListener("click", () => openPayModal(m.key));
-    choices.appendChild(btn);
-  });
-  document.getElementById("langModal").style.display = "grid";
-}
-
-// ─── Payment modal (beta: free) ───────────────────────────────────────────────
-function openPayModal(chosenLang){
-  pendingAddLang = chosenLang;
-  document.getElementById("langModal").style.display = "none";
-  const course = pendingAdd, d = TAPP[lang];
-  const labels = { en:"English", es:"Español", ru:"Русский" };
   document.getElementById("payModalTitle").textContent = course.name[lang] || course.name.en;
-  document.getElementById("payCourseInfo").innerHTML =
-    `<div class="pay-lang-chosen">${labels[chosenLang] || chosenLang.toUpperCase()}</div>`;
+  document.getElementById("payCourseInfo").innerHTML = "";
   document.getElementById("payModal").style.display = "grid";
 }
 
@@ -292,12 +259,8 @@ document.getElementById("removeCourseConfirm").addEventListener("click", async (
   }
 });
 
-document.getElementById("langCancel").addEventListener("click", () => {
-  document.getElementById("langModal").style.display = "none"; pendingAdd = null;
-});
-
 document.getElementById("payCancel").addEventListener("click", () => {
-  document.getElementById("payModal").style.display = "none"; pendingAddLang = null;
+  document.getElementById("payModal").style.display = "none"; pendingAdd = null;
 });
 
 // ── Entitlement grant — SINGLE POINT TO CHANGE FOR PAYMENT ─────────────────────
@@ -320,11 +283,10 @@ async function grantCourseAccess(course){
 }
 
 document.getElementById("payConfirm").addEventListener("click", async () => {
-  const course = pendingAdd, chosenLang = pendingAddLang;
+  const course = pendingAdd;
   document.getElementById("payModal").style.display = "none";
-  pendingAdd = null; pendingAddLang = null;
+  pendingAdd = null;
   if (!course) return;
-  localStorage.setItem("lp:course_lang:" + course.id, chosenLang);
   if (await grantCourseAccess(course)){ renderMyTests(); renderCatalog(); }
 });
 
