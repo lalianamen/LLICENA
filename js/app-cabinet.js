@@ -181,12 +181,11 @@ function renderCatalog(){
           (sub.courses || []).forEach(course => {
             const isOwned = owned.has(course.id);
             const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
-            const langStr = course.langs.map(l => l.toUpperCase()).join(" · ");
             const row = document.createElement("div"); row.className = "course-row";
             row.innerHTML = `
               <div class="course-info">
                 <span class="course-name">${course.name[lang] || course.name.en}</span>
-                <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span>${statePill()}<span class="lang-pill">${langStr}</span></span>
+                <span class="course-meta"><span class="type-badge type-${course.type}">${badge}</span>${statePill()}</span>
               </div>
               <div class="course-actions">
                 <button class="btn-sm${isOwned ? " btn-added" : ""}"${isOwned ? " disabled" : ""}>${isOwned ? d.added : d.addBtn}</button>

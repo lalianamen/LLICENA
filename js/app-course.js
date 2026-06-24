@@ -463,6 +463,93 @@ document.getElementById("filterWrongBtn").addEventListener("click", () => {
 });
 document.getElementById("resetProgressBtn").addEventListener("click", resetAllProgress);
 
+// ─── Guide (article) rendering ────────────────────────────────────────────────
+// Guide-type courses carry prose, not questions. Content lives in
+// js/guides/<id>.js → COURSE_GUIDE[id] = { en:[{t,h}], es:[...], ru:[...] }, where
+// t = section title (plain text) and h = section body (trusted authored HTML).
+let guideLang = "en";
+
+function loadGuideData(id){
+  if (window.COURSE_GUIDE && window.COURSE_GUIDE[id]) return Promise.resolve(true);
+  return loadScript("js/guides/" + id + ".js");
+}
+
+function guideAvailLangs(){
+  const g = (window.COURSE_GUIDE || {})[courseId] || {};
+  return ["en","es","ru","hy","ar","zh","ko"].filter(l => Array.isArray(g[l]) && g[l].length);
+}
+
+function buildGuideLangSwitcher(){
+  const wrap = document.getElementById("studyLangWrap");
+  wrap.innerHTML = "";
+  const langs = guideAvailLangs();
+  if (langs.length <= 1) return;
+  const seg = document.createElement("div");
+  seg.className = "study-lang-seg";
+  langs.forEach(l => {
+    const btn = document.createElement("button");
+    btn.textContent = LANG_LABEL[l] || l.toUpperCase();
+    btn.setAttribute("aria-pressed", l === guideLang ? "true" : "false");
+    btn.addEventListener("click", () => {
+      guideLang = l;
+      localStorage.setItem("lp:course_lang:" + courseId, guideLang);
+      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
+      renderGuide();
+    });
+    seg.appendChild(btn);
+  });
+  wrap.appendChild(seg);
+}
+
+function renderGuide(){
+  const g    = (window.COURSE_GUIDE || {})[courseId] || {};
+  const secs = (g[guideLang] && g[guideLang].length) ? g[guideLang] : (g.en || []);
+  const view = document.getElementById("guideView");
+  const cs   = document.getElementById("comingSoon");
+  if (!secs.length){
+    view.style.display = "none";
+    cs.style.display = "block";
+    document.getElementById("csTitle").textContent = courseMeta ? (courseMeta.name[uiLang] || courseMeta.name.en) : courseId;
+    document.getElementById("csText").textContent = ui("courseSoon");
+    return;
+  }
+  cs.style.display = "none";
+  const toc  = secs.map((s, i) => `<a class="guide-toc-link" href="#gs-${i}">${esc(s.t)}</a>`).join("");
+  const body = secs.map((s, i) => `<section class="guide-sec" id="gs-${i}"><h2>${esc(s.t)}</h2>${s.h}</section>`).join("");
+  view.innerHTML = `<nav class="guide-toc">${toc}</nav><div class="guide-body">${body}</div>`;
+  view.style.display = "block";
+}
+
+async function initGuideView(){
+  await loadGuideData(courseId);
+  const langs  = guideAvailLangs();
+  const stored = localStorage.getItem("lp:course_lang:" + courseId);
+  guideLang = (stored && langs.includes(stored)) ? stored
+            : (langs.includes(uiLang) ? uiLang : (langs[0] || "en"));
+
+  const name = courseMeta ? (courseMeta.name[uiLang] || courseMeta.name.en) : courseId;
+  document.title = "LICENA — " + name;
+  document.getElementById("courseTitle").textContent = name;
+  document.getElementById("backLabel").textContent = ui("navMyTests");
+
+  const st   = (typeof STATES !== "undefined") ? STATES.find(s => s.id === courseState) : null;
+  const pill = document.getElementById("courseStatePill");
+  if (st && pill) pill.textContent = `${st.flag} ${st.abbr}`;
+
+  // Hide the quiz-only UI and switch the shell to a single, centered column.
+  const side = document.querySelector(".course-side");
+  if (side) side.style.display = "none";
+  ["blockCards", "qCard", "resultsCard"].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = "none";
+  });
+  const shell = document.getElementById("courseShell");
+  shell.classList.add("guide-mode");
+
+  buildGuideLangSwitcher();
+  renderGuide();
+  shell.style.display = "grid";
+}
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function initCourse(){
   const { data: { session } } = await supa.auth.getSession();
@@ -478,6 +565,9 @@ async function initCourse(){
     uiLang = prof.lang;
     localStorage.setItem("lp:ui_lang", uiLang);
   }
+
+  // Guide-type courses render an article instead of a quiz.
+  if (courseMeta && courseMeta.type === "guide"){ await initGuideView(); return; }
 
   // Load this course's English base + the user-language overlay (only after ownership).
   await loadCourseData(courseId);
