@@ -63,10 +63,10 @@ function statesCatalog(){ return CATALOG.filter(cat => (cat.state || "ca") === s
 function statePill(){ const s = stateById(selectedState); return `<span class="state-pill">${s.flag} ${s.abbr}</span>`; }
 
 // ─── Subcategory toggle helper ────────────────────────────────────────────────
-function makeSubEl(sub, bodyBuilder){
-  const subEl = document.createElement("div"); subEl.className = "my-sub";
+function makeSubEl(sub, bodyBuilder, startCollapsed){
+  const subEl = document.createElement("div"); subEl.className = "my-sub" + (startCollapsed ? " collapsed" : "");
   const hd = document.createElement("div"); hd.className = "my-sub-hd";
-  hd.innerHTML = `<span>${sub.name[lang] || sub.name.en}</span><span class="sub-chevron">▾</span>`;
+  hd.innerHTML = `<span>${sub.name[lang] || sub.name.en}</span><span class="sub-chevron">${startCollapsed ? "▸" : "▾"}</span>`;
   hd.addEventListener("click", () => {
     const collapsed = subEl.classList.toggle("collapsed");
     hd.querySelector(".sub-chevron").textContent = collapsed ? "▸" : "▾";
@@ -189,7 +189,7 @@ function renderCatalog(){
             if (!isOwned) row.querySelector("button").addEventListener("click", () => openPayModal(course));
             body.appendChild(row);
           });
-        }));
+        }, true));
       });
     }
     wrap.appendChild(catEl);
