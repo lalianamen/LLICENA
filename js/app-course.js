@@ -41,36 +41,49 @@ function ui(key){ return (TAPP[uiLang] && TAPP[uiLang][key]) || (TAPP.en[key]) |
 function esc(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 // ─── Study language ───────────────────────────────────────────────────────────
-// Modes based on uiLang: if course has uiLang translations → EN / EN·LANG / LANG
-// Otherwise just EN (no switcher shown).
+// The study-language switcher reflects the course's ACTUAL content languages
+// (courseMeta.langs), not the interface language — so an EN+RU course always offers
+// EN / EN·RU / RU and the toggle never disappears just because the UI is in another
+// language. The default and stale-value reset (in buildStudyLangSwitcher) still
+// follow uiLang, so a Spanish or English UI never lands on Russian by default.
 const LANG_LABEL = { ru:"RU", es:"ES", hy:"HY", ar:"AR", zh:"ZH", ko:"KO" };
 const LANG_FIELD = { ru:"r",  es:"s",  hy:"hy", ar:"ar", zh:"zh", ko:"ko" };
 
 function buildStudyLangModes(){
   if (!courseMeta) return [{ key:"en", label:"EN" }];
-  const avail = courseMeta.langs || ["en"];
-  if (uiLang === "en" || !avail.includes(uiLang)){
-    return [{ key:"en", label:"EN" }];
-  }
-  const ll = LANG_LABEL[uiLang] || uiLang.toUpperCase();
-  return [
-    { key:"en",              label:"EN" },
-    { key:"en+" + uiLang,   label:`EN·${ll}` },
-    { key:uiLang,           label:ll }
-  ];
+  const secondaries = (courseMeta.langs || ["en"]).filter(l => l !== "en");
+  if (!secondaries.length) return [{ key:"en", label:"EN" }];
+  const modes = [{ key:"en", label:"EN" }];
+  secondaries.forEach(l => {
+    const ll = LANG_LABEL[l] || l.toUpperCase();
+    modes.push({ key:"en+" + l, label:`EN·${ll}` });
+    modes.push({ key:l,         label:ll });
+  });
+  return modes;
 }
+
+// The secondary study language a mode key carries ("en"→null, "ru"→"ru", "en+ru"→"ru").
+function modeSecondary(key){ return key === "en" ? null : key.replace("en+", ""); }
 
 function buildStudyLangSwitcher(){
   const wrap = document.getElementById("studyLangWrap");
   wrap.innerHTML = "";
   const modes = buildStudyLangModes();
-  if (modes.length <= 1) return;
 
-  // Validate stored studyLang
-  if (!modes.find(m => m.key === studyLang)){
-    studyLang = modes[0].key;
+  // Reconcile the stored study language BEFORE deciding whether to show a switcher,
+  // so a leftover value can never keep rendering the wrong language. Reset it when it
+  // isn't valid for this course, OR when its secondary language isn't the active UI
+  // language (e.g. a Russian selection lingering after switching the UI to Spanish).
+  // Falls back to EN·<uiLang> when the course offers it, otherwise plain EN.
+  const keys = modes.map(m => m.key);
+  const sec  = modeSecondary(studyLang);
+  if (!keys.includes(studyLang) || (sec && sec !== uiLang)){
+    const pref = "en+" + uiLang;
+    studyLang = keys.includes(pref) ? pref : "en";
     localStorage.setItem("lp:course_lang:" + courseId, studyLang);
   }
+
+  if (modes.length <= 1) return;
 
   const label = document.createElement("span");
   label.className = "study-lang-label";
