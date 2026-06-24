@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=8">
-<link rel="stylesheet" href="css/cabinet.css?v=8">
+<link rel="stylesheet" href="css/styles.css?v=9">
+<link rel="stylesheet" href="css/cabinet.css?v=9">
 </head>
 <body>
 
@@ -85,7 +85,15 @@
       <span class="beta-pill">BETA</span>
       <span data-a="betaFree">Free access during beta — no payment needed.</span>
     </div>
-    <button class="btn btn-primary" id="payConfirm" style="width:100%;margin-top:18px" data-a="activateBtn">Activate for free</button>
+    <details class="pay-honest" id="payHonest" open>
+      <summary class="pay-honest-sum" id="payHonestTitle"></summary>
+      <div class="pay-honest-body" id="payHonestBody"></div>
+    </details>
+    <label class="pay-consent">
+      <input type="checkbox" id="payHonestChk">
+      <span data-a="honestAck">I have read the above and understand this is a practice tool that does not guarantee passing.</span>
+    </label>
+    <button class="btn btn-primary" id="payConfirm" style="width:100%;margin-top:8px" data-a="activateBtn" disabled>Activate for free</button>
     <div class="modal-row" style="margin-top:10px">
       <button class="btn btn-ghost" id="payCancel" data-a="cancel">Cancel</button>
     </div>
@@ -93,11 +101,11 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-client.js?v=8"></script>
-<script src="js/catalog.js?v=8"></script>
-<script src="js/catalog/ca.js?v=8"></script>
-<script src="js/i18n-app.js?v=8"></script>
-<script src="js/honest-chances.js?v=8"></script>
-<script src="js/app-cabinet.js?v=8"></script>
+<script src="js/supabase-client.js?v=9"></script>
+<script src="js/catalog.js?v=9"></script>
+<script src="js/catalog/ca.js?v=9"></script>
+<script src="js/i18n-app.js?v=9"></script>
+<script src="js/honest-chances.js?v=9"></script>
+<script src="js/app-cabinet.js?v=9"></script>
 </body>
 </html>

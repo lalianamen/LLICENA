@@ -225,6 +225,24 @@
 .hc-tbl td:last-child{text-align:right;font-family:'IBM Plex Mono';font-weight:600;white-space:nowrap;width:1%}
 .hc-key{background:#fff7e6;border:1px solid #f0dca8;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.5}
 
+/* General honest-chances pinned in the catalog "General" group */
+.hc-general{margin:0 0 4px}
+
+/* Honest-chances + consent inside the activate-course modal */
+.pay-honest{border:1.5px solid #f0dca8;border-radius:12px;background:#fffdf6;margin:14px 0 12px;overflow:hidden}
+.pay-honest>summary{list-style:none;cursor:pointer;padding:11px 14px;font-size:13px;font-weight:700;color:var(--ink);display:flex;align-items:center}
+.pay-honest>summary::-webkit-details-marker{display:none}
+.pay-honest>summary::after{content:"▾";margin-left:auto;color:var(--steel);font-size:12px}
+.pay-honest:not([open])>summary::after{content:"▸"}
+.pay-honest-body{padding:12px 14px 14px;max-height:230px;overflow-y:auto;font-size:12.5px;line-height:1.6;color:var(--ink);border-top:1px solid #f0dca8}
+.pay-honest-body p{margin:0 0 8px}
+.pay-honest-body ol{margin:0 0 10px;padding-left:18px}
+.pay-honest-body li{margin-bottom:5px}
+.pay-honest-body a{color:var(--gold-deep);font-weight:600}
+.pay-consent{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--ink);cursor:pointer;margin-bottom:4px}
+.pay-consent input{width:auto;height:auto;margin:2px 0 0;padding:0;border:0;flex-shrink:0;box-shadow:none}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+
 /* Lang picker */
 .lang-choices{display:flex;flex-direction:column;gap:8px}
 .lang-choice-btn{width:100%;text-align:left;padding:13px 16px;border:1.5px solid var(--line);border-radius:11px;

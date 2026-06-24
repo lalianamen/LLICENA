@@ -178,6 +178,18 @@ function renderCatalog(){
     if (!cat.soon){
       (cat.subs || []).forEach(sub => {
         catEl.appendChild(makeSubEl(sub, body => {
+          // General "honest chances" — pinned, open, in the General group (construction only for now).
+          if (cat.id === "construction" && sub.id === "general"){
+            const g = window.HONEST_CHANCES_GENERAL || {};
+            const gl = g[lang] ? lang : "en";
+            if (g[gl]){
+              const titles = window.HONEST_CHANCES_TITLE || {};
+              const det = document.createElement("details");
+              det.className = "hc-my-details hc-general"; det.open = true;
+              det.innerHTML = `<summary class="hc-my-summary">${titles[gl] || titles.en}</summary><div class="hc-my-body">${g[gl]}</div>`;
+              body.appendChild(det);
+            }
+          }
           (sub.courses || []).forEach(course => {
             const isOwned = owned.has(course.id);
             const badge = course.type === "guide" ? d.guideBadge : d.examBadge;
@@ -227,6 +239,16 @@ function openPayModal(course){
   pendingAdd = course;
   document.getElementById("payModalTitle").textContent = course.name[lang] || course.name.en;
   document.getElementById("payCourseInfo").innerHTML = "";
+  // Honest-chances: mandatory read + acknowledgment before a course can be activated.
+  const g = window.HONEST_CHANCES_GENERAL || {};
+  const titles = window.HONEST_CHANCES_TITLE || {};
+  const gl = g[lang] ? lang : "en";
+  document.getElementById("payHonestTitle").textContent = titles[gl] || titles.en || "★ Honest chances";
+  document.getElementById("payHonestBody").innerHTML = g[gl] || g.en || "";
+  document.getElementById("payHonest").open = true;
+  const chk = document.getElementById("payHonestChk");
+  chk.checked = false;
+  document.getElementById("payConfirm").disabled = true;
   document.getElementById("payModal").style.display = "grid";
 }
 
@@ -262,6 +284,11 @@ document.getElementById("payCancel").addEventListener("click", () => {
   document.getElementById("payModal").style.display = "none"; pendingAdd = null;
 });
 
+// Mandatory honest-chances acknowledgment gates the activate button.
+document.getElementById("payHonestChk").addEventListener("change", e => {
+  document.getElementById("payConfirm").disabled = !e.target.checked;
+});
+
 // ── Entitlement grant — SINGLE POINT TO CHANGE FOR PAYMENT ─────────────────────
 // During the free beta the client writes the user_courses "active" row directly.
 // When payment goes live this must move SERVER-SIDE: a Stripe webhook
@@ -282,6 +309,7 @@ async function grantCourseAccess(course){
 }
 
 document.getElementById("payConfirm").addEventListener("click", async () => {
+  if (document.getElementById("payConfirm").disabled) return;
   const course = pendingAdd;
   document.getElementById("payModal").style.display = "none";
   pendingAdd = null;
