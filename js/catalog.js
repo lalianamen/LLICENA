@@ -13,6 +13,7 @@
    catalog entry, js/questions/<id>.js, the user_courses access row and resources. */
 const STATES = [
   { id:"ca", abbr:"CA", flag:"🌴", name:{ en:"California", es:"California", ru:"Калифорния" }, active:true  },
+  { id:"az", abbr:"AZ", flag:"🌵", name:{ en:"Arizona",    es:"Arizona",    ru:"Аризона"    }, active:true  },
   { id:"tx", abbr:"TX", flag:"⭐", name:{ en:"Texas",      es:"Texas",      ru:"Техас"      }, active:false },
   { id:"fl", abbr:"FL", flag:"🌞", name:{ en:"Florida",    es:"Florida",    ru:"Флорида"    }, active:false },
   { id:"ny", abbr:"NY", flag:"🗽", name:{ en:"New York",   es:"Nueva York", ru:"Нью-Йорк"   }, active:false }
