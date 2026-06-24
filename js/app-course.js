@@ -11,21 +11,42 @@ let studyLang = localStorage.getItem("lp:course_lang:" + courseId) || "en";
 // Filled by loadCourseData() in initCourse — content is loaded on demand, only for
 // the opened course (not every course's file on every page).
 let QUESTIONS = [];
+// id -> { q, opts, re } translation overlay for the user's language (empty in English).
+let TR = {};
 
-// Lazily load this course's question file (js/questions/<id>.js, which sets
-// window.COURSE_REGISTRY[id]). Keeping content out of course.html means adding a
-// course never touches the page, and a missing file degrades to "coming soon"
-// instead of a hard 404 baked into a <script> tag.
-function loadCourseData(id){
-  return new Promise(resolve => {
-    if (!id) return resolve(false);
-    if (window.COURSE_REGISTRY && window.COURSE_REGISTRY[id]) return resolve(true);
+function loadScript(src){
+  return new Promise(res => {
     const s = document.createElement("script");
-    s.src = "js/questions/" + id + ".js";
-    s.onload  = () => resolve(true);
-    s.onerror = () => resolve(false);
+    s.src = src;
+    s.onload  = () => res(true);
+    s.onerror = () => res(false);
     document.head.appendChild(s);
   });
+}
+
+// Load the English base (js/questions/<id>.js → COURSE_REGISTRY[id]) and, when the UI
+// language is a non-English language the course provides, that language's translation
+// overlay (js/questions/<id>.<lang>.js → COURSE_LANG[id][lang]). Bilingual = base + one
+// overlay, so the page never loads more than two files no matter how many languages the
+// course has in total. A missing base degrades to "coming soon".
+async function loadCourseData(id){
+  if (!id) return false;
+  if (!(window.COURSE_REGISTRY && window.COURSE_REGISTRY[id])){
+    if (!(await loadScript("js/questions/" + id + ".js"))) return false;
+  }
+  const langs = (courseMeta && courseMeta.langs) || ["en"];
+  if (uiLang !== "en" && langs.includes(uiLang)){
+    const have = window.COURSE_LANG && window.COURSE_LANG[id] && window.COURSE_LANG[id][uiLang];
+    if (!have) await loadScript("js/questions/" + id + "." + uiLang + ".js");
+  }
+  return true;
+}
+
+// Build the id→translation lookup from the loaded overlay for the user's language.
+function buildOverlay(){
+  TR = {};
+  const ov = window.COURSE_LANG && window.COURSE_LANG[courseId] && window.COURSE_LANG[courseId][uiLang];
+  if (ov) for (const o of ov) TR[o.id] = o;
 }
 
 let courseMeta = null, courseState = "ca";
@@ -114,22 +135,24 @@ function buildStudyLangSwitcher(){
 }
 
 // ─── Question text helpers ────────────────────────────────────────────────────
+// Monolingual reads come from the base (English q.*) or the overlay (TR by id);
+// bilingual rendering pulls both sides directly in renderQ.
 const isBilingual = () => studyLang.includes("+");
-function secondaryLang(){ return studyLang.replace("en+","").replace("+en",""); }
-function lf(lang){ return LANG_FIELD[lang] || lang; }
 
 function getQText(q){
-  const f = lf(studyLang);
-  return q["q"+f] || q.q;
+  if (studyLang === "en") return q.q;
+  const t = TR[q.id];
+  return (t && t.q) || q.q;
 }
 function getOpts(q){
-  const f = lf(studyLang);
-  const t = q["opts"+f];
-  return (t && t.length) ? t : q.opts;
+  if (studyLang === "en") return q.opts;
+  const t = TR[q.id];
+  return (t && t.opts && t.opts.length) ? t.opts : q.opts;
 }
 function getExplanation(q){
-  const f = lf(studyLang);
-  return q["r"+f] || q.re || "";
+  if (studyLang === "en") return q.re || "";
+  const t = TR[q.id];
+  return (t && t.re) || q.re || "";
 }
 
 // ─── Progress persistence ─────────────────────────────────────────────────────
@@ -312,8 +335,8 @@ function renderQ(){
   // Question text
   const qTextEl = document.getElementById("qText");
   if (bilingual){
-    const sf = lf(secondaryLang());
-    const qTrans = q["q"+sf];
+    const t = TR[q.id];
+    const qTrans = t && t.q;
     qTextEl.innerHTML = `<span class="lx-en">${esc(q.q)}</span>${qTrans ? `<span class="lx-ru">${esc(qTrans)}</span>` : ""}`;
   } else {
     qTextEl.textContent = getQText(q);
@@ -328,8 +351,8 @@ function renderQ(){
     const btn = document.createElement("button");
     btn.className = "opt-btn";
     if (bilingual){
-      const sf = lf(secondaryLang());
-      const transOpts = q["opts"+sf];
+      const t = TR[q.id];
+      const transOpts = t && t.opts;
       if (transOpts && transOpts[i]){
         btn.innerHTML = `<span class="lx-en">${esc(enOpts[i])}</span><span class="lx-ru">${esc(transOpts[i])}</span>`;
       } else {
@@ -352,8 +375,8 @@ function renderQ(){
   const expEl = document.getElementById("qExplanation");
   if (isAnswered){
     if (bilingual){
-      const sf = lf(secondaryLang());
-      const rTrans = q["r"+sf];
+      const t = TR[q.id];
+      const rTrans = t && t.re;
       if (q.re || rTrans){
         expEl.innerHTML = (q.re ? `<div class="lx-en">${esc(q.re)}</div>` : "") +
                           (rTrans ? `<div class="lx-ru">${esc(rTrans)}</div>` : "");
@@ -449,15 +472,17 @@ async function initCourse(){
   const { data: owned } = await supa.from("user_courses").select("course_id").eq("user_id", userId).eq("course_id", courseId).single();
   if (!owned){ window.location.replace("app.html"); return; }
 
-  // Load only this course's content, and only after the ownership check passed.
-  await loadCourseData(courseId);
-  QUESTIONS = (window.COURSE_REGISTRY && window.COURSE_REGISTRY[courseId]) || [];
-
+  // Resolve the account language first — it decides which translation overlay to load.
   const { data: prof } = await supa.from("profiles").select("lang").eq("id", userId).single();
   if (prof && prof.lang && TAPP[prof.lang]){
     uiLang = prof.lang;
     localStorage.setItem("lp:ui_lang", uiLang);
   }
+
+  // Load this course's English base + the user-language overlay (only after ownership).
+  await loadCourseData(courseId);
+  QUESTIONS = (window.COURSE_REGISTRY && window.COURSE_REGISTRY[courseId]) || [];
+  buildOverlay();
 
   // Default studyLang: if uiLang course has translations, default to bilingual (en+uiLang)
   if (!localStorage.getItem("lp:course_lang:" + courseId)){
