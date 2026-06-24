@@ -75,13 +75,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/catalog.js"></script>
+<script src="js/catalog/ca.js"></script>
 <script src="js/i18n-app.js"></script>
 <script src="js/course-blocks.js"></script>
-<!-- All question files — each sets window.COURSE_REGISTRY[id] -->
-<script src="js/questions/cslb-law.js"></script>
-<script src="js/questions/asbestos.js"></script>
-<script src="js/questions/c20-exam.js"></script>
-<script src="js/questions/c10-exam.js"></script>
+<!-- Question files are lazy-loaded by app-course.js for the opened course only
+     (js/questions/<id>.js). Adding a course never touches this page. -->
 <script src="js/honest-chances.js"></script>
 <script src="js/app-course.js"></script>
 </body>

@@ -58,3 +58,34 @@ Flow:
 - Watermark on-screen content with the account email/code to discourage
   screen-recording and redistribution.
 - Rate-limit `/activate` and `/move`.
+
+## Course entitlements — what is actually built today (beta)
+
+The code+device model above is the **future** anti-sharing design. What ships now
+is simpler and account-based:
+
+- A course you "own" is a row in `user_courses(user_id, course_id, status)`.
+  The course player (`course.html?id=<id>`) checks for a session **and** a matching
+  `user_courses` row before showing content; no row → redirect to the cabinet.
+- Supabase **Row-Level Security** restricts each user to their own rows.
+- All grants flow through one function, `grantCourseAccess()` in `js/app-cabinet.js`.
+
+### What MUST change before charging money
+
+1. **Move the grant server-side.** Today, during the free beta, the client writes
+   the `active` row itself, and the RLS `courses: own insert` policy *allows* any
+   authenticated user to self-grant any `course_id` — i.e. for free. That is correct
+   for beta but is a hole once courses are paid. When payment goes live:
+   - A Stripe webhook (`checkout.session.completed`) writes the `user_courses` row
+     using the service role.
+   - Drop the `courses: own insert` (and self-`update`) RLS policy so the client can
+     no longer grant itself access. `grantCourseAccess()` becomes a call to that
+     backend instead of a direct upsert — it is the only client code that changes.
+
+2. **Decide on content protection.** The question banks are static files
+   (`js/questions/<id>.js`) served publicly. The ownership check gates the *UI*, not
+   the *data*: anyone who knows the URL can fetch a course file directly, paid or not.
+   - Acceptable for beta / low-value content.
+   - For real protection, serve questions through an authenticated endpoint
+     (e.g. a Supabase Edge Function) that verifies the `user_courses` row before
+     returning the data, instead of shipping them as public static files.

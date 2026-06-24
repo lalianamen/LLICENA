@@ -81,4 +81,4 @@ const TAPP = {
     courseSoon:"Вопросы скоро появятся."
   }
 };
-const SECTIONS = ["Licensing Requirements","Business Organization","Business Finances","Employment & Labor","Safety (Cal/OSHA)","Bonds & Insurance","Mechanics Liens","Contracts"];
+

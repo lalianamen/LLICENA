@@ -8,7 +8,25 @@ const courseId = params.get("id") || "";
 let uiLang    = localStorage.getItem("lp:ui_lang") || "en";
 let studyLang = localStorage.getItem("lp:course_lang:" + courseId) || "en";
 
-const QUESTIONS = (window.COURSE_REGISTRY && window.COURSE_REGISTRY[courseId]) || [];
+// Filled by loadCourseData() in initCourse — content is loaded on demand, only for
+// the opened course (not every course's file on every page).
+let QUESTIONS = [];
+
+// Lazily load this course's question file (js/questions/<id>.js, which sets
+// window.COURSE_REGISTRY[id]). Keeping content out of course.html means adding a
+// course never touches the page, and a missing file degrades to "coming soon"
+// instead of a hard 404 baked into a <script> tag.
+function loadCourseData(id){
+  return new Promise(resolve => {
+    if (!id) return resolve(false);
+    if (window.COURSE_REGISTRY && window.COURSE_REGISTRY[id]) return resolve(true);
+    const s = document.createElement("script");
+    s.src = "js/questions/" + id + ".js";
+    s.onload  = () => resolve(true);
+    s.onerror = () => resolve(false);
+    document.head.appendChild(s);
+  });
+}
 
 let courseMeta = null, courseState = "ca";
 for (const cat of CATALOG){
@@ -412,6 +430,10 @@ async function initCourse(){
   const userId = session.user.id;
   const { data: owned } = await supa.from("user_courses").select("course_id").eq("user_id", userId).eq("course_id", courseId).single();
   if (!owned){ window.location.replace("app.html"); return; }
+
+  // Load only this course's content, and only after the ownership check passed.
+  await loadCourseData(courseId);
+  QUESTIONS = (window.COURSE_REGISTRY && window.COURSE_REGISTRY[courseId]) || [];
 
   const { data: prof } = await supa.from("profiles").select("lang").eq("id", userId).single();
   if (prof && prof.lang && TAPP[prof.lang]){

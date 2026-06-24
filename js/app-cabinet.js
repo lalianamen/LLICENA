@@ -300,22 +300,32 @@ document.getElementById("payCancel").addEventListener("click", () => {
   document.getElementById("payModal").style.display = "none"; pendingAddLang = null;
 });
 
+// ── Entitlement grant — SINGLE POINT TO CHANGE FOR PAYMENT ─────────────────────
+// During the free beta the client writes the user_courses "active" row directly.
+// When payment goes live this must move SERVER-SIDE: a Stripe webhook
+// (checkout.session.completed) inserts the row, and the RLS "courses: own insert"
+// policy must be dropped so a user can no longer self-grant a course for free.
+// Everything else only READS user_courses and doesn't care who wrote it, so this
+// function is the only thing that changes.
+async function grantCourseAccess(course){
+  const { data: { user } } = await supa.auth.getUser();
+  // Upsert: re-adding a removed course (or new) sets status back to active.
+  const { data, error } = await supa.from("user_courses")
+    .upsert({ user_id: user.id, course_id: course.id, status: "active" }, { onConflict: "user_id,course_id" })
+    .select().single();
+  if (error || !data) return false;
+  const idx = courses.findIndex(c => c.course_id === course.id);
+  if (idx >= 0) courses[idx] = data; else courses.push(data);
+  return true;
+}
+
 document.getElementById("payConfirm").addEventListener("click", async () => {
   const course = pendingAdd, chosenLang = pendingAddLang;
   document.getElementById("payModal").style.display = "none";
   pendingAdd = null; pendingAddLang = null;
   if (!course) return;
   localStorage.setItem("lp:course_lang:" + course.id, chosenLang);
-  const { data: { user } } = await supa.auth.getUser();
-  // Upsert: re-adding a removed course (or new) sets status back to active.
-  const { data, error } = await supa.from("user_courses")
-    .upsert({ user_id: user.id, course_id: course.id, status: "active" }, { onConflict: "user_id,course_id" })
-    .select().single();
-  if (!error && data){
-    const idx = courses.findIndex(c => c.course_id === course.id);
-    if (idx >= 0) courses[idx] = data; else courses.push(data);
-    renderMyTests(); renderCatalog();
-  }
+  if (await grantCourseAccess(course)){ renderMyTests(); renderCatalog(); }
 });
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
