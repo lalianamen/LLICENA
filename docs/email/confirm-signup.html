@@ -1,4 +1,4 @@
-<!-- LICENA — Supabase "Confirm signup" email template (EN/ES/RU).
+<!-- LICENA — Supabase "Confirm signup" email template (English only).
      Paste the BODY below into: Supabase Dashboard → Authentication → Email Templates
      → "Confirm signup" → Message body.  Subject line suggestion:
        Confirm your email — LICENA
@@ -14,9 +14,9 @@
         </span>
       </td></tr>
 
-      <tr><td style="padding:30px 28px 6px;">
+      <tr><td style="padding:30px 28px 8px;">
         <h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15273d;">Confirm your email address</h1>
-        <p style="margin:0 0 22px;font-size:15px;line-height:1.55;color:#3a4a5a;">
+        <p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:#3a4a5a;">
           Tap the button below to confirm your email and finish creating your LICENA account.
         </p>
 
@@ -29,14 +29,7 @@
           </td>
         </tr></table>
 
-        <p style="margin:24px 0 0;padding-top:18px;border-top:1px solid #eaeef2;font-size:13.5px;line-height:1.55;color:#3a4a5a;">
-          <strong style="color:#15273d;">Español:</strong> Pulsa el botón de arriba para confirmar tu correo y terminar de crear tu cuenta de LICENA.
-        </p>
-        <p style="margin:12px 0 0;font-size:13.5px;line-height:1.55;color:#3a4a5a;">
-          <strong style="color:#15273d;">Русский:</strong> Нажми кнопку выше, чтобы подтвердить почту и завершить создание аккаунта LICENA.
-        </p>
-
-        <p style="margin:22px 0 4px;font-size:12.5px;line-height:1.5;color:#7a8794;">
+        <p style="margin:26px 0 4px;font-size:12.5px;line-height:1.5;color:#7a8794;">
           If the button does not work, copy and paste this link into your browser:<br>
           <a href="{{ .ConfirmationURL }}" style="color:#15273d;word-break:break-all;">{{ .ConfirmationURL }}</a>
         </p>
