@@ -45,6 +45,27 @@ window.HONEST_CHANCES["cslb-law"] = {
     <p style="margin-top:10px">📘 <b>Primary source:</b> <a href="https://www.cslb.ca.gov/Resources/GuidesAndPublications/2026/2026_CSLB_Law_Book.pdf" target="_blank" rel="noopener">2026 California Contractors License Law &amp; Reference Book (free PDF, CSLB)</a>.</p>
     <p style="margin-top:8px">🟡 Getting ready for license issuance? Take the required <a href="course.html?id=asbestos"><b>asbestos open-book exam (47 questions) →</b></a></p>
     <p style="margin-top:8px">🔧 Taking the C-20 Trade exam? Trainer: <a href="course.html?id=c20-exam"><b>C-20 HVAC Trade →</b></a></p>
+  `,
+  es: `
+    <p>Estas preguntas realmente te preparan y cubren la mayor parte de los temas, pero <b>ningún conjunto de preguntas garantiza el 100%</b> — y esta es la razón honesta:</p>
+    <ol>
+      <li><b>~20–30% de las preguntas del examen vienen de fuentes fuera del Law Book</b> (Cal/OSHA Title 8, IRS Pub 15, DIR Public Works Manual). Eso es un grupo aparte.</li>
+      <li><b>Preguntas de prueba (pre-test).</b> CSLB mezcla 5–15 preguntas experimentales — no cuentan, pero no sabrás cuáles son.</li>
+      <li><b>Las formulaciones engañosas de PSI</b> — dobles negaciones, "todas EXCEPTO", "la menos correcta". Se pueden simular, pero no de forma idéntica.</li>
+      <li><b>El estrés del centro de pruebas PSI</b> — temporizador de 3.5 horas, silencio, videovigilancia. Hasta los bien preparados fallan en material conocido.</li>
+      <li><b>Memorizar ≠ entender.</b> Recordar una respuesta no es lo mismo que comprender el principio; en el examen la formulación será distinta.</li>
+    </ol>
+    <p>Probabilidad realista de aprobar <b>al primer intento</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Solo las 500 preguntas (memorizadas)</td><td>~75–80%</td></tr>
+      <tr><td>500 + leer el Law Book una vez</td><td>~85–88%</td></tr>
+      <tr><td>500 + libro + entender la lógica</td><td>~88–92%</td></tr>
+      <tr><td>Todo lo anterior + 1 simulacro pagado de prep-school</td><td>~92–95%</td></tr>
+    </table>
+    <div class="hc-key"><b>Importante:</b> estas 500 preguntas son <b>solo de Law &amp; Business</b>. Para la licencia <b>C-20</b> también debes aprobar un <b>Trade exam</b> aparte (psicrometría, refrigeration cycle, Manual J/D/S, EER/SEER) — ese es un conjunto de preguntas distinto.</div>
+    <p style="margin-top:10px">📘 <b>Fuente principal:</b> <a href="https://www.cslb.ca.gov/Resources/GuidesAndPublications/2026/2026_CSLB_Law_Book.pdf" target="_blank" rel="noopener">2026 California Contractors License Law &amp; Reference Book (PDF gratis, CSLB)</a>.</p>
+    <p style="margin-top:8px">🟡 ¿Te preparas para la emisión de la licencia? Toma el examen obligatorio <a href="course.html?id=asbestos"><b>asbestos open-book (47 preguntas) →</b></a></p>
+    <p style="margin-top:8px">🔧 ¿Tomas el Trade exam C-20? Entrenador: <a href="course.html?id=c20-exam"><b>C-20 HVAC Trade →</b></a></p>
   `
 };
 
@@ -88,12 +109,33 @@ window.HONEST_CHANCES["c10-exam"] = {
     <div class="hc-key"><b>Important:</b> this is the <b>C-10 Trade exam</b> (Electrical). For the license you must also pass a separate <b>Law &amp; Business</b> exam — that's a separate question set.</div>
     <p style="margin-top:10px">⚡ <b>Primary source:</b> <a href="https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" target="_blank" rel="noopener">NFPA 70 — National Electrical Code (NEC)</a> and the California Electrical Code (Title 24, Part 3).</p>
     <p style="margin-top:8px">🔧 Taking Law &amp; Business? Trainer: <a href="course.html?id=cslb-law"><b>CSLB Law &amp; Business →</b></a></p>
+  `,
+  es: `
+    <p>Estas preguntas realmente te preparan para el Trade exam C-10 y cubren la mayor parte de los temas, pero <b>ningún conjunto de preguntas garantiza el 100%</b> — y esta es la razón honesta:</p>
+    <ol>
+      <li><b>El examen se basa en el NEC (National Electrical Code) y el California Electrical Code.</b> Son cientos de páginas de tablas y cálculos — estas preguntas cubren lo esencial, no cada tabla.</li>
+      <li><b>Preguntas de prueba (pre-test).</b> PSI mezcla preguntas experimentales — no cuentan, pero no sabrás cuáles son.</li>
+      <li><b>Las formulaciones engañosas de PSI</b> — dobles negaciones, "todas EXCEPTO", "la menos correcta". Se pueden simular, pero no de forma idéntica.</li>
+      <li><b>Cálculos bajo el temporizador</b> — voltage drop, conductor sizing, box fill, motor loads. En el examen hay que calcular rápido y sin errores.</li>
+      <li><b>Memorizar ≠ entender.</b> Recordar una respuesta no es lo mismo que comprender el principio; en el examen la formulación será distinta.</li>
+    </ol>
+    <p>Probabilidad realista de aprobar <b>al primer intento</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Solo estas preguntas (memorizadas)</td><td>~75–80%</td></tr>
+      <tr><td>Preguntas + leer el NEC por secciones una vez</td><td>~85–88%</td></tr>
+      <tr><td>Preguntas + código + entender los cálculos</td><td>~88–92%</td></tr>
+      <tr><td>Todo lo anterior + 1 simulacro pagado de prep-school</td><td>~92–95%</td></tr>
+    </table>
+    <div class="hc-key"><b>Importante:</b> este es el <b>Trade exam C-10</b> (Electrical). Para la licencia también debes aprobar un examen <b>Law &amp; Business</b> aparte — ese es un conjunto de preguntas distinto.</div>
+    <p style="margin-top:10px">⚡ <b>Fuente principal:</b> <a href="https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" target="_blank" rel="noopener">NFPA 70 — National Electrical Code (NEC)</a> y el California Electrical Code (Title 24, Part 3).</p>
+    <p style="margin-top:8px">🔧 ¿Tomas Law &amp; Business? Entrenador: <a href="course.html?id=cslb-law"><b>CSLB Law &amp; Business →</b></a></p>
   `
 };
 
 window.HONEST_CHANCES_TITLE = {
   ru: "★ Честно о шансах: почему вопросы не гарантируют 100% сдачу",
-  en: "★ Honest chances: why questions don't guarantee a 100% pass"
+  en: "★ Honest chances: why questions don't guarantee a 100% pass",
+  es: "★ Probabilidades honestas: por qué las preguntas no garantizan un 100% de aprobación"
 };
 
 /* Short version for My Courses — no promo links, just the honest message */
@@ -137,6 +179,25 @@ window.HONEST_CHANCES_MY["cslb-law"] = {
       <tr><td>All of the above + 1 paid prep-school mock</td><td>~92–95%</td></tr>
     </table>
     <p class="hc-warn-footer">Questions are a tool. Passing is your job.</p>
+  `,
+  es: `
+    <div class="hc-warn-banner">⚠️ Lee esto antes de empezar</div>
+    <p>Estas preguntas son una preparación seria, pero <b>no garantizan aprobar</b>. El resultado depende enteramente de ti.</p>
+    <ol>
+      <li><b>~20–30% de las preguntas del examen vienen de fuera del Law Book</b> (Cal/OSHA Title 8, IRS Pub 15, DIR Public Works Manual). Este curso por sí solo no las cubre.</li>
+      <li><b>CSLB mezcla 5–15 preguntas experimentales</b> — no cuentan, pero no sabrás cuáles son.</li>
+      <li><b>PSI usa formulaciones engañosas</b> — dobles negaciones, "todas EXCEPTO", "la menos correcta". La formulación del examen real será distinta.</li>
+      <li><b>El estrés del centro de pruebas PSI es real</b> — temporizador de 3.5 horas, silencio, videovigilancia. Hasta los bien preparados fallan.</li>
+      <li><b>Memorizar ≠ entender.</b> Recordar una respuesta no es lo mismo que comprender el principio.</li>
+    </ol>
+    <p>Probabilidad realista de aprobar <b>al primer intento</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Solo las 500 preguntas (memorizadas)</td><td>~75–80%</td></tr>
+      <tr><td>500 + leer el Law Book una vez</td><td>~85–88%</td></tr>
+      <tr><td>500 + libro + entender la lógica</td><td>~88–92%</td></tr>
+      <tr><td>Todo lo anterior + 1 simulacro pagado de prep-school</td><td>~92–95%</td></tr>
+    </table>
+    <p class="hc-warn-footer">Las preguntas son una herramienta. Aprobar es tu trabajo.</p>
   `
 };
 
@@ -178,150 +239,189 @@ window.HONEST_CHANCES_MY["c10-exam"] = {
       <tr><td>All of the above + 1 paid prep-school mock</td><td>~92–95%</td></tr>
     </table>
     <p class="hc-warn-footer">Questions are a tool. Passing is your job.</p>
+  `,
+  es: `
+    <div class="hc-warn-banner">⚠️ Lee esto antes de empezar</div>
+    <p>Estas preguntas son una preparación seria para el Trade exam C-10, pero <b>no garantizan aprobar</b>. El resultado depende enteramente de ti.</p>
+    <ol>
+      <li><b>El examen se basa en el NEC y el California Electrical Code</b> — cientos de páginas de tablas y cálculos. Este curso cubre lo esencial, no cada tabla.</li>
+      <li><b>PSI mezcla preguntas experimentales</b> — no cuentan, pero no sabrás cuáles son.</li>
+      <li><b>PSI usa formulaciones engañosas</b> — dobles negaciones, "todas EXCEPTO", "la menos correcta". La formulación del examen real será distinta.</li>
+      <li><b>Los cálculos bajo el temporizador son reales</b> — voltage drop, conductor sizing, box fill, motor loads. Tendrás que calcular rápido.</li>
+      <li><b>Memorizar ≠ entender.</b> Recordar una respuesta no es lo mismo que comprender el principio.</li>
+    </ol>
+    <p>Probabilidad realista de aprobar <b>al primer intento</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Solo estas preguntas (memorizadas)</td><td>~75–80%</td></tr>
+      <tr><td>Preguntas + leer el NEC una vez</td><td>~85–88%</td></tr>
+      <tr><td>Preguntas + código + entender los cálculos</td><td>~88–92%</td></tr>
+      <tr><td>Todo lo anterior + 1 simulacro pagado de prep-school</td><td>~92–95%</td></tr>
+    </table>
+    <p class="hc-warn-footer">Las preguntas son una herramienta. Aprobar es tu trabajo.</p>
   `
 };
 
 window.COURSE_RESOURCES = window.COURSE_RESOURCES || {};
 
 window.COURSE_RESOURCES["cslb-law"] = {
-  title: { en: "Resources", ru: "Источники" },
+  title: { en: "Resources", ru: "Источники", es: "Recursos" },
   links: [
     {
       icon: "📘",
       en: "2026 CSLB Law Book (free PDF)",
       ru: "2026 CSLB Law Book (бесплатный PDF)",
+      es: "2026 CSLB Law Book (PDF gratis)",
       url: "https://www.cslb.ca.gov/Resources/GuidesAndPublications/2026/2026_CSLB_Law_Book.pdf"
     },
     {
       icon: "🏛",
       en: "CSLB Official Website",
       ru: "Официальный сайт CSLB",
+      es: "Sitio web oficial de CSLB",
       url: "https://www.cslb.ca.gov"
     },
     {
       icon: "⚠️",
       en: "Cal/OSHA Title 8 Regulations",
       ru: "Cal/OSHA Title 8 (Нормативы)",
+      es: "Cal/OSHA Title 8 (Reglamentos)",
       url: "https://www.dir.ca.gov/title8/index.htm"
     },
     {
       icon: "💼",
       en: "IRS Pub 15 (Circular E — Employer's Tax Guide)",
       ru: "IRS Pub 15 (Налоговое руководство работодателя)",
+      es: "IRS Pub 15 (Circular E — Guía Fiscal del Empleador)",
       url: "https://www.irs.gov/publications/p15"
     },
     {
       icon: "🏗",
       en: "DIR Public Works Manual",
       ru: "DIR Руководство по Public Works",
+      es: "DIR Public Works Manual",
       url: "https://www.dir.ca.gov/dlse/PublicWorksManual.pdf"
     },
     {
       icon: "📝",
       en: "PSI Exam Candidate Information Bulletin",
       ru: "Информационный бюллетень PSI для кандидатов",
+      es: "Boletín informativo de PSI para candidatos al examen",
       url: "https://candidate.psiexams.com/bulletin/display_bulletin.jsp?ro=yes&actionname=83&bulletinid=1118&bulletinurl=.pdf"
     }
   ]
 };
 
 window.COURSE_RESOURCES["asbestos"] = {
-  title: { en: "Resources", ru: "Источники" },
+  title: { en: "Resources", ru: "Источники", es: "Recursos" },
   links: [
     {
       icon: "📋",
       en: "CSLB Asbestos Certification Info",
       ru: "Информация о сертификации по асбесту CSLB",
+      es: "Información de certificación de asbesto de CSLB",
       url: "https://www.cslb.ca.gov/Contractors/Applicants/Asbestos_Certification/"
     },
     {
       icon: "⚠️",
       en: "Cal/OSHA Asbestos Standard (§1529)",
       ru: "Cal/OSHA Стандарт по асбесту (§1529)",
+      es: "Estándar de asbesto de Cal/OSHA (§1529)",
       url: "https://www.dir.ca.gov/title8/1529.html"
     },
     {
       icon: "🏛",
       en: "CSLB Official Website",
       ru: "Официальный сайт CSLB",
+      es: "Sitio web oficial de CSLB",
       url: "https://www.cslb.ca.gov"
     }
   ]
 };
 
 window.COURSE_RESOURCES["c20-exam"] = {
-  title: { en: "Resources", ru: "Источники" },
+  title: { en: "Resources", ru: "Источники", es: "Recursos" },
   links: [
     {
       icon: "❄️",
       en: "ACCA Manual J (Residential Load Calc)",
       ru: "ACCA Manual J (Расчёт нагрузок для жилых домов)",
+      es: "ACCA Manual J (Cálculo de carga residencial)",
       url: "https://www.acca.org/standards/manualj"
     },
     {
       icon: "📐",
       en: "ACCA Manual D (Duct Design)",
       ru: "ACCA Manual D (Проектирование воздуховодов)",
+      es: "ACCA Manual D (Diseño de ductos)",
       url: "https://www.acca.org/standards/manuald"
     },
     {
       icon: "🌡",
       en: "ASHRAE Fundamentals Handbook",
       ru: "Справочник ASHRAE Fundamentals",
+      es: "ASHRAE Fundamentals Handbook",
       url: "https://www.ashrae.org/technical-resources/ashrae-handbook"
     },
     {
       icon: "⚠️",
       en: "Cal/OSHA Title 8 — HVAC Safety",
       ru: "Cal/OSHA Title 8 — Безопасность HVAC",
+      es: "Cal/OSHA Title 8 — Seguridad de HVAC",
       url: "https://www.dir.ca.gov/title8/index.htm"
     },
     {
       icon: "🔧",
       en: "EPA Section 608 Technician Certification",
       ru: "EPA Сертификация технологов по разделу 608",
+      es: "EPA Certificación de técnicos Section 608",
       url: "https://www.epa.gov/section608"
     },
     {
       icon: "🏛",
       en: "CSLB C-20 License Requirements",
       ru: "CSLB Требования к лицензии C-20",
+      es: "CSLB Requisitos de la licencia C-20",
       url: "https://www.cslb.ca.gov/Contractors/Applicants/Contractor_License/Classifications/C-20_Warm-Air_Heating_Ventilating_and_Air-Conditioning.aspx"
     }
   ]
 };
 
 window.COURSE_RESOURCES["c10-exam"] = {
-  title: { en: "Resources", ru: "Источники" },
+  title: { en: "Resources", ru: "Источники", es: "Recursos" },
   links: [
     {
       icon: "⚡",
       en: "NFPA 70 — National Electrical Code (NEC)",
       ru: "NFPA 70 — National Electrical Code (NEC)",
+      es: "NFPA 70 — National Electrical Code (NEC)",
       url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70"
     },
     {
       icon: "📘",
       en: "California Electrical Code (Title 24, Part 3)",
       ru: "California Electrical Code (Title 24, Part 3)",
+      es: "California Electrical Code (Title 24, Part 3)",
       url: "https://www.dgs.ca.gov/BSC/Codes"
     },
     {
       icon: "⚠️",
       en: "Cal/OSHA Title 8 — Electrical Safety Orders",
       ru: "Cal/OSHA Title 8 — Электробезопасность",
+      es: "Cal/OSHA Title 8 — Electrical Safety Orders",
       url: "https://www.dir.ca.gov/title8/sb5g4.html"
     },
     {
       icon: "🔌",
       en: "NFPA 70E — Electrical Safety in the Workplace",
       ru: "NFPA 70E — Электробезопасность на рабочем месте",
+      es: "NFPA 70E — Seguridad eléctrica en el lugar de trabajo",
       url: "https://www.nfpa.org/codes-and-standards/nfpa-70e-standard-development/70e"
     },
     {
       icon: "🏛",
       en: "CSLB C-10 License Requirements",
       ru: "CSLB Требования к лицензии C-10",
+      es: "CSLB Requisitos de la licencia C-10",
       url: "https://www.cslb.ca.gov/Contractors/Applicants/Contractor_License/Classifications/C-10_Electrical.aspx"
     }
   ]

@@ -64,6 +64,12 @@ function buildStudyLangModes(){
 // The secondary study language a mode key carries ("en"→null, "ru"→"ru", "en+ru"→"ru").
 function modeSecondary(key){ return key === "en" ? null : key.replace("en+", ""); }
 
+// Localized display label for a section (the English q.sec stays the data key).
+function secLabel(sec){
+  const m = (window.SECTION_I18N || {})[sec];
+  return (m && m[uiLang]) || sec;
+}
+
 function buildStudyLangSwitcher(){
   const wrap = document.getElementById("studyLangWrap");
   wrap.innerHTML = "";
@@ -220,7 +226,7 @@ function buildSections(){
   secs.forEach(sec => {
     const btn = document.createElement("button");
     btn.className = "sec-btn";
-    btn.textContent = sec;
+    btn.textContent = secLabel(sec);
     btn.addEventListener("click", () => {
       activeSection = sec; resetOrder(); renderQ();
       wrap.querySelectorAll(".sec-btn").forEach(b => b.classList.remove("active"));
@@ -301,7 +307,7 @@ function renderQ(){
   const bilingual  = isBilingual();
 
   document.getElementById("qNum").textContent = (currentQ + 1) + " / " + order.length;
-  document.getElementById("qSection").textContent = q.sec || "";
+  document.getElementById("qSection").textContent = secLabel(q.sec);
 
   // Question text
   const qTextEl = document.getElementById("qText");
