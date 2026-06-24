@@ -355,6 +355,14 @@ async function saveAccountLang(newLang){
   lang = newLang;
   if (profile) profile.lang = newLang;
   localStorage.setItem("lp:ui_lang", newLang);
+  // The account language drives course content too. Drop the per-course study-language
+  // overrides (written when a course was added) so every previously-added course
+  // re-derives its language from the new account language next time it is opened —
+  // otherwise an old Russian pick would stick on already-added courses.
+  for (let i = localStorage.length - 1; i >= 0; i--){
+    const k = localStorage.key(i);
+    if (k && k.indexOf("lp:course_lang:") === 0) localStorage.removeItem(k);
+  }
   tr(); renderStateBadge(); renderAll();
   renderHeaderLangs();
   renderAcctLangPicker();
