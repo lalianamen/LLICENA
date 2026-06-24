@@ -315,36 +315,57 @@ window.HONEST_CHANCES_TITLE = {
    as a mandatory read, inside the activate-course modal before a course is added. */
 window.HONEST_CHANCES_GENERAL = {
   ru: `
-    <p>Эти вопросы реально готовят и закрывают большинство тем, но <b>ни один набор вопросов не даёт гарантии 100% сдачи</b> — и вот почему честно:</p>
+    <p>Эти вопросы реально готовят и закрывают основную массу тем, но <b>ни один набор вопросов не даёт гарантии 100%</b> — и вот почему честно:</p>
     <ol>
-      <li><b>Часть вопросов экзамена — вне нашего набора.</b> Официальные экзамены тянут из большего и периодически обновляемого пула.</li>
-      <li><b>Экспериментальные вопросы.</b> Многие экзамены подмешивают «пробные» вопросы, которые не объявляют и которые не всегда идут в зачёт.</li>
-      <li><b>Формулировки с подвохом</b> — двойные отрицания, «всё, КРОМЕ», «наименее верный». Их можно сымитировать, но не один в один.</li>
+      <li><b>Часть вопросов экзамена — из официальных источников вне нашего набора.</b> Реальный экзамен тянет из большего и периодически обновляемого пула.</li>
+      <li><b>Экспериментальные (pre-test) вопросы.</b> В экзамен подмешивают несколько пробных вопросов — они не идут в зачёт, но ты не знаешь, какие именно.</li>
+      <li><b>Формулировки с подвохом</b> — двойные отрицания, «всё, КРОМЕ», «наименее верный». Можно сымитировать, но не один в один.</li>
       <li><b>Стресс центра тестирования</b> — таймер, тишина, видеонаблюдение. Даже подготовленные ошибаются на знакомом материале.</li>
-      <li><b>Зубрёжка ≠ понимание.</b> Запомнить ответ — не то же, что понять принцип; на экзамене формулировка будет другой.</li>
+      <li><b>Зубрёжка ≠ понимание.</b> Запомнить ответ — не то же самое, что понять принцип; на экзамене формулировка будет другой.</li>
     </ol>
+    <p>Реалистичный шанс сдать <b>с первой попытки</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Только практические вопросы (зазубрил)</td><td>~75–80%</td></tr>
+      <tr><td>Практика + 1 раз прочитал официальный учебник</td><td>~85–88%</td></tr>
+      <tr><td>Практика + учебник + понимание логики</td><td>~88–92%</td></tr>
+      <tr><td>Всё выше + 1 платный пробник prep-школы</td><td>~92–95%</td></tr>
+    </table>
     <p><b>LICENA — это тренажёр, а не школа.</b> Используйте его как одну из частей подготовки рядом с официальным первоисточником вашего экзамена. Сдача зависит от вашей подготовки, и мы её не гарантируем.</p>
   `,
   en: `
-    <p>These questions genuinely prepare you and cover most of the topics, but <b>no question set guarantees a 100% pass</b> — and here's the honest reason why:</p>
+    <p>These questions genuinely prepare you and cover the bulk of the topics, but <b>no question set guarantees 100%</b> — and here's the honest reason why:</p>
     <ol>
-      <li><b>Some exam questions come from outside our set.</b> Official exams draw from a larger pool that is updated from time to time.</li>
-      <li><b>Experimental questions.</b> Many exams mix in unannounced "pre-test" questions that don't always count.</li>
+      <li><b>Some exam questions come from official sources outside our set.</b> The real exam draws from a larger pool that is updated from time to time.</li>
+      <li><b>Experimental (pre-test) questions.</b> Exams mix in a few trial questions — they don't count, but you won't know which ones.</li>
       <li><b>Tricky wording</b> — double negatives, "all EXCEPT", "least correct". It can be simulated, but never one-to-one.</li>
-      <li><b>Test-center stress</b> — a timer, silence, and video monitoring. Even well-prepared people slip on familiar material.</li>
+      <li><b>Test-center stress</b> — a timer, silence, video monitoring. Even well-prepared people slip on familiar material.</li>
       <li><b>Memorizing ≠ understanding.</b> Recalling an answer isn't the same as grasping the principle; on the exam the wording will differ.</li>
     </ol>
+    <p>Realistic chance of passing <b>on the first attempt</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Practice questions only (memorized)</td><td>~75–80%</td></tr>
+      <tr><td>Practice + read the official handbook once</td><td>~85–88%</td></tr>
+      <tr><td>Practice + handbook + understanding the logic</td><td>~88–92%</td></tr>
+      <tr><td>All of the above + one paid prep-school mock</td><td>~92–95%</td></tr>
+    </table>
     <p><b>LICENA is a practice tool, not a school.</b> Use it as one part of your prep alongside the official source for your exam. Passing depends on your own preparation, and we don't guarantee it.</p>
   `,
   es: `
-    <p>Estas preguntas realmente te preparan y cubren la mayoría de los temas, pero <b>ningún conjunto de preguntas garantiza un 100% de aprobación</b> — y esta es la razón honesta:</p>
+    <p>Estas preguntas realmente te preparan y cubren la mayoría de los temas, pero <b>ningún conjunto de preguntas garantiza el 100%</b> — y esta es la razón honesta:</p>
     <ol>
-      <li><b>Algunas preguntas del examen vienen de fuera de nuestro conjunto.</b> Los exámenes oficiales sacan de un banco más grande que se actualiza de vez en cuando.</li>
-      <li><b>Preguntas experimentales.</b> Muchos exámenes incluyen preguntas de "prueba" no anunciadas que no siempre cuentan.</li>
+      <li><b>Algunas preguntas del examen vienen de fuentes oficiales fuera de nuestro conjunto.</b> El examen real saca de un banco más grande que se actualiza de vez en cuando.</li>
+      <li><b>Preguntas experimentales (pre-test).</b> Los exámenes incluyen algunas preguntas de prueba — no cuentan, pero no sabes cuáles son.</li>
       <li><b>Redacción con trampa</b> — dobles negaciones, "todas EXCEPTO", "la menos correcta". Se puede simular, pero nunca igual.</li>
-      <li><b>Estrés del centro de examen</b> — cronómetro, silencio y videovigilancia. Hasta los bien preparados fallan en material conocido.</li>
+      <li><b>Estrés del centro de examen</b> — cronómetro, silencio, videovigilancia. Hasta los bien preparados fallan en material conocido.</li>
       <li><b>Memorizar ≠ entender.</b> Recordar una respuesta no es lo mismo que comprender el principio; en el examen la redacción será distinta.</li>
     </ol>
+    <p>Probabilidad realista de aprobar <b>al primer intento</b>:</p>
+    <table class="hc-tbl">
+      <tr><td>Solo preguntas de práctica (memorizadas)</td><td>~75–80%</td></tr>
+      <tr><td>Práctica + leer una vez el manual oficial</td><td>~85–88%</td></tr>
+      <tr><td>Práctica + manual + entender la lógica</td><td>~88–92%</td></tr>
+      <tr><td>Todo lo anterior + un simulacro pagado de prep</td><td>~92–95%</td></tr>
+    </table>
     <p><b>LICENA es una herramienta de práctica, no una escuela.</b> Úsala como una parte de tu preparación junto con la fuente oficial de tu examen. Aprobar depende de tu propia preparación, y no lo garantizamos.</p>
   `
 };

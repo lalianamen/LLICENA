@@ -83,22 +83,6 @@ function renderMyTests(){
   wrap.innerHTML = "";
   const owned = new Set(courses.map(c => c.course_id));
 
-  // "Honest chances" block — shown first, uses short MY version without promo links
-  const hcMy = window.HONEST_CHANCES_MY || {};
-  const hcTitle = window.HONEST_CHANCES_TITLE || {};
-  const hcCourseIds = Object.keys(hcMy).filter(id => owned.has(id));
-  if (hcCourseIds.length){
-    const l = (lang !== "en" && hcMy[hcCourseIds[0]][lang]) ? lang : "en";
-    const titleText = hcTitle[l] || hcTitle.en || "★ Honest chances";
-    const hcWrap = document.createElement("div");
-    hcWrap.className = "hc-my";
-    hcWrap.innerHTML = `
-      <details class="hc-my-details">
-        <summary class="hc-my-summary">${titleText}</summary>
-        <div class="hc-my-body">${hcMy[hcCourseIds[0]][l]}</div>
-      </details>`;
-    wrap.appendChild(hcWrap);
-  }
   let hasAny = false;
 
   // Map course_id -> status row
@@ -204,17 +188,6 @@ function renderCatalog(){
               </div>`;
             if (!isOwned) row.querySelector("button").addEventListener("click", () => openPayModal(course));
             body.appendChild(row);
-
-            // Honest-chances block (before purchase, for courses that have it)
-            const hc = (window.HONEST_CHANCES || {})[course.id];
-            if (hc){
-              const l = hc[lang] ? lang : (hc.en ? "en" : Object.keys(hc)[0]);
-              const titles = window.HONEST_CHANCES_TITLE || {};
-              const det = document.createElement("details");
-              det.className = "hc-catalog";
-              det.innerHTML = `<summary>${titles[l] || titles.en || "Honest chances"}</summary><div class="hc-catalog-body">${hc[l]}</div>`;
-              body.appendChild(det);
-            }
           });
         }));
       });
