@@ -64,5 +64,12 @@ window.SECTION_I18N = {
   "Health Effects":         { es:"Efectos en la Salud",           ru:"Влияние на здоровье" },
   "Where It's Found":       { es:"Dónde se Encuentra",            ru:"Где встречается" },
   "Regulations & Licensing":{ es:"Regulaciones y Licencias",      ru:"Нормы и лицензирование" },
-  "Safe Handling & Procedures": { es:"Manejo Seguro y Procedimientos", ru:"Безопасное обращение и процедуры" }
+  "Safe Handling & Procedures": { es:"Manejo Seguro y Procedimientos", ru:"Безопасное обращение и процедуры" },
+  // Motorcycle (CA DMV)
+  "Gear & Preparation":         { es:"Equipo y Preparación",            ru:"Экипировка и подготовка" },
+  "Controls & Basic Operation": { es:"Controles y Operación Básica",    ru:"Органы управления и основы" },
+  "Lane Position & Visibility": { es:"Posición en el Carril y Visibilidad", ru:"Позиция в полосе и видимость" },
+  "Turning, Braking & Cornering": { es:"Giros, Frenado y Curvas",       ru:"Повороты, торможение и прохождение поворотов" },
+  "Hazards & Special Conditions": { es:"Peligros y Condiciones Especiales", ru:"Опасности и особые условия" },
+  "California Laws & Licensing": { es:"Leyes y Licencias de California", ru:"Законы и лицензии Калифорнии" }
 };
