@@ -11,7 +11,8 @@ registerState("ca", [
         id: "general",
         name: { en:"General — All Trades", es:"General — Todos los oficios", ru:"Общее — для всех трейдов" },
         courses: [
-          { id:"contractor-business", name:{ en:"Business Setup Guide A–Z", es:"Guía de Negocio A–Z", ru:"Гайд открытия бизнеса A–Z" }, langs:["en","es","ru"], type:"guide" }
+          { id:"contractor-business", name:{ en:"Business Setup Guide A–Z", es:"Guía de Negocio A–Z", ru:"Гайд открытия бизнеса A–Z" }, langs:["en","es","ru"], type:"guide" },
+          { id:"osha-construction",   name:{ en:"OSHA Construction Safety", es:"Seguridad OSHA (Construcción)", ru:"OSHA — безопасность на стройке" }, langs:["en","es","ru"], type:"exam" }
         ]
       },
       {
@@ -27,8 +28,7 @@ registerState("ca", [
         name: { en:"C-20 HVAC", es:"C-20 HVAC", ru:"C-20 HVAC" },
         courses: [
           { id:"c20-exam",  name:{ en:"C-20 Trade Exam",          es:"Examen Trade C-20",        ru:"Trade-экзамен C-20"          }, langs:["en","es","ru"], type:"exam"  },
-          { id:"epa-608",   name:{ en:"EPA 608 Certification",    es:"Certificación EPA 608",    ru:"Сертификация EPA 608"        }, langs:["en","es","ru"], type:"exam"  },
-          { id:"osha-hvac", name:{ en:"OSHA Safety (HVAC)",       es:"Seguridad OSHA (HVAC)",    ru:"Безопасность OSHA (HVAC)"    }, langs:["en","es","ru"], type:"exam"  }
+          { id:"epa-608",   name:{ en:"EPA 608 Certification",    es:"Certificación EPA 608",    ru:"Сертификация EPA 608"        }, langs:["en","es","ru"], type:"exam"  }
         ]
       },
       {
