@@ -41,25 +41,24 @@ function ui(key){ return (TAPP[uiLang] && TAPP[uiLang][key]) || (TAPP.en[key]) |
 function esc(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 // ─── Study language ───────────────────────────────────────────────────────────
-// The study-language switcher reflects the course's ACTUAL content languages
-// (courseMeta.langs), not the interface language — so an EN+RU course always offers
-// EN / EN·RU / RU and the toggle never disappears just because the UI is in another
-// language. The default and stale-value reset (in buildStudyLangSwitcher) still
-// follow uiLang, so a Spanish or English UI never lands on Russian by default.
+// The study-language switcher follows the USER'S interface language and only ever
+// offers that language plus English. A Russian user on an EN+RU course sees
+// EN / EN·RU / RU; a Spanish user sees EN / EN·ES / ES (or just EN when the course
+// has no Spanish yet) and is NEVER shown Russian, and vice-versa. Courses without the
+// user's language (or an English UI) show plain EN with no switcher.
 const LANG_LABEL = { ru:"RU", es:"ES", hy:"HY", ar:"AR", zh:"ZH", ko:"KO" };
 const LANG_FIELD = { ru:"r",  es:"s",  hy:"hy", ar:"ar", zh:"zh", ko:"ko" };
 
 function buildStudyLangModes(){
   if (!courseMeta) return [{ key:"en", label:"EN" }];
-  const secondaries = (courseMeta.langs || ["en"]).filter(l => l !== "en");
-  if (!secondaries.length) return [{ key:"en", label:"EN" }];
-  const modes = [{ key:"en", label:"EN" }];
-  secondaries.forEach(l => {
-    const ll = LANG_LABEL[l] || l.toUpperCase();
-    modes.push({ key:"en+" + l, label:`EN·${ll}` });
-    modes.push({ key:l,         label:ll });
-  });
-  return modes;
+  const avail = courseMeta.langs || ["en"];
+  if (uiLang === "en" || !avail.includes(uiLang)) return [{ key:"en", label:"EN" }];
+  const ll = LANG_LABEL[uiLang] || uiLang.toUpperCase();
+  return [
+    { key:"en",           label:"EN" },
+    { key:"en+" + uiLang, label:`EN·${ll}` },
+    { key:uiLang,         label:ll }
+  ];
 }
 
 // The secondary study language a mode key carries ("en"→null, "ru"→"ru", "en+ru"→"ru").
