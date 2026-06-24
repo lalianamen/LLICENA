@@ -385,7 +385,7 @@ async function init(){
 
   if (!profRes.data) {
     const pendingName = localStorage.getItem("lp:pending_name") || session.user.user_metadata?.name || "";
-    const pendingLang = localStorage.getItem("lp:pending_lang") || "en";
+    const pendingLang = localStorage.getItem("lp:pending_lang") || session.user.user_metadata?.lang || "en";
     await supa.from("profiles").upsert({ id: userId, name: pendingName, lang: pendingLang });
     await supa.from("user_courses").upsert({ user_id: userId, course_id: "cslb-law" });
     localStorage.removeItem("lp:pending_name");
