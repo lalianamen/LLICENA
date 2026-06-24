@@ -19,3 +19,21 @@ window.COURSE_BLOCKS["cslb-law"] = [
     title:{ en:"Block 5 · Questions 401–500", ru:"Блок 5 · Вопросы 401–500" },
     sub:{   en:"Final review · exam-style traps · all sections",   ru:"Финальный обзор · ловушки экзамена · все разделы" } }
 ];
+
+window.COURSE_BLOCKS["c10-exam"] = [
+  { n:1, range:"1–100",   roman:"I",
+    title:{ en:"Block 1 · Questions 1–100",   ru:"Блок 1 · Вопросы 1–100"   },
+    sub:{   en:"Mixed practice · all five C-10 areas",        ru:"Смешанная практика · все пять разделов C-10" } },
+  { n:2, range:"101–200", roman:"II",
+    title:{ en:"Block 2 · Questions 101–200", ru:"Блок 2 · Вопросы 101–200" },
+    sub:{   en:"Mixed practice · all five C-10 areas",        ru:"Смешанная практика · все пять разделов C-10" } },
+  { n:3, range:"201–300", roman:"III",
+    title:{ en:"Block 3 · Questions 201–300", ru:"Блок 3 · Вопросы 201–300" },
+    sub:{   en:"Mixed practice · all five C-10 areas",        ru:"Смешанная практика · все пять разделов C-10" } },
+  { n:4, range:"301–400", roman:"IV",
+    title:{ en:"Block 4 · Questions 301–400", ru:"Блок 4 · Вопросы 301–400" },
+    sub:{   en:"Mixed practice · all five C-10 areas",        ru:"Смешанная практика · все пять разделов C-10" } },
+  { n:5, range:"401–500", roman:"V",
+    title:{ en:"Block 5 · Questions 401–500", ru:"Блок 5 · Вопросы 401–500" },
+    sub:{   en:"Final mixed review · all five C-10 areas",    ru:"Финальный смешанный обзор · все пять разделов C-10" } }
+];
