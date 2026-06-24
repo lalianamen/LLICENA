@@ -1,6 +1,6 @@
 /* LICENA — course player
    uiLang   = cabinet language (button labels, Prev/Next/Restart etc.)
-   studyLang = question display mode: "en" | "en+ru" | "ru" | "es" | "vi" */
+   studyLang = question display mode: "en" | "en+ru" | "ru" | "es" */
 
 const params   = new URLSearchParams(location.search);
 const courseId = params.get("id") || "";
@@ -25,8 +25,8 @@ function esc(s){ const d = document.createElement("div"); d.textContent = s; ret
 // ─── Study language ───────────────────────────────────────────────────────────
 // Modes based on uiLang: if course has uiLang translations → EN / EN·LANG / LANG
 // Otherwise just EN (no switcher shown).
-const LANG_LABEL = { ru:"RU", es:"ES", vi:"VI", hy:"HY", ar:"AR", zh:"ZH", ko:"KO" };
-const LANG_FIELD = { ru:"r",  es:"s",  vi:"v",  hy:"hy", ar:"ar", zh:"zh", ko:"ko" };
+const LANG_LABEL = { ru:"RU", es:"ES", hy:"HY", ar:"AR", zh:"ZH", ko:"KO" };
+const LANG_FIELD = { ru:"r",  es:"s",  hy:"hy", ar:"ar", zh:"zh", ko:"ko" };
 
 function buildStudyLangModes(){
   if (!courseMeta) return [{ key:"en", label:"EN" }];

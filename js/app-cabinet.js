@@ -225,12 +225,12 @@ function renderAll(){ renderMyTests(); renderCatalog(); renderAccount(); }
 // Course study-lang modes: for EN+RU courses show EN / EN·RU / RU
 function courseLangModes(course){
   const avail = course.langs;
-  if (avail.length <= 1) return avail.map(l => ({ key:l, label:({en:"English",es:"Español",ru:"Русский",vi:"Tiếng Việt"})[l]||l.toUpperCase() }));
+  if (avail.length <= 1) return avail.map(l => ({ key:l, label:({en:"English",es:"Español",ru:"Русский"})[l]||l.toUpperCase() }));
   const modes = [];
   modes.push({ key:"en", label:"English" });
   if (avail.includes("ru")) modes.push({ key:"en+ru", label:"EN · RU (bilingual)" });
   avail.filter(l => l !== "en").forEach(l => {
-    modes.push({ key:l, label:({es:"Español",ru:"Русский",vi:"Tiếng Việt"})[l]||l.toUpperCase() });
+    modes.push({ key:l, label:({es:"Español",ru:"Русский"})[l]||l.toUpperCase() });
   });
   return modes;
 }
@@ -257,7 +257,7 @@ function openPayModal(chosenLang){
   pendingAddLang = chosenLang;
   document.getElementById("langModal").style.display = "none";
   const course = pendingAdd, d = TAPP[lang];
-  const labels = { en:"English", es:"Español", ru:"Русский", vi:"Tiếng Việt" };
+  const labels = { en:"English", es:"Español", ru:"Русский" };
   document.getElementById("payModalTitle").textContent = course.name[lang] || course.name.en;
   document.getElementById("payCourseInfo").innerHTML =
     `<div class="pay-lang-chosen">${labels[chosenLang] || chosenLang.toUpperCase()}</div>`;
@@ -328,8 +328,7 @@ document.querySelectorAll(".side button").forEach(b => b.addEventListener("click
 const ALL_LANGS = [
   { key:"en", label:"EN", name:"English" },
   { key:"ru", label:"RU", name:"Русский" },
-  { key:"es", label:"ES", name:"Español" },
-  { key:"vi", label:"VI", name:"Tiếng Việt" }
+  { key:"es", label:"ES", name:"Español" }
 ];
 
 // Toggle display lang (header EN/LANG buttons) — does NOT change account language

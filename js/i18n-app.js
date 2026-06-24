@@ -79,32 +79,6 @@ const TAPP = {
     courseRetry:"Начать заново",
     courseStudyIn:"Язык:",
     courseSoon:"Вопросы скоро появятся."
-  },
-  vi:{
-    tag:"Trang của tôi", signOut:"Đăng xuất",
-    navMyTests:"Khóa học", navAdd:"Danh mục", navAccount:"Tài khoản",
-    myH:"Khóa học của tôi", myL:"Các khóa học và tài liệu học tập của bạn.",
-    myEmpty:"Bạn chưa thêm khóa học nào. Vào Danh mục để thêm khóa học đầu tiên.",
-    examBadge:"Thi", guideBadge:"Hướng dẫn", activeBadge:"Đang hoạt động", inactiveBadge:"Chưa kích hoạt",
-    openCourse:"Mở →",
-    storeH:"Danh mục", storeL:"Thêm khóa học vào tài khoản. Miễn phí khi thử nghiệm.",
-    addBtn:"Thêm", added:"Đã thêm ✓", soon:"Sắp ra mắt",
-    acctH:"Tài khoản", acctName:"Họ tên", acctEmail:"Email", acctPlan:"Truy cập", planTest:"Truy cập beta",
-    cancel:"Hủy", chooseLang:"Chọn ngôn ngữ học của bạn:",
-    betaFree:"Truy cập miễn phí trong giai đoạn beta — không cần thanh toán.", activateBtn:"Kích hoạt miễn phí",
-    removeBtn:"Xóa", removeCourseConfirm:"Xóa khóa học", removeCourseText:"Khóa học sẽ bị xóa khỏi tài khoản của bạn. Bạn có thể thêm lại bất cứ lúc nào.", removeYes:"Xóa",
-    stateLabel:"Tiểu bang", chooseState:"Chọn tiểu bang của bạn", stateSoon:"Sắp ra mắt", stateEmpty:"Chưa có khóa học cho tiểu bang này — sắp ra mắt.",
-    /* Course player */
-    courseAllSections:"Tất cả các phần",
-    courseRestart:"Làm lại", courseResetProgress:"Xóa tiến trình",
-    courseResetConfirm:"Xóa toàn bộ tiến trình của khóa học này?",
-    courseWrongOff:"✗ Chỉ sai", courseWrongOn:"✓ Chỉ sai",
-    coursePrev:"← Trước", courseNext:"Tiếp →", courseFinish:"Kết quả",
-    coursePassed:"✓ Đạt!", courseFail:"✗ Tiếp tục luyện tập",
-    courseCorrect:"Đúng:", courseOf:"trên",
-    courseRetry:"Thử lại",
-    courseStudyIn:"Ngôn ngữ:",
-    courseSoon:"Câu hỏi sắp ra mắt."
   }
 };
 const SECTIONS = ["Licensing Requirements","Business Organization","Business Finances","Employment & Labor","Safety (Cal/OSHA)","Bonds & Insurance","Mechanics Liens","Contracts"];
