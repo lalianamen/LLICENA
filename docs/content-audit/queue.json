@@ -2,7 +2,7 @@
   "_about": "Content-audit queue for the automated 5-hour cron. Each cycle: take the first item with status 'pending', run the `content` subagent to verify/strengthen it against official sources, auto-deploy its grounded edits to main, then set status 'done' with checkedOn (YYYY-MM-DD). When all are 'done' the initial pass is complete. NOTE: the in-session cron auto-expires after 7 days, so the annual re-verification must be re-initiated manually (rules change year to year).",
   "policy": "deploy-everything (autonomous): the agent never fabricates; UNVERIFIED items are flagged, not edited; every deploy is reported with a one-command revert.",
   "items": [
-    { "id": "dmv-car",            "type": "exam",  "source": "CA DMV Driver Handbook",                       "status": "pending", "checkedOn": null },
+    { "id": "dmv-car",            "type": "exam",  "source": "CA DMV Driver Handbook",                       "status": "done",    "checkedOn": "2026-06-25", "result": "clean, 0 edits; 50/50 corroborated via search (dmv.ca.gov proxy-blocked, not read directly)" },
     { "id": "dmv-motorcycle",     "type": "exam",  "source": "CA DMV Motorcycle Handbook",                   "status": "pending", "checkedOn": null },
     { "id": "cdl-general",        "type": "exam",  "source": "CA Commercial Driver Handbook + FMCSA",        "status": "pending", "checkedOn": null },
     { "id": "cdl-air-brakes",     "type": "exam",  "source": "CA CDL Handbook §5 (air brakes)",              "status": "pending", "checkedOn": null },
