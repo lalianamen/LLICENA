@@ -1,0 +1,23 @@
+{
+  "_about": "Content-audit queue for the automated 5-hour cron. Each cycle: take the first item with status 'pending', run the `content` subagent to verify/strengthen it against official sources, auto-deploy its grounded edits to main, then set status 'done' with checkedOn (YYYY-MM-DD). When all are 'done' the initial pass is complete. NOTE: the in-session cron auto-expires after 7 days, so the annual re-verification must be re-initiated manually (rules change year to year).",
+  "policy": "deploy-everything (autonomous): the agent never fabricates; UNVERIFIED items are flagged, not edited; every deploy is reported with a one-command revert.",
+  "items": [
+    { "id": "dmv-car",            "type": "exam",  "source": "CA DMV Driver Handbook",                       "status": "pending", "checkedOn": null },
+    { "id": "dmv-motorcycle",     "type": "exam",  "source": "CA DMV Motorcycle Handbook",                   "status": "pending", "checkedOn": null },
+    { "id": "cdl-general",        "type": "exam",  "source": "CA Commercial Driver Handbook + FMCSA",        "status": "pending", "checkedOn": null },
+    { "id": "cdl-air-brakes",     "type": "exam",  "source": "CA CDL Handbook §5 (air brakes)",              "status": "pending", "checkedOn": null },
+    { "id": "cdl-combination",    "type": "exam",  "source": "CA CDL Handbook §6 (combination)",             "status": "pending", "checkedOn": null },
+    { "id": "cdl-hazmat",         "type": "exam",  "source": "CA CDL Handbook §9 + 49 CFR (hazmat)",         "status": "pending", "checkedOn": null },
+    { "id": "cdl-tanker",         "type": "exam",  "source": "CA CDL Handbook §8 (tank)",                    "status": "pending", "checkedOn": null },
+    { "id": "cdl-doubles-triples","type": "exam",  "source": "CA CDL Handbook §7 (doubles/triples)",         "status": "pending", "checkedOn": null },
+    { "id": "cdl-passenger",      "type": "exam",  "source": "CA CDL Handbook §4 (passenger)",               "status": "pending", "checkedOn": null },
+    { "id": "cdl-school-bus",     "type": "exam",  "source": "CA CDL Handbook §10 (school bus)",             "status": "pending", "checkedOn": null },
+    { "id": "epa-608",            "type": "exam",  "source": "EPA Section 608 / 40 CFR Part 82",             "status": "pending", "checkedOn": null },
+    { "id": "osha-construction",  "type": "exam",  "source": "OSHA 29 CFR 1926 / OSHA-10/30 construction",   "status": "pending", "checkedOn": null },
+    { "id": "cslb-law",           "type": "exam",  "source": "CSLB Law & Business study guide",              "status": "pending", "checkedOn": null },
+    { "id": "c10-exam",           "type": "exam",  "source": "CSLB C-10 + NEC (electrical)",                 "status": "pending", "checkedOn": null },
+    { "id": "c20-exam",           "type": "exam",  "source": "CSLB C-20 (HVAC)",                             "status": "pending", "checkedOn": null },
+    { "id": "asbestos",           "type": "exam",  "source": "CSLB asbestos open-book / Cal/OSHA",           "status": "pending", "checkedOn": null },
+    { "id": "contractor-business","type": "guide", "source": "CSLB Law & Business / contractor licensing",   "status": "pending", "checkedOn": null }
+  ]
+}

@@ -75,6 +75,11 @@ propose the addition — **sourced**, in the bank's existing schema/style, and t
 (EN + ES + RU with matching option order). Do not pad: add only what improves
 correctness or real exam-readiness. (This project values simplicity — no speculative bulk.)
 
+**Strengthen thin explanations (the owner specifically asked for this).** When an
+answer's explanation (`re`) is present but too thin to actually teach *why* the answer
+is right, expand it by a sentence or two — grounded in the official source, in all three
+languages. Keep it grounded: if you cannot source the addition, do not write it.
+
 ## Link validation (every external URL)
 Grep the whole repo for `https?://`. For each link check:
 - **Reachable** — fetch it and record the HTTP status. **Sandbox caveat:** outbound
@@ -86,14 +91,20 @@ Grep the whole repo for `https?://`. For each link check:
 - **Appropriate** — official / primary source, HTTPS, no tracking cruft.
 Report each link's verdict and the corrected URL if it moved.
 
-## Safety & the approval loop — NON-NEGOTIABLE
-1. **Never deploy or publish.** Do **not** `git push`, do **not** commit on or merge into
-   `main`, do **not** call any deploy tool. You edit only the working tree you were given.
-2. Your output is a **proposal** — sourced findings, and (where asked) fixes applied in
-   the working tree — for the owner to review and approve. It goes live only after the
-   owner confirms.
-3. Read-only verification is always fine (fetching sources, `node --check`, grep). Do not
-   start servers or long-running processes.
+## Safety & the deploy pipeline — NON-NEGOTIABLE
+1. **You never run git or deploy yourself.** Do not `git push` / commit / merge, do not
+   call any deploy tool, do not start servers. You edit only the working tree you were
+   given; the orchestration handles git and deployment.
+2. **Your edits ship.** Per the owner's standing policy, the orchestration auto-deploys
+   your working-tree changes to production after your run (reporting each deploy with a
+   one-command revert). So treat every edit as going live: only change or add content you
+   can back with a **cited, currently-reachable official source.**
+3. **UNVERIFIED → flag, never touch.** If you cannot confirm an item against a live source
+   (including when the sandbox proxy blocks it), do **not** edit it — leave the existing
+   content as-is and record it as `UNVERIFIED` in your report. Never "fix" on a hunch: a
+   wrong autonomous change to a licensing answer is the worst possible outcome, far worse
+   than leaving a flagged uncertainty for the owner.
+4. Read-only verification is always fine (fetching sources, `node --check`, grep).
 
 ## What to hand back (every time)
 A tight, decision-ready report:
