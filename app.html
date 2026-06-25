@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css?v=15">
-<link rel="stylesheet" href="css/cabinet.css?v=13">
+<link rel="stylesheet" href="css/cabinet.css?v=16">
 </head>
 <body>
 
@@ -26,10 +26,19 @@
 </div></div>
 
 <div class="wrap shell" id="shell" style="display:none">
-  <nav class="side" id="side">
-    <button data-panel="mytests" aria-current="true"><span class="ico">▤</span><span data-a="navMyTests">My courses</span></button>
-    <button data-panel="add"><span class="ico">＋</span><span data-a="navAdd">Catalog</span></button>
-    <button data-panel="account"><span class="ico">◍</span><span data-a="navAccount">Account</span></button>
+  <nav class="side" id="side" aria-label="Sections">
+    <button data-panel="mytests" aria-current="true">
+      <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/></svg></span>
+      <span class="side-lbl" data-a="navMyTests">My courses</span>
+    </button>
+    <button data-panel="add">
+      <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/></svg></span>
+      <span class="side-lbl" data-a="navAdd">Catalog</span>
+    </button>
+    <button data-panel="account">
+      <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+      <span class="side-lbl" data-a="navAccount">Account</span>
+    </button>
   </nav>
 
   <main>
