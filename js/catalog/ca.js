@@ -73,6 +73,49 @@ registerState("ca", [
     id: "beauty",
     icon: "💅",
     name: { en:"Beauty", es:"Estética", ru:"Бьюти" },
-    subs: [], soon: true
+    subs: [
+      {
+        id: "beauty-general",
+        name: { en:"General — Health & Safety", es:"General — Salud y Seguridad", ru:"Общее — здоровье и безопасность" },
+        courses: [
+          { id:"beauty-health-safety", name:{ en:"Health, Safety & Infection Control", es:"Salud, Seguridad y Control de Infecciones", ru:"Здоровье, безопасность и инфекционный контроль" }, langs:["en","es","ru"], type:"exam" }
+        ]
+      },
+      {
+        id: "cosmetology",
+        name: { en:"Cosmetology", es:"Cosmetología", ru:"Косметология" },
+        courses: [
+          { id:"cosmetology", name:{ en:"Cosmetologist Exam", es:"Examen de Cosmetología", ru:"Экзамен косметолога" }, langs:["en","es","ru"], type:"exam" }
+        ]
+      },
+      {
+        id: "barbering",
+        name: { en:"Barbering", es:"Barbería", ru:"Барбер" },
+        courses: [
+          { id:"barbering", name:{ en:"Barber Exam", es:"Examen de Barbero", ru:"Экзамен барбера" }, langs:["en","es","ru"], type:"exam" }
+        ]
+      },
+      {
+        id: "esthetics",
+        name: { en:"Esthetics (Skin Care)", es:"Estética (Cuidado de la Piel)", ru:"Эстетика (уход за кожей)" },
+        courses: [
+          { id:"esthetician", name:{ en:"Esthetician Exam", es:"Examen de Esteticista", ru:"Экзамен эстетиста" }, langs:["en","es","ru"], type:"exam" }
+        ]
+      },
+      {
+        id: "nailcare",
+        name: { en:"Nail Care (Manicurist)", es:"Cuidado de Uñas (Manicurista)", ru:"Маникюр (Nail-мастер)" },
+        courses: [
+          { id:"manicurist", name:{ en:"Manicurist Exam", es:"Examen de Manicurista", ru:"Экзамен мастера маникюра" }, langs:["en","es","ru"], type:"exam" }
+        ]
+      },
+      {
+        id: "electrology",
+        name: { en:"Electrology", es:"Electrología", ru:"Электрология" },
+        courses: [
+          { id:"electrology", name:{ en:"Electrologist Exam", es:"Examen de Electrólogo", ru:"Экзамен электролога" }, langs:["en","es","ru"], type:"exam" }
+        ]
+      }
+    ]
   }
 ]);

@@ -18,6 +18,12 @@
     { "id": "c10-exam",           "type": "exam",  "source": "CSLB C-10 + NEC (electrical)",                 "status": "pending", "checkedOn": null },
     { "id": "c20-exam",           "type": "exam",  "source": "CSLB C-20 (HVAC)",                             "status": "pending", "checkedOn": null },
     { "id": "asbestos",           "type": "exam",  "source": "CSLB asbestos open-book / Cal/OSHA",           "status": "pending", "checkedOn": null },
-    { "id": "contractor-business","type": "guide", "source": "CSLB Law & Business / contractor licensing",   "status": "pending", "checkedOn": null }
+    { "id": "contractor-business","type": "guide", "source": "CSLB Law & Business / contractor licensing",   "status": "pending", "checkedOn": null },
+    { "id": "beauty-health-safety","type": "exam", "source": "CA Board of Barbering & Cosmetology — Health & Safety (CCR Title 16, Art. 12)", "status": "pending", "checkedOn": null },
+    { "id": "cosmetology",        "type": "exam", "source": "CA BBC — Cosmetology (barbercosmo.ca.gov)", "status": "pending", "checkedOn": null },
+    { "id": "barbering",          "type": "exam", "source": "CA BBC — Barbering (barbercosmo.ca.gov)",   "status": "pending", "checkedOn": null },
+    { "id": "esthetician",        "type": "exam", "source": "CA BBC — Esthetician (barbercosmo.ca.gov)", "status": "pending", "checkedOn": null },
+    { "id": "manicurist",         "type": "exam", "source": "CA BBC — Manicurist (barbercosmo.ca.gov)",  "status": "pending", "checkedOn": null },
+    { "id": "electrology",        "type": "exam", "source": "CA BBC — Electrology (barbercosmo.ca.gov)",  "status": "pending", "checkedOn": null }
   ]
 }
