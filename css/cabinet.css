@@ -22,7 +22,9 @@
 .state-caret{font-size:10px;color:#9fb2c6;flex:0 0 auto}
 .state-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:40;min-width:230px;max-width:80vw;
   background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px;
-  box-shadow:0 18px 50px rgba(0,0,0,.28)}
+  box-shadow:0 18px 50px rgba(0,0,0,.28);
+  transform-origin:top left;animation:menuIn .16s ease}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
 .state-opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;
   color:var(--ink);font-weight:600;font-size:14px;padding:11px 12px;min-height:44px;
   border-radius:10px;cursor:pointer;transition:background .12s ease}
@@ -54,20 +56,26 @@
 .shell{display:grid;grid-template-columns:222px 1fr;gap:24px;padding:26px 0 64px;align-items:start}
 .side{position:sticky;top:84px;display:flex;flex-direction:column;gap:4px;
   background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:var(--shadow)}
-.side button{display:flex;align-items:center;gap:12px;text-align:left;background:transparent;color:var(--ink);
+.side button{position:relative;display:flex;align-items:center;gap:12px;text-align:left;background:transparent;color:var(--ink);
   font-family:'Archivo';font-weight:600;font-size:14.5px;padding:11px 13px;min-height:44px;border-radius:11px;width:100%;
-  transition:background .12s ease,color .12s ease}
+  transition:background .16s ease,color .16s ease,box-shadow .16s ease}
 .side button:hover{background:var(--paper)}
 .side button[aria-current="true"]{background:var(--ink);color:#fff;box-shadow:0 4px 12px rgba(21,39,61,.18)}
-.side .ico{width:24px;height:24px;flex:0 0 24px;display:grid;place-items:center;color:var(--gold-deep)}
+.side .ico{width:24px;height:24px;flex:0 0 24px;display:grid;place-items:center;color:var(--gold-deep);
+  transition:color .16s ease,transform .16s ease}
+.side button:hover .ico{transform:translateY(-1px)}
 .side button[aria-current="true"] .ico{color:var(--gold)}
 .side .ico svg{width:19px;height:19px;display:block}
 .side .side-lbl{flex:1;min-width:0}
 
 /* ── Panels ───────────────────────────────────────────────────────────────── */
-.panel{display:none;animation:fade .3s ease}
-.panel.on{display:block}
-.panel h2{font-family:'Archivo';font-weight:800;font-size:clamp(22px,4vw,30px);margin:0;letter-spacing:-.02em}
+.panel{display:none}
+.panel.on{display:block;animation:fade .24s ease}
+.panel h2{position:relative;font-family:'Archivo';font-weight:800;font-size:clamp(22px,4vw,30px);margin:0;
+  letter-spacing:-.02em;padding-left:15px}
+/* signature gold leading rule — echoes the brand's gold "L" */
+.panel h2::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:4px;border-radius:3px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-deep))}
 .panel .lead{color:var(--steel);margin:8px 0 24px;max-width:56ch;font-size:15px}
 
 .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:30px}
@@ -86,8 +94,13 @@
 
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow)}
 .card+.card{margin-top:14px}
-.empty{margin-top:18px;border:1.5px dashed var(--line);border-radius:16px;padding:34px 26px;text-align:center;
+.empty{margin-top:18px;border:1.5px dashed var(--line);border-radius:16px;padding:30px 26px 34px;text-align:center;
   color:var(--steel);background:#fff;font-size:14.5px;line-height:1.6;max-width:54ch}
+/* friendly empty-state marker: an ink/gold icon chip above the message
+   (decorative; the text itself is injected via JS textContent) */
+.empty::before{content:"";display:block;width:46px;height:46px;margin:0 auto 16px;border-radius:13px;
+  background:var(--ink);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23E0A116' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpolyline points='3.27 6.96 12 12.01 20.73 6.96'/%3E%3Cline x1='12' y1='22.08' x2='12' y2='12'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:center;box-shadow:0 6px 16px rgba(21,39,61,.18)}
 .row-between{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
 .badge{font-size:12px;font-weight:700;font-family:'Archivo';text-transform:uppercase;letter-spacing:.08em;
   color:var(--verify);background:var(--verify-soft);border:1px solid #bfe0cf;padding:4px 9px;border-radius:20px}
@@ -175,7 +188,9 @@
   display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
 
 .my-sub,.store-cat .my-sub{margin:0 0 12px 0;border:1px solid var(--line);border-radius:16px;
-  overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(21,39,61,.05)}
+  overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(21,39,61,.05);
+  transition:border-color .16s ease,box-shadow .16s ease}
+.my-sub:hover{border-color:#c2cad0;box-shadow:0 8px 22px rgba(21,39,61,.07)}
 .my-sub:last-child{margin-bottom:0}
 .my-sub-hd{font-family:'Archivo';font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;
   color:var(--gold-deep);padding:14px 18px;background:linear-gradient(180deg,#fff,#fbfbfa);
@@ -303,6 +318,11 @@
   .side{position:static;top:auto;flex-direction:row;gap:6px;padding:6px;border-radius:14px}
   .side button{flex:1 1 0;min-width:0;justify-content:center;flex-direction:column;gap:5px;
     padding:9px 6px;border-radius:10px;font-size:12.5px;text-align:center}
+  /* signature: active tab gets a small gold underline indicator (clarifies the
+     current tab on the cramped bar; the active item itself stays ink-filled) */
+  .side button[aria-current="true"]::after{content:"";position:absolute;left:50%;bottom:5px;
+    transform:translateX(-50%);width:18px;height:3px;border-radius:3px;background:var(--gold)}
+  .side button:hover .ico{transform:none}
   .side .ico{width:22px;height:22px;flex-basis:22px}
   .side .ico svg{width:18px;height:18px}
   .side .side-lbl{flex:0 0 auto;white-space:nowrap}
