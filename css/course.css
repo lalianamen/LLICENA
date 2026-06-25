@@ -223,7 +223,9 @@
 /* ── Responsive: get the question reachable fast on phones ─────────────────── */
 @media(max-width:760px){
   .course-shell{grid-template-columns:1fr;gap:14px}
-  .course-side{position:static;padding:14px}
+  /* Question first on phones — don't bury it under progress / sections / controls. */
+  .course-main{order:-1}
+  .course-side{position:static;padding:14px;order:0}
   /* sections become a single-row horizontal chip scroller (don't push the question down) */
   .side-sections{flex-direction:row;flex-wrap:nowrap;gap:7px;max-height:none;overflow-x:auto;
     overflow-y:hidden;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
