@@ -37,6 +37,27 @@ registerState("ca", [
         courses: [
           { id:"c10-exam",  name:{ en:"C-10 Trade Exam",          es:"Examen Trade C-10",        ru:"Trade-экзамен C-10"          }, langs:["en","es","ru"], type:"exam"  }
         ]
+      },
+      {
+        id: "c36",
+        name: { en:"C-36 Plumbing", es:"C-36 Plomería", ru:"C-36 Сантехника" },
+        courses: [
+          { id:"c36-plumbing", name:{ en:"Plumbing Trade Exam", es:"Examen Trade de Plomería", ru:"Trade-экзамен сантехника (C-36)" }, langs:["en","es","ru"], type:"exam" }
+        ]
+      },
+      {
+        id: "c7",
+        name: { en:"C-7 Low Voltage Systems", es:"C-7 Sistemas de Bajo Voltaje", ru:"C-7 Слаботочные системы" },
+        courses: [
+          { id:"c7-low-voltage", name:{ en:"Low Voltage Trade Exam", es:"Examen Trade de Bajo Voltaje", ru:"Trade-экзамен слаботочки (C-7)" }, langs:["en","es","ru"], type:"exam" }
+        ]
+      },
+      {
+        id: "c16",
+        name: { en:"C-16 Fire Protection", es:"C-16 Protección Contra Incendios", ru:"C-16 Пожарная защита" },
+        courses: [
+          { id:"c16-fire-sprinkler", name:{ en:"Fire Sprinkler Trade Exam", es:"Examen Trade de Rociadores", ru:"Trade-экзамен пожарных спринклеров (C-16)" }, langs:["en","es","ru"], type:"exam" }
+        ]
       }
     ]
   },
