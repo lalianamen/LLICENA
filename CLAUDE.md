@@ -46,3 +46,16 @@ Define a success criterion, then check it.
 ---
 Working if: fewer stray changes in diffs, fewer rewrites from overcomplication, and
 clarifying questions land before implementation rather than after a mistake.
+
+## Agent lanes (multiple subagents — avoid collisions, break nothing)
+Up to three subagents may run. Each edits ONLY its own files, so their changes never overlap
+and deploys fast-forward cleanly:
+- **design** (`.claude/agents/design.md`) — look & layout: HTML structure + `css/*.css` +
+  presentational glue like `js/resources-render.js`. Not content facts, not resource data.
+- **content** (`.claude/agents/content.md`) — the question banks `js/questions/*` and guides
+  `js/guides/*`, verified against official sources. Not layout.
+- **resources** (`.claude/agents/resources.md`) — ONLY `js/resources.js` (official-links/
+  articles data) + its i18n keys. Not banks, not layout, not other JS.
+Shared rule: never rename or remove an `id` / `class` / `data-*` hook another file's JS reads.
+The orchestrator serializes deploys; since each agent's diff touches different files, merges
+to `main` stay conflict-free.
