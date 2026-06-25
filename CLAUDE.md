@@ -59,3 +59,13 @@ and deploys fast-forward cleanly:
 Shared rule: never rename or remove an `id` / `class` / `data-*` hook another file's JS reads.
 The orchestrator serializes deploys; since each agent's diff touches different files, merges
 to `main` stay conflict-free.
+
+## Construction banks: ALWAYS 5 blocks × 100 questions
+Exam banks in the **Construction** category are **always 5 blocks of 100 questions**
+(500 per course) — NOT the 50-question / 6-section shape used by other verticals. Give each
+item a numeric `block` field (`1`–`5`, ~100 questions per block); the course player renders
+block cards (`buildBlockCards` / `activeBlock` in `js/app-course.js`) and filters the quiz to
+the selected block whenever items carry `block`. Keep `sec` too for the in-block section nav.
+Applies to the CSLB trade & related exams under Construction (`c10`, `c20`, `c36`, `c7`,
+`c16`, `cslb-law`, `asbestos`, `osha-construction`). Other verticals (driving, CDL, EPA,
+beauty, …) stay 50 questions / 6 sections unless stated otherwise.
