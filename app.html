@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=15">
-<link rel="stylesheet" href="css/cabinet.css?v=17">
+<link rel="stylesheet" href="css/styles.css?v=16">
+<link rel="stylesheet" href="css/cabinet.css?v=18">
 </head>
 <body>
 
@@ -47,6 +47,19 @@
       <h2 data-a="myH">My courses</h2>
       <p class="lead" data-a="myL">Your active courses and study materials.</p>
       <div id="myList"></div>
+
+      <!-- OFFICIAL RESOURCES (compact, non-intrusive) -->
+      <aside class="res-slot-cab" aria-label="Official resources">
+        <div class="res-slot-cab-hd">
+          <span class="res-slot-cab-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 6a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H5a2 2 0 0 1-2-2z"/><path d="M21 6a2 2 0 0 0-2-2h-5a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h5a2 2 0 0 0 2-2z"/></svg></span>
+          <div>
+            <h3 data-a="resHead">Official resources</h3>
+            <p class="res-slot-cab-sub" data-a="resSub">Primary documents and official sites — straight from the source.</p>
+          </div>
+        </div>
+        <div id="resList" class="res-list"></div>
+        <div id="resUpdated" class="res-updated"></div>
+      </aside>
     </section>
 
     <!-- CATALOG -->
@@ -114,8 +127,10 @@
 <script src="js/catalog.js?v=13"></script>
 <script src="js/catalog/ca.js?v=13"></script>
 <script src="js/catalog/az.js?v=13"></script>
-<script src="js/i18n-app.js?v=13"></script>
+<script src="js/i18n-app.js?v=14"></script>
 <script src="js/honest-chances.js?v=13"></script>
 <script src="js/app-cabinet.js?v=13"></script>
+<script src="js/resources.js?v=14"></script>
+<script src="js/resources-render.js?v=14"></script>
 </body>
 </html>

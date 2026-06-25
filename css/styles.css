@@ -288,6 +288,36 @@ footer small{color:#8ea2b6;font-size:12.5px;max-width:48ch;display:block;margin-
 .tcard-meta{font-size:12.5px;color:var(--steel);margin-top:2px}
 @media(max-width:680px){.testi-grid{grid-template-columns:1fr}}
 
+/* ── Official resources slot (landing) ────────────────────── */
+.res-slot{margin:0 0 40px}
+.res-slot>.eyebrow{margin-bottom:10px}
+.res-slot>h2{font-size:clamp(24px,4vw,36px);font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
+.res-slot .res-lead{color:var(--steel);font-size:15.5px;line-height:1.6;max-width:54ch;margin:0 0 24px}
+/* grouped cards — CSS columns pack the groups with no large bottom void
+   (the set is small + finite); collapses to one column on phones below. */
+.res-list{column-count:2;column-gap:16px}
+.res-group{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:20px 22px 14px;box-shadow:var(--shadow);
+  break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 16px}
+/* gold-accent group heading — echoes the brand accent on the story/footer labels */
+.res-group-hd{position:relative;font-family:'Archivo';font-weight:700;font-size:12px;
+  text-transform:uppercase;letter-spacing:.1em;color:#8A5C06;padding-left:13px;margin-bottom:6px}
+.res-group-hd::before{content:"";position:absolute;left:0;top:1px;bottom:1px;width:3px;border-radius:3px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-deep))}
+.res-items{list-style:none;margin:0;padding:0}
+.res-link{display:flex;align-items:center;gap:12px;min-height:44px;padding:11px 12px;
+  margin:0 -12px;border-radius:11px;text-decoration:none;color:var(--ink);
+  transition:background .14s ease,transform .14s ease}
+.res-link:hover{background:var(--paper);transform:translateX(2px)}
+.res-link-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.res-title{font-family:'Archivo';font-weight:600;font-size:14.5px;line-height:1.35;color:var(--ink)}
+.res-src{font-family:'IBM Plex Mono';font-size:11.5px;font-weight:500;color:var(--steel);letter-spacing:.01em}
+.res-ext-ic{width:16px;height:16px;flex:0 0 16px;color:var(--steel);
+  transition:color .14s ease,transform .14s ease}
+.res-link:hover .res-ext-ic{color:var(--gold-deep);transform:translate(1px,-1px)}
+.res-updated{font-size:12px;color:var(--steel);font-family:'IBM Plex Mono';margin-top:16px;letter-spacing:.02em}
+@media(max-width:680px){.res-list{column-count:1}.res-group{margin-bottom:12px}}
+
 /* ── Footer (expanded) ────────────────────────────────────── */
 footer{margin-top:48px;border-top:1px solid var(--line);background:var(--ink);color:#cdd8e3}
 footer .wrap{padding:48px 22px 0}

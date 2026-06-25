@@ -311,6 +311,21 @@
 .lang-choice-btn:hover{border-color:var(--ink);background:var(--paper)}
 .lang-choice-btn.preferred{border-color:var(--ink);background:var(--ink);color:#fff}
 
+/* ── Official resources slot (cabinet, compact) ───────────────────────────── */
+/* Sits under #myList on the My-courses panel. Shares .res-list / .res-group /
+   .res-link from styles.css (loaded on both pages); only the framing differs. */
+.res-slot-cab{margin-top:34px;padding-top:26px;border-top:1px solid var(--line)}
+.res-slot-cab-hd{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+.res-slot-cab-ic{flex:0 0 38px;width:38px;height:38px;border-radius:11px;background:var(--ink);
+  color:var(--gold);display:grid;place-items:center}
+.res-slot-cab-ic svg{width:20px;height:20px;display:block}
+.res-slot-cab h3{font-family:'Archivo';font-weight:800;font-size:17px;margin:0;letter-spacing:-.01em}
+.res-slot-cab-sub{font-size:13.5px;color:var(--steel);line-height:1.5;margin:3px 0 0;max-width:52ch}
+/* tighten the shared cards a touch inside the cabinet */
+.res-slot-cab .res-group{padding:16px 18px 10px;border-radius:14px;box-shadow:0 1px 2px rgba(21,39,61,.05);margin-bottom:12px}
+.res-slot-cab .res-list{column-gap:12px}
+.res-slot-cab .res-updated{margin-top:14px}
+
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 /* Tablet & below: side rail becomes a full-width segmented tab bar on top */
 @media (max-width:760px){
