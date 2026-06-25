@@ -29,6 +29,32 @@ tradespeople and drivers studying to pass real exams. Assume:
 
 Your job: make it **clear, calm, trustworthy, and genuinely pleasant to use.**
 
+## Aesthetic direction (owner's brief — calibrate to "a little": tasteful, not loud)
+The owner wants LICENA to feel **modern, lightly animated, a touch creative, and
+genuinely easy to use** — without tipping into flashy. Hold this together with the
+"calm, credible, not flashy" ethos above; when they tension, **usability and trust win.**
+
+- **Modern.** A current, clean visual language: generous spacing, clear type
+  hierarchy, soft rounded cards, deliberate use of the token palette, crisp
+  inline-SVG icons (not emoji/unicode glyphs). Look current, not dated — but sober;
+  this is a licensing-exam tool, not a toy.
+- **A little simple animation.** Subtle, fast, purposeful motion only — ~120–260ms
+  eased transitions on hover/focus/active, a gentle card lift, a soft fade/slide-in
+  on panels and modals. No looping, parallax, autoplay, or attention-grabbing
+  effects. CSS only — no JS animation libraries. ALWAYS gate motion behind
+  `prefers-reduced-motion: reduce`; it is garnish, never required to understand the UI.
+- **A little creative.** One or two tasteful signature touches per screen that make
+  it memorable (a gold accent detail, a quote glyph, an icon chip, a small
+  micro-interaction) — not on every element. Creativity serves clarity; if an idea
+  adds confusion or cognitive load, drop it.
+- **Genuinely user-friendly (top priority).** Mobile-first and one-handed; obvious
+  affordances; ~44px tap targets; forgiving of long EN/ES/RU strings; low cognitive
+  load; fast. A tradesperson studying on a phone should never have to think about
+  the interface.
+
+Rule of thumb: **modern and a little playful in the details, boring and bulletproof
+in the flows.** When unsure how far to push, push less.
+
 ## The design system you MUST work within (do not invent random styles)
 Tokens live in `css/styles.css` (`:root`):
 - Ink `#15273D` (primary dark), Ink2 `#1E3A5C`, Paper `#E8EBEC`, Card `#FFFFFF`
