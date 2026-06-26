@@ -58,7 +58,8 @@ registerState("ca", [
         id: "c16",
         name: { en:"C-16 Fire Protection", es:"C-16 Protección Contra Incendios", ru:"C-16 Пожарная защита" },
         courses: [
-          { id:"c16-fire-sprinkler", name:{ en:"Fire Sprinkler Trade Exam", es:"Examen Trade de Rociadores", ru:"Trade-экзамен пожарных спринклеров (C-16)" }, langs:["en","es","ru"], type:"exam" }
+          { id:"c16-fire-sprinkler", name:{ en:"Fire Sprinkler Trade Exam", es:"Examen Trade de Rociadores", ru:"Trade-экзамен пожарных спринклеров (C-16)" }, langs:["en","es","ru"], type:"exam" },
+          { id:"nicet-water-based", name:{ en:"NICET Water-Based Systems", es:"Sistemas a Base de Agua (NICET)", ru:"Системы водяного пожаротушения (NICET)" }, langs:["en","es","ru"], type:"exam" }
         ]
       }
     ]
