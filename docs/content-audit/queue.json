@@ -28,6 +28,7 @@
     { "id": "c36-plumbing",       "type": "exam", "source": "California Plumbing Code (UPC) + CSLB C-36",     "status": "pending", "checkedOn": null },
     { "id": "c7-low-voltage",     "type": "exam", "source": "NEC Art. 725/760/770/800 + NFPA 72 + CSLB C-7",  "status": "pending", "checkedOn": null },
     { "id": "c16-fire-sprinkler", "type": "exam", "source": "NFPA 13/25 + California Fire Code + CSLB C-16",  "status": "pending", "checkedOn": null },
-    { "id": "backflow",           "type": "exam", "source": "AWWA M14 + USC FCCCHR + CA Title 17/SWRCB CCCPH", "status": "pending", "checkedOn": null }
+    { "id": "backflow",           "type": "exam", "source": "AWWA M14 + USC FCCCHR + CA Title 17/SWRCB CCCPH", "status": "pending", "checkedOn": null },
+    { "id": "nicet-fire-alarm",   "type": "exam", "source": "NFPA 72 + NEC Art. 760 (NICET Fire Alarm)",      "status": "pending", "checkedOn": null }
   ]
 }

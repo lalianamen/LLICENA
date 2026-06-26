@@ -50,7 +50,8 @@ registerState("ca", [
         id: "c7",
         name: { en:"C-7 Low Voltage Systems", es:"C-7 Sistemas de Bajo Voltaje", ru:"C-7 Слаботочные системы" },
         courses: [
-          { id:"c7-low-voltage", name:{ en:"Low Voltage Trade Exam", es:"Examen Trade de Bajo Voltaje", ru:"Trade-экзамен слаботочки (C-7)" }, langs:["en","es","ru"], type:"exam" }
+          { id:"c7-low-voltage", name:{ en:"Low Voltage Trade Exam", es:"Examen Trade de Bajo Voltaje", ru:"Trade-экзамен слаботочки (C-7)" }, langs:["en","es","ru"], type:"exam" },
+          { id:"nicet-fire-alarm", name:{ en:"NICET Fire Alarm Systems", es:"Sistemas de Alarma Contra Incendios (NICET)", ru:"Системы пожарной сигнализации (NICET)" }, langs:["en","es","ru"], type:"exam" }
         ]
       },
       {
