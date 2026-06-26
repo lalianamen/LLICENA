@@ -42,7 +42,8 @@ registerState("ca", [
         id: "c36",
         name: { en:"C-36 Plumbing", es:"C-36 Plomería", ru:"C-36 Сантехника" },
         courses: [
-          { id:"c36-plumbing", name:{ en:"Plumbing Trade Exam", es:"Examen Trade de Plomería", ru:"Trade-экзамен сантехника (C-36)" }, langs:["en","es","ru"], type:"exam" }
+          { id:"c36-plumbing", name:{ en:"Plumbing Trade Exam", es:"Examen Trade de Plomería", ru:"Trade-экзамен сантехника (C-36)" }, langs:["en","es","ru"], type:"exam" },
+          { id:"backflow", name:{ en:"Backflow Prevention Tester", es:"Probador de Prevención de Reflujo", ru:"Тестировщик защиты от обратного потока" }, langs:["en","es","ru"], type:"exam" }
         ]
       },
       {
