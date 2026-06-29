@@ -15,7 +15,7 @@
 import Anthropic from "npm:@anthropic-ai/sdk";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const MODEL = "claude-opus-4-8";
+const MODEL = "claude-sonnet-4-6";
 const MAX_TURNS = 6;          // safety cap on the tool-use loop
 const MAX_MESSAGES = 40;      // cap on conversation length we accept
 const MAX_CHARS = 8000;       // cap on a single user message
