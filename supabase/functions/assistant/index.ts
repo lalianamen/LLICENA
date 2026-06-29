@@ -12,7 +12,7 @@
 // The browser calls it through supa.functions.invoke('assistant', { body }), so
 // the anon key handles auth and CORS for same-project requests.
 
-import Anthropic from "npm:@anthropic-ai/sdk@0.69.0";
+import Anthropic from "npm:@anthropic-ai/sdk";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const MODEL = "claude-opus-4-8";
