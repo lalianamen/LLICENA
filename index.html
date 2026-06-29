@@ -263,11 +263,42 @@
   </div>
 </footer>
 
+<!-- Support / requests assistant -->
+<button id="supFab" class="sup-fab" aria-label="LICENA Assistant" aria-expanded="false">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
+</button>
+<div id="supPanel" class="sup-panel" role="dialog" aria-modal="false" aria-labelledby="supTitle" hidden>
+  <div class="sup-head">
+    <strong id="supTitle" data-t="supTitle">LICENA Assistant</strong>
+    <button id="supClose" class="sup-x" aria-label="Close">✕</button>
+  </div>
+  <div class="sup-intro" data-t="supIntro">Ask a question, request a course or language, or report a problem. Leave your email and we'll follow up.</div>
+  <form id="supForm" novalidate>
+    <div class="sup-types" role="group" aria-label="Type">
+      <button type="button" class="sup-type on" data-kind="question" data-t="supTypeQ">Question</button>
+      <button type="button" class="sup-type" data-kind="request" data-t="supTypeR">Request</button>
+      <button type="button" class="sup-type" data-kind="complaint" data-t="supTypeC">Complaint</button>
+    </div>
+    <label class="sup-l" for="supMsg" data-t="supMsgL">Your message</label>
+    <textarea id="supMsg" rows="4"></textarea>
+    <label class="sup-l" for="supEmail" data-t="supEmailL">Email for updates</label>
+    <input id="supEmail" type="email" placeholder="you@email.com">
+    <div class="sup-err" id="supErr"></div>
+    <button type="submit" class="btn btn-primary btn-block" id="supSend" data-t="supSend">Send</button>
+  </form>
+  <div class="sup-done" id="supDone" hidden>
+    <div class="sup-done-ic">✓</div>
+    <p id="supDoneMsg"></p>
+    <button type="button" class="btn btn-ghost" id="supAgain" data-t="supAgain">Send another</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=13"></script>
-<script src="js/i18n.js?v=15"></script>
+<script src="js/i18n.js?v=16"></script>
 <script src="js/app.js?v=14"></script>
 <script src="js/resources.js?v=14"></script>
 <script src="js/resources-render.js?v=14"></script>
+<script src="js/support.js?v=1"></script>
 </body>
 </html>
