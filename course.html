@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=16">
+<link rel="stylesheet" href="css/styles.css?v=19">
 <link rel="stylesheet" href="css/course.css?v=19">
 </head>
 <body>
@@ -83,6 +83,22 @@
   </main>
 </div>
 
+<!-- Support assistant (AI chat) — shared widget; logic in js/support.js -->
+<button id="supFab" class="sup-fab" aria-label="LICENA Assistant" aria-expanded="false">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
+</button>
+<div id="supPanel" class="sup-panel" role="dialog" aria-modal="false" aria-labelledby="supTitle" hidden>
+  <div class="sup-head">
+    <strong id="supTitle">LICENA Assistant</strong>
+    <button id="supClose" class="sup-x" aria-label="Close">✕</button>
+  </div>
+  <div class="sup-log" id="supLog" aria-live="polite"></div>
+  <form id="supForm" class="sup-input">
+    <textarea id="supMsg" rows="1" placeholder="Ask a question…"></textarea>
+    <button type="submit" id="supSend" class="sup-send" aria-label="Send">➤</button>
+  </form>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=13"></script>
 <script src="js/catalog.js?v=13"></script>
@@ -94,5 +110,6 @@
      (js/questions/<id>.js). Adding a course never touches this page. -->
 <script src="js/honest-chances.js?v=13"></script>
 <script src="js/app-course.js?v=13"></script>
+<script src="js/support.js?v=3"></script>
 </body>
 </html>

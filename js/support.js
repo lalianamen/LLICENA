@@ -2,7 +2,12 @@
    A conversational widget: answers questions (grounded via the server function's
    web search) and logs course/language requests and complaints. All Claude calls
    go through the Supabase Edge Function `assistant` — the API key never touches
-   the browser. `T`, `lang`, and `supa` come from i18n.js / app.js / supabase-client.js. */
+   the browser. `supa` comes from supabase-client.js.
+
+   Strings and the current UI language are self-contained here so the widget drops
+   into ANY page (landing / cabinet / course) regardless of that page's i18n: the
+   landing exposes `lang` + `T`, the cabinet exposes `lang` + `TAPP`, the course
+   exposes `uiLang` + `TAPP`. We read none of those objects to avoid coupling. */
 (function(){
   const fab   = document.getElementById("supFab");
   const panel = document.getElementById("supPanel");
@@ -12,8 +17,24 @@
   const form   = document.getElementById("supForm");
   const input  = document.getElementById("supMsg");
   const sendBtn= document.getElementById("supSend");
+  const titleEl= document.getElementById("supTitle");
 
-  const d = () => (typeof T !== "undefined" && T[lang]) ? T[lang] : (typeof T !== "undefined" ? T.en : {});
+  // Self-contained copy (mirrors the sup* keys in i18n.js) so no page i18n is needed.
+  const STR = {
+    en:{ title:"LICENA Assistant", greeting:"Hi! I'm the LICENA assistant. Ask about exams, scheduling, or where to take a test — and I can log a request for a new course or language, or a problem you found.", ph:"Ask a question…", error:"Something went wrong. Please try again." },
+    es:{ title:"Asistente LICENA", greeting:"¡Hola! Soy el asistente de LICENA. Pregunta sobre exámenes, citas o dónde dar una prueba — y puedo registrar una solicitud de un nuevo curso o idioma, o un problema que hayas encontrado.", ph:"Escribe tu pregunta…", error:"Algo salió mal. Inténtalo de nuevo." },
+    ru:{ title:"Ассистент LICENA", greeting:"Привет! Я ассистент LICENA. Спроси про экзамены, запись или где сдавать тест — и я могу зафиксировать заявку на новый курс или язык, либо найденную ошибку.", ph:"Задай вопрос…", error:"Что-то пошло не так. Попробуйте ещё раз." },
+  };
+  // UI language across pages: course exposes `uiLang`, landing/cabinet expose `lang`,
+  // all persist lp:ui_lang. typeof-guarded so an undefined global never throws.
+  function curLang(){
+    const l = (typeof uiLang !== "undefined" && uiLang) ||
+              (typeof lang   !== "undefined" && lang)   ||
+              localStorage.getItem("lp:ui_lang") || "en";
+    return (l === "es" || l === "ru") ? l : "en";
+  }
+  const d = () => STR[curLang()];
+
   const history = [];   // [{role:'user'|'assistant', content}] sent to the model
   let greeted = false, busy = false;
 
@@ -39,11 +60,16 @@
     } else if (!on && t){ t.remove(); }
   }
 
+  function localize(){
+    if (titleEl) titleEl.textContent = d().title;
+    input.placeholder = d().ph;
+  }
+
   function open(){
     panel.hidden = false;
     fab.setAttribute("aria-expanded", "true");
-    input.placeholder = d().supPh || "";
-    if (!greeted){ bubble("assistant", d().supGreeting || ""); greeted = true; }
+    localize();
+    if (!greeted){ bubble("assistant", d().greeting); greeted = true; }
     input.focus();
   }
   function close(){ panel.hidden = true; fab.setAttribute("aria-expanded", "false"); }
@@ -64,7 +90,7 @@
     typing(true);
     try {
       const { data, error } = await supa.functions.invoke("assistant", {
-        body: { messages: history, locale: lang },
+        body: { messages: history, locale: curLang() },
       });
       typing(false);
       if (error || !data || !data.reply) throw (error || new Error("no reply"));
@@ -72,7 +98,7 @@
       history.push({ role: "assistant", content: data.reply });
     } catch (_) {
       typing(false);
-      bubble("assistant", d().supError || "Something went wrong. Please try again.");
+      bubble("assistant", d().error);
     } finally {
       busy = false; sendBtn.disabled = false; input.focus();
     }
@@ -86,10 +112,14 @@
     send(text);
   });
 
-  // Re-localize on language change; re-greet only if no conversation started yet
-  document.querySelectorAll(".langs button").forEach(b =>
-    b.addEventListener("click", () => {
-      input.placeholder = d().supPh || "";
-      if (greeted && history.length === 0){ log.innerHTML = ""; bubble("assistant", d().supGreeting || ""); }
-    }));
+  // Re-localize when the UI language changes. Landing uses `.langs`, the cabinet a
+  // `#appLangs` switcher; both render buttons with [data-lang]. Defer so the page's
+  // own handler updates the language first; re-greet only if no message was sent yet.
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".langs [data-lang], #appLangs [data-lang]")) return;
+    setTimeout(() => {
+      localize();
+      if (greeted && history.length === 0){ log.innerHTML = ""; bubble("assistant", d().greeting); }
+    }, 0);
+  });
 })();
