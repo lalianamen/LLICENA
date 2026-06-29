@@ -29,7 +29,10 @@ trades (Law & Business, C-10, C-20, C-36, C-7, C-16, asbestos, OSHA), CDL endors
 motorcycle, EPA 608, backflow, NICET, and beauty/cosmetology licenses.
 
 How to answer:
-- Be concise, friendly, and direct. Reply in the user's language (the request states their locale).
+- Be concise, friendly, and direct. Reply in the SAME language the user writes their latest message in —
+  whatever it is (English, Spanish, Russian, Armenian, Ukrainian, etc.), even if it differs from their
+  interface language. Only fall back to the interface locale when the message itself is language-ambiguous
+  (e.g. just a greeting, a number, or an email address).
 - For factual specifics that change over time or by location — where/how to schedule or take an exam,
   the nearest office by ZIP code, current fees, deadlines — DO NOT invent addresses, dates, or fees.
   Use the web_search tool and prefer official / government sources (.gov, the state agency or board,
@@ -108,7 +111,7 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  const system = `${SYSTEM}\n\nThe user's locale is "${locale}". Reply in that language.`;
+  const system = `${SYSTEM}\n\nThe user's interface language is "${locale}"; use it only as a fallback when the language of their message is unclear. Otherwise always mirror the language of their latest message.`;
   let ticketId: string | null = null;
 
   try {

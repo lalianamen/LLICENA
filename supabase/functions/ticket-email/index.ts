@@ -79,7 +79,7 @@ function template(locale: string, kind: string, stage: string, message: string) 
     : "";
   const html =
     `<div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;color:#15273D;padding:8px">
-       <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:bold;letter-spacing:.5px;margin-bottom:18px">LICENA</div>
+       <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px"><tr><td width="30" height="30" style="width:30px;height:30px;background:#15273D;border-radius:7px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#E0A116;line-height:30px">L</td><td style="padding-left:10px;font-family:Arial,Helvetica,sans-serif;font-size:21px;font-weight:bold;color:#15273D;letter-spacing:.5px">LICENA</td></tr></table>
        <p style="font-size:15px;line-height:1.5;margin:0">${t.b}</p>
        ${quote}
        <p style="font-size:12px;color:#8ea2b6;line-height:1.5;margin-top:24px">${c.footer}</p>

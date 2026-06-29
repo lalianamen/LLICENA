@@ -1,0 +1,47 @@
+<!--
+  LICENA — Supabase Auth "Confirm signup" email.
+
+  Goal: the sign-up confirmation comes from licena.us in LICENA's style
+  (not Supabase's default email). One-time dashboard setup:
+
+  1) Authentication → Sign In / Providers → Email:  "Confirm email" must be ON.
+
+  2) Project Settings → Authentication → SMTP Settings → enable Custom SMTP:
+        Sender email : noreply@licena.us
+        Sender name  : LICENA
+        Host         : smtp.resend.com
+        Port         : 465
+        Username     : resend
+        Password     : <your Resend API key, re_...>
+
+  3) Authentication → Emails → Templates → "Confirm signup":
+        Subject:
+          {{ if eq .Data.lang "ru" }}Подтвердите почту — LICENA{{ else if eq .Data.lang "es" }}Confirma tu correo — LICENA{{ else }}Confirm your email — LICENA{{ end }}
+        Message body: paste everything below this comment.
+
+  Language is chosen from the `lang` saved at sign-up
+  (app.js sends it via supa.auth.signUp options.data.lang). Missing/unknown → English.
+-->
+<div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;color:#15273D;padding:8px">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px"><tr><td width="30" height="30" style="width:30px;height:30px;background:#15273D;border-radius:7px;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#E0A116;line-height:30px">L</td><td style="padding-left:10px;font-family:Arial,Helvetica,sans-serif;font-size:21px;font-weight:bold;color:#15273D;letter-spacing:.5px">LICENA</td></tr></table>
+
+  {{ if eq .Data.lang "ru" }}
+  <p style="font-size:16px;line-height:1.5;margin:0 0 6px;font-weight:bold">Подтвердите почту</p>
+  <p style="font-size:15px;line-height:1.5;margin:0">Спасибо за регистрацию в LICENA. Нажмите кнопку ниже, чтобы подтвердить адрес и начать заниматься.</p>
+  <p style="margin:24px 0"><a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#E0A116;color:#15273D;font-size:15px;font-weight:bold;text-decoration:none;padding:12px 26px;border-radius:8px">Подтвердить почту</a></p>
+  <p style="font-size:12px;color:#5E6E7E;line-height:1.5;margin:0">Если кнопка не работает, скопируйте ссылку:<br><a href="{{ .ConfirmationURL }}" style="color:#1E3A5C">{{ .ConfirmationURL }}</a></p>
+  <p style="font-size:12px;color:#8ea2b6;line-height:1.5;margin-top:24px">Вы получили это письмо, потому что зарегистрировались в LICENA. Если это были не вы — просто проигнорируйте письмо.</p>
+  {{ else if eq .Data.lang "es" }}
+  <p style="font-size:16px;line-height:1.5;margin:0 0 6px;font-weight:bold">Confirma tu correo</p>
+  <p style="font-size:15px;line-height:1.5;margin:0">Gracias por registrarte en LICENA. Pulsa el botón de abajo para confirmar tu correo y empezar a practicar.</p>
+  <p style="margin:24px 0"><a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#E0A116;color:#15273D;font-size:15px;font-weight:bold;text-decoration:none;padding:12px 26px;border-radius:8px">Confirmar correo</a></p>
+  <p style="font-size:12px;color:#5E6E7E;line-height:1.5;margin:0">Si el botón no funciona, copia este enlace:<br><a href="{{ .ConfirmationURL }}" style="color:#1E3A5C">{{ .ConfirmationURL }}</a></p>
+  <p style="font-size:12px;color:#8ea2b6;line-height:1.5;margin-top:24px">Recibes este correo porque te registraste en LICENA. Si no fuiste tú, ignóralo.</p>
+  {{ else }}
+  <p style="font-size:16px;line-height:1.5;margin:0 0 6px;font-weight:bold">Confirm your email</p>
+  <p style="font-size:15px;line-height:1.5;margin:0">Thanks for signing up for LICENA. Click the button below to confirm your email and start practicing.</p>
+  <p style="margin:24px 0"><a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#E0A116;color:#15273D;font-size:15px;font-weight:bold;text-decoration:none;padding:12px 26px;border-radius:8px">Confirm email</a></p>
+  <p style="font-size:12px;color:#5E6E7E;line-height:1.5;margin:0">If the button doesn't work, copy this link:<br><a href="{{ .ConfirmationURL }}" style="color:#1E3A5C">{{ .ConfirmationURL }}</a></p>
+  <p style="font-size:12px;color:#8ea2b6;line-height:1.5;margin-top:24px">You're receiving this because you signed up for LICENA. If this wasn't you, just ignore this email.</p>
+  {{ end }}
+</div>
