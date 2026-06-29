@@ -81,8 +81,17 @@ const CORS = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 
-const textOf = (content: any[]) =>
-  content.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+// Final visible answer: only the text AFTER the last (server-side) tool/search
+// block, so a "let me check…" lead-in emitted before a web search doesn't get
+// concatenated with the real answer into one doubled-up reply.
+const textOf = (content: any[]) => {
+  let last = -1;
+  content.forEach((b, i) => {
+    if (b.type === "server_tool_use" || b.type === "web_search_tool_result" || b.type === "tool_use") last = i;
+  });
+  const tail = content.slice(last + 1).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+  return tail || content.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
