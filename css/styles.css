@@ -256,6 +256,7 @@ footer small{color:#8ea2b6;font-size:12.5px;max-width:48ch;display:block;margin-
   height:520px;max-height:calc(100vh - 120px);display:flex;flex-direction:column;
   background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
   box-shadow:0 18px 50px rgba(21,39,61,.22);animation:authIn .2s ease}
+.sup-panel[hidden]{display:none}
 .sup-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--ink);color:#fff}
 .sup-head strong{font-family:'Archivo';font-size:15px}
 .sup-x{background:none;border:0;color:#fff;font-size:17px;cursor:pointer;opacity:.8;line-height:1}
