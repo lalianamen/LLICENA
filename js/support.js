@@ -37,6 +37,16 @@
 
   const history = [];   // [{role:'user'|'assistant', content}] sent to the model
   let greeted = false, busy = false;
+  // A signed-in user's email/id so the assistant never asks logged-in users for it.
+  let authEmail = null, authId = null;
+  async function refreshAuth(){
+    try {
+      const { data: { session } } = await supa.auth.getSession();
+      authEmail = session && session.user ? (session.user.email || null) : null;
+      authId    = session && session.user ? (session.user.id || null) : null;
+    } catch (_) { authEmail = null; authId = null; }
+  }
+  refreshAuth();
 
   const esc = (s) => { const e = document.createElement("div"); e.textContent = s; return e.innerHTML; };
   // Escape, then linkify bare URLs (safe: escaping runs first).
@@ -89,8 +99,9 @@
     history.push({ role: "user", content: text });
     typing(true);
     try {
+      await refreshAuth();
       const { data, error } = await supa.functions.invoke("assistant", {
-        body: { messages: history, locale: curLang() },
+        body: { messages: history, locale: curLang(), userEmail: authEmail, userId: authId },
       });
       typing(false);
       if (error || !data || !data.reply) throw (error || new Error("no reply"));

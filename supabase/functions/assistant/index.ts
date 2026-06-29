@@ -107,6 +107,11 @@ Deno.serve(async (req) => {
   const incoming = Array.isArray(payload?.messages) ? payload.messages : null;
   if (!incoming || !incoming.length) return json({ error: "bad_request" }, 400);
 
+  // A signed-in user's email/id (sent by the widget) so we never ask logged-in users for it.
+  const userEmail = (typeof payload?.userEmail === "string" && payload.userEmail.includes("@"))
+    ? payload.userEmail.toLowerCase().trim().slice(0, 200) : null;
+  const userId = (typeof payload?.userId === "string" && payload.userId) ? payload.userId.slice(0, 64) : null;
+
   // Sanitize the conversation we forward to the model.
   const messages = incoming
     .slice(-MAX_MESSAGES)
@@ -120,7 +125,10 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  const system = `${SYSTEM}\n\nThe user's interface language is "${locale}"; use it only as a fallback when the language of their message is unclear. Otherwise always mirror the language of their latest message.`;
+  const authNote = userEmail
+    ? `\n\nThe user is signed in; their account email is ${userEmail}. Do NOT ask them for their email — you already have it. When logging a request or complaint, use this email directly and never ask them to type or confirm it.`
+    : "";
+  const system = `${SYSTEM}\n\nThe user's interface language is "${locale}"; use it only as a fallback when the language of their message is unclear. Otherwise always mirror the language of their latest message.${authNote}`;
   let ticketId: string | null = null;
 
   try {
@@ -158,9 +166,10 @@ Deno.serve(async (req) => {
             .from("support_tickets")
             .insert([{
               kind: t.kind === "complaint" ? "complaint" : "request",
-              email: String(t.email || "").toLowerCase(),
+              email: (userEmail || String(t.email || "")).toLowerCase(),
               message: String(t.summary || ""),
               locale,
+              user_id: userId,
               course_id: t.course_id || null,
               target_lang: t.target_lang || null,
             }])
