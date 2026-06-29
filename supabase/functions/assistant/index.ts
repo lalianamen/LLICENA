@@ -111,6 +111,7 @@ Deno.serve(async (req) => {
   const userEmail = (typeof payload?.userEmail === "string" && payload.userEmail.includes("@"))
     ? payload.userEmail.toLowerCase().trim().slice(0, 200) : null;
   const userId = (typeof payload?.userId === "string" && payload.userId) ? payload.userId.slice(0, 64) : null;
+  const userName = (typeof payload?.userName === "string" && payload.userName.trim()) ? payload.userName.trim().slice(0, 80) : null;
 
   // Sanitize the conversation we forward to the model.
   const messages = incoming
@@ -126,7 +127,7 @@ Deno.serve(async (req) => {
   );
 
   const authNote = userEmail
-    ? `\n\nThe user is signed in; their account email is ${userEmail}. Do NOT ask them for their email — you already have it. When logging a request or complaint, use this email directly and never ask them to type or confirm it.`
+    ? `\n\nThe user is signed in${userName ? ` and their name is ${userName}` : ""}; their account email is ${userEmail}. ${userName ? `Address them by their first name naturally (e.g. in your greeting or when confirming an action), without overusing it. ` : ""}Do NOT ask them for their email — you already have it. When logging a request or complaint, use this email directly and never ask them to type or confirm it.`
     : "";
   const system = `${SYSTEM}\n\nThe user's interface language is "${locale}"; use it only as a fallback when the language of their message is unclear. Otherwise always mirror the language of their latest message.${authNote}`;
   let ticketId: string | null = null;

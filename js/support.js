@@ -21,9 +21,9 @@
 
   // Self-contained copy (mirrors the sup* keys in i18n.js) so no page i18n is needed.
   const STR = {
-    en:{ title:"LICENA Assistant", greeting:"Hi! I'm the LICENA assistant. Ask about exams, scheduling, or where to take a test — and I can log a request for a new course or language, or a problem you found.", ph:"Ask a question…", error:"Something went wrong. Please try again." },
-    es:{ title:"Asistente LICENA", greeting:"¡Hola! Soy el asistente de LICENA. Pregunta sobre exámenes, citas o dónde dar una prueba — y puedo registrar una solicitud de un nuevo curso o idioma, o un problema que hayas encontrado.", ph:"Escribe tu pregunta…", error:"Algo salió mal. Inténtalo de nuevo." },
-    ru:{ title:"Ассистент LICENA", greeting:"Привет! Я ассистент LICENA. Спроси про экзамены, запись или где сдавать тест — и я могу зафиксировать заявку на новый курс или язык, либо найденную ошибку.", ph:"Задай вопрос…", error:"Что-то пошло не так. Попробуйте ещё раз." },
+    en:{ title:"LICENA Assistant", hello:"Hi", intro:"I'm the LICENA assistant. Ask about exams, scheduling, or where to take a test — and I can log a request for a new course or language, or a problem you found.", ph:"Ask a question…", error:"Something went wrong. Please try again." },
+    es:{ title:"Asistente LICENA", hello:"¡Hola", intro:"Soy el asistente de LICENA. Pregunta sobre exámenes, citas o dónde dar una prueba — y puedo registrar una solicitud de un nuevo curso o idioma, o un problema que hayas encontrado.", ph:"Escribe tu pregunta…", error:"Algo salió mal. Inténtalo de nuevo." },
+    ru:{ title:"Ассистент LICENA", hello:"Привет", intro:"Я ассистент LICENA. Спроси про экзамены, запись или где сдавать тест — и я могу зафиксировать заявку на новый курс или язык, либо найденную ошибку.", ph:"Задай вопрос…", error:"Что-то пошло не так. Попробуйте ещё раз." },
   };
   // UI language across pages: course exposes `uiLang`, landing/cabinet expose `lang`,
   // all persist lp:ui_lang. typeof-guarded so an undefined global never throws.
@@ -34,17 +34,25 @@
     return (l === "es" || l === "ru") ? l : "en";
   }
   const d = () => STR[curLang()];
+  // Greeting, personalized with the signed-in user's first name when we have it.
+  function greetingText(){
+    const s = d(), n = (authName || "").trim().split(/\s+/)[0];
+    return n ? `${s.hello}, ${n}! ${s.intro}` : `${s.hello}! ${s.intro}`;
+  }
 
   const history = [];   // [{role:'user'|'assistant', content}] sent to the model
   let greeted = false, busy = false;
-  // A signed-in user's email/id so the assistant never asks logged-in users for it.
-  let authEmail = null, authId = null;
+  // A signed-in user's email/id/name so the assistant never asks logged-in users for
+  // their email and can address them by name.
+  let authEmail = null, authId = null, authName = null;
   async function refreshAuth(){
     try {
       const { data: { session } } = await supa.auth.getSession();
-      authEmail = session && session.user ? (session.user.email || null) : null;
-      authId    = session && session.user ? (session.user.id || null) : null;
-    } catch (_) { authEmail = null; authId = null; }
+      const u = session && session.user ? session.user : null;
+      authEmail = u ? (u.email || null) : null;
+      authId    = u ? (u.id || null) : null;
+      authName  = u && u.user_metadata ? (u.user_metadata.name || null) : null;
+    } catch (_) { authEmail = null; authId = null; authName = null; }
   }
   refreshAuth();
 
@@ -75,11 +83,12 @@
     input.placeholder = d().ph;
   }
 
-  function open(){
+  async function open(){
     panel.hidden = false;
     fab.setAttribute("aria-expanded", "true");
     localize();
-    if (!greeted){ bubble("assistant", d().greeting); greeted = true; }
+    await refreshAuth();
+    if (!greeted){ bubble("assistant", greetingText()); greeted = true; }
     input.focus();
   }
   function close(){ panel.hidden = true; fab.setAttribute("aria-expanded", "false"); }
@@ -101,7 +110,7 @@
     try {
       await refreshAuth();
       const { data, error } = await supa.functions.invoke("assistant", {
-        body: { messages: history, locale: curLang(), userEmail: authEmail, userId: authId },
+        body: { messages: history, locale: curLang(), userEmail: authEmail, userId: authId, userName: authName },
       });
       typing(false);
       if (error || !data || !data.reply) throw (error || new Error("no reply"));
@@ -130,7 +139,7 @@
     if (!e.target.closest(".langs [data-lang], #appLangs [data-lang]")) return;
     setTimeout(() => {
       localize();
-      if (greeted && history.length === 0){ log.innerHTML = ""; bubble("assistant", d().greeting); }
+      if (greeted && history.length === 0){ log.innerHTML = ""; bubble("assistant", greetingText()); }
     }, 0);
   });
 })();
