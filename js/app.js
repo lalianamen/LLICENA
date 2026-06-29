@@ -7,6 +7,25 @@ let lang = "en";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function passOk(p){ return /[A-Z]/.test(p) && /[^A-Za-z0-9]/.test(p); }
 
+// Inline validation feedback: red-highlight a control and show why next to it.
+function fieldErr(input, msg){
+  input.classList.add("invalid");
+  const field = input.closest(".field");
+  if (msg === null){                 // password: reuse the requirement hint as the reason
+    const hint = field && field.querySelector(".pwhint");
+    if (hint) hint.classList.add("bad");
+    return;
+  }
+  const slot = field && field.querySelector(".ferr");
+  if (slot) slot.textContent = msg;
+}
+function consentErr(checkbox){ checkbox.closest(".consent").classList.add("invalid"); }
+function clearErrors(form){
+  form.querySelectorAll(".invalid").forEach(el => el.classList.remove("invalid"));
+  form.querySelectorAll(".ferr").forEach(el => el.textContent = "");
+  form.querySelectorAll(".pwhint").forEach(el => el.classList.remove("bad"));
+}
+
 function applyLang(){
   const d = T[lang];
   document.querySelectorAll("[data-t]").forEach(el => {
@@ -48,12 +67,17 @@ supa.auth.getSession().then(({ data: { session } }) => {
 // LOGIN
 async function doLogin() {
   const d = T[lang], err = document.getElementById("li_err");
-  const email = document.getElementById("li_email").value.trim().toLowerCase();
-  const pass  = document.getElementById("li_pass").value;
-  if (!email || !pass) { err.textContent = d.errFields; return; }
-  if (!EMAIL_RE.test(email)) { err.textContent = d.errEmail; return; }
+  const emailEl = document.getElementById("li_email");
+  const passEl  = document.getElementById("li_pass");
+  const email = emailEl.value.trim().toLowerCase();
+  const pass  = passEl.value;
+  clearErrors(emailEl.form); err.textContent = "";
+  const bad = [];
+  if (!email || !EMAIL_RE.test(email)) { fieldErr(emailEl, d.errEmail); bad.push(emailEl); }
+  if (!pass) { fieldErr(passEl, d.errPassReq); bad.push(passEl); }
+  if (bad.length) { bad[0].focus(); return; }
   const btn = document.getElementById("li_btn");
-  btn.disabled = true; err.textContent = "";
+  btn.disabled = true;
   const { error } = await supa.auth.signInWithPassword({ email, password: pass });
   btn.disabled = false;
   if (error) { err.textContent = d.errCreds; return; }
@@ -65,18 +89,24 @@ document.getElementById("li_form").addEventListener("submit", doLogin);
 // REGISTER
 async function doRegister() {
   const d = T[lang], err = document.getElementById("rg_err");
-  const name  = document.getElementById("rg_name").value.trim();
-  const email = document.getElementById("rg_email").value.trim().toLowerCase();
-  const pass  = document.getElementById("rg_pass").value;
-  if (!name)  { err.textContent = d.errName;    return; }
-  if (!email) { err.textContent = d.errEmail;   return; }
-  if (!EMAIL_RE.test(email)) { err.textContent = d.errEmail; return; }
-  if (!pass)  { err.textContent = d.errFields;  return; }
-  if (!passOk(pass)) { err.textContent = d.errPass; return; }
-  if (!document.getElementById("rg_age").checked)     { err.textContent = d.errAge;     return; }
-  if (!document.getElementById("rg_consent").checked) { err.textContent = d.errConsent; return; }
+  const nameEl  = document.getElementById("rg_name");
+  const emailEl = document.getElementById("rg_email");
+  const passEl  = document.getElementById("rg_pass");
+  const ageEl   = document.getElementById("rg_age");
+  const consEl  = document.getElementById("rg_consent");
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim().toLowerCase();
+  const pass  = passEl.value;
+  clearErrors(nameEl.form); err.textContent = "";
+  const bad = [];
+  if (!name) { fieldErr(nameEl, d.errName); bad.push(nameEl); }
+  if (!email || !EMAIL_RE.test(email)) { fieldErr(emailEl, d.errEmail); bad.push(emailEl); }
+  if (!passOk(pass)) { fieldErr(passEl, null); bad.push(passEl); }
+  if (!ageEl.checked)  { consentErr(ageEl);  if (!err.textContent) err.textContent = d.errAge;     bad.push(ageEl); }
+  if (!consEl.checked) { consentErr(consEl); if (!err.textContent) err.textContent = d.errConsent; bad.push(consEl); }
+  if (bad.length) { bad[0].focus(); return; }
   const btn = document.getElementById("rg_btn");
-  btn.disabled = true; err.textContent = "";
+  btn.disabled = true;
   const { data, error } = await supa.auth.signUp({
     email, password: pass,
     options: { data: { name, lang } }
@@ -98,6 +128,20 @@ async function doRegister() {
 }
 document.getElementById("rg_btn").addEventListener("click", doRegister);
 document.getElementById("rg_form").addEventListener("submit", doRegister);
+
+// Clear a field's error highlight as soon as the user starts fixing it
+document.querySelectorAll("#li_form input, #rg_form input").forEach(el => {
+  const clear = () => {
+    el.classList.remove("invalid");
+    const box = el.closest(".field, .consent");
+    if (!box) return;
+    box.classList.remove("invalid");
+    const slot = box.querySelector(".ferr"); if (slot) slot.textContent = "";
+    const hint = box.querySelector(".pwhint"); if (hint) hint.classList.remove("bad");
+  };
+  el.addEventListener("input", clear);
+  el.addEventListener("change", clear);
+});
 
 // Back button / browser back from check-email screen → return to register panel
 document.getElementById("backToRegister").addEventListener("click", () => {
