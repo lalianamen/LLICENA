@@ -2,6 +2,11 @@
 
 let lang = "en";
 
+// Validation: email must look like an address; password must use Latin
+// letters with at least one uppercase letter and at least one symbol.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function passOk(p){ return /[A-Z]/.test(p) && /[^A-Za-z0-9]/.test(p); }
+
 function applyLang(){
   const d = T[lang];
   document.querySelectorAll("[data-t]").forEach(el => {
@@ -46,6 +51,7 @@ async function doLogin() {
   const email = document.getElementById("li_email").value.trim().toLowerCase();
   const pass  = document.getElementById("li_pass").value;
   if (!email || !pass) { err.textContent = d.errFields; return; }
+  if (!EMAIL_RE.test(email)) { err.textContent = d.errEmail; return; }
   const btn = document.getElementById("li_btn");
   btn.disabled = true; err.textContent = "";
   const { error } = await supa.auth.signInWithPassword({ email, password: pass });
@@ -64,7 +70,9 @@ async function doRegister() {
   const pass  = document.getElementById("rg_pass").value;
   if (!name)  { err.textContent = d.errName;    return; }
   if (!email) { err.textContent = d.errEmail;   return; }
+  if (!EMAIL_RE.test(email)) { err.textContent = d.errEmail; return; }
   if (!pass)  { err.textContent = d.errFields;  return; }
+  if (!passOk(pass)) { err.textContent = d.errPass; return; }
   if (!document.getElementById("rg_age").checked)     { err.textContent = d.errAge;     return; }
   if (!document.getElementById("rg_consent").checked) { err.textContent = d.errConsent; return; }
   const btn = document.getElementById("rg_btn");
