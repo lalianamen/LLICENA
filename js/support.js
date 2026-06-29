@@ -1,65 +1,95 @@
-/* LICENA — support / requests assistant (Phase 1: intake).
-   Captures questions, course/language requests, and complaints into Supabase
-   (support_tickets). Grounded AI answers + email notifications are layered on in
-   later phases; this file only needs the existing anon Supabase client. */
+/* LICENA — support assistant (AI chat).
+   A conversational widget: answers questions (grounded via the server function's
+   web search) and logs course/language requests and complaints. All Claude calls
+   go through the Supabase Edge Function `assistant` — the API key never touches
+   the browser. `T`, `lang`, and `supa` come from i18n.js / app.js / supabase-client.js. */
 (function(){
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const fab   = document.getElementById("supFab");
   const panel = document.getElementById("supPanel");
   if (!fab || !panel) return;
 
-  const form    = document.getElementById("supForm");
-  const msgEl   = document.getElementById("supMsg");
-  const emailEl = document.getElementById("supEmail");
-  const errEl   = document.getElementById("supErr");
-  const done    = document.getElementById("supDone");
-  const doneMsg = document.getElementById("supDoneMsg");
-  let kind = "question";
+  const log    = document.getElementById("supLog");
+  const form   = document.getElementById("supForm");
+  const input  = document.getElementById("supMsg");
+  const sendBtn= document.getElementById("supSend");
 
-  // Active translation dict (falls back to English). `T` and `lang` come from i18n.js/app.js.
   const d = () => (typeof T !== "undefined" && T[lang]) ? T[lang] : (typeof T !== "undefined" ? T.en : {});
-  const setPlaceholder = () => { if (msgEl) msgEl.placeholder = d().supMsgPh || ""; };
+  const history = [];   // [{role:'user'|'assistant', content}] sent to the model
+  let greeted = false, busy = false;
 
-  function open(){ panel.hidden = false; fab.setAttribute("aria-expanded", "true"); setPlaceholder(); msgEl.focus(); }
+  const esc = (s) => { const e = document.createElement("div"); e.textContent = s; return e.innerHTML; };
+  // Escape, then linkify bare URLs (safe: escaping runs first).
+  const fmt = (s) => esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+
+  function bubble(role, text){
+    const el = document.createElement("div");
+    el.className = "sup-msg " + (role === "user" ? "user" : "bot");
+    el.innerHTML = fmt(text);
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  }
+  function typing(on){
+    let t = document.getElementById("supTyping");
+    if (on && !t){
+      t = document.createElement("div");
+      t.id = "supTyping"; t.className = "sup-typing";
+      t.innerHTML = "<span></span><span></span><span></span>";
+      log.appendChild(t); log.scrollTop = log.scrollHeight;
+    } else if (!on && t){ t.remove(); }
+  }
+
+  function open(){
+    panel.hidden = false;
+    fab.setAttribute("aria-expanded", "true");
+    input.placeholder = d().supPh || "";
+    if (!greeted){ bubble("assistant", d().supGreeting || ""); greeted = true; }
+    input.focus();
+  }
   function close(){ panel.hidden = true; fab.setAttribute("aria-expanded", "false"); }
   fab.addEventListener("click", () => panel.hidden ? open() : close());
   document.getElementById("supClose").addEventListener("click", close);
 
-  // Ticket type selector
-  panel.querySelectorAll(".sup-type").forEach(b => b.addEventListener("click", () => {
-    kind = b.dataset.kind;
-    panel.querySelectorAll(".sup-type").forEach(x => x.classList.toggle("on", x === b));
-  }));
+  // Auto-grow the input; Enter sends, Shift+Enter makes a newline.
+  function grow(){ input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 96) + "px"; }
+  input.addEventListener("input", grow);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey){ e.preventDefault(); form.requestSubmit(); }
+  });
 
-  // Re-localize the placeholder when the page language changes
-  document.querySelectorAll(".langs button").forEach(b => b.addEventListener("click", setPlaceholder));
+  async function send(text){
+    busy = true; sendBtn.disabled = true;
+    bubble("user", text);
+    history.push({ role: "user", content: text });
+    typing(true);
+    try {
+      const { data, error } = await supa.functions.invoke("assistant", {
+        body: { messages: history, locale: lang },
+      });
+      typing(false);
+      if (error || !data || !data.reply) throw (error || new Error("no reply"));
+      bubble("assistant", data.reply);
+      history.push({ role: "assistant", content: data.reply });
+    } catch (_) {
+      typing(false);
+      bubble("assistant", d().supError || "Something went wrong. Please try again.");
+    } finally {
+      busy = false; sendBtn.disabled = false; input.focus();
+    }
+  }
 
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const message = msgEl.value.trim();
-    const email   = emailEl.value.trim().toLowerCase();
-    errEl.textContent = "";
-    if (!message)              { errEl.textContent = d().supErrMsg;   msgEl.focus();   return; }
-    if (!EMAIL_RE.test(email)) { errEl.textContent = d().supErrEmail; emailEl.focus(); return; }
-
-    const btn = document.getElementById("supSend");
-    btn.disabled = true;
-    // Attach the user when logged in (cabinet use later); anonymous on the landing.
-    let user_id = null;
-    try { const { data } = await supa.auth.getSession(); user_id = data.session ? data.session.user.id : null; } catch (_) {}
-    const { error } = await supa.from("support_tickets").insert([{ kind, email, message, user_id, locale: lang }]);
-    btn.disabled = false;
-    if (error) { errEl.textContent = error.message || "Error"; return; }
-
-    form.hidden = true;
-    done.hidden = false;
-    doneMsg.textContent = (d().supDone || "").replace("{email}", email);
+    const text = input.value.trim();
+    if (!text || busy) return;
+    input.value = ""; grow();
+    send(text);
   });
 
-  document.getElementById("supAgain").addEventListener("click", () => {
-    msgEl.value = ""; emailEl.value = ""; errEl.textContent = "";
-    done.hidden = true; form.hidden = false; msgEl.focus();
-  });
-
-  setPlaceholder();
+  // Re-localize on language change; re-greet only if no conversation started yet
+  document.querySelectorAll(".langs button").forEach(b =>
+    b.addEventListener("click", () => {
+      input.placeholder = d().supPh || "";
+      if (greeted && history.length === 0){ log.innerHTML = ""; bubble("assistant", d().supGreeting || ""); }
+    }));
 })();

@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=17">
+<link rel="stylesheet" href="css/styles.css?v=18">
 </head>
 <body>
 
@@ -272,33 +272,19 @@
     <strong id="supTitle" data-t="supTitle">LICENA Assistant</strong>
     <button id="supClose" class="sup-x" aria-label="Close">✕</button>
   </div>
-  <div class="sup-intro" data-t="supIntro">Ask a question, request a course or language, or report a problem. Leave your email and we'll follow up.</div>
-  <form id="supForm" novalidate>
-    <div class="sup-types" role="group" aria-label="Type">
-      <button type="button" class="sup-type on" data-kind="question" data-t="supTypeQ">Question</button>
-      <button type="button" class="sup-type" data-kind="request" data-t="supTypeR">Request</button>
-      <button type="button" class="sup-type" data-kind="complaint" data-t="supTypeC">Complaint</button>
-    </div>
-    <label class="sup-l" for="supMsg" data-t="supMsgL">Your message</label>
-    <textarea id="supMsg" rows="4"></textarea>
-    <label class="sup-l" for="supEmail" data-t="supEmailL">Email for updates</label>
-    <input id="supEmail" type="email" placeholder="you@email.com">
-    <div class="sup-err" id="supErr"></div>
-    <button type="submit" class="btn btn-primary btn-block" id="supSend" data-t="supSend">Send</button>
+  <div class="sup-log" id="supLog" aria-live="polite"></div>
+  <form id="supForm" class="sup-input">
+    <textarea id="supMsg" rows="1" placeholder="Ask a question…"></textarea>
+    <button type="submit" id="supSend" class="sup-send" aria-label="Send">➤</button>
   </form>
-  <div class="sup-done" id="supDone" hidden>
-    <div class="sup-done-ic">✓</div>
-    <p id="supDoneMsg"></p>
-    <button type="button" class="btn btn-ghost" id="supAgain" data-t="supAgain">Send another</button>
-  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=13"></script>
-<script src="js/i18n.js?v=16"></script>
+<script src="js/i18n.js?v=17"></script>
 <script src="js/app.js?v=14"></script>
 <script src="js/resources.js?v=14"></script>
 <script src="js/resources-render.js?v=14"></script>
-<script src="js/support.js?v=1"></script>
+<script src="js/support.js?v=2"></script>
 </body>
 </html>

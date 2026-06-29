@@ -39,7 +39,7 @@ const T = {
     footExamsHead:"Exams", footExam1:"CSLB Law & Business", footExam2:"C-20 HVAC Trade", footExam3:"Asbestos Certification",
     footLangsHead:"Languages", footBilingualNote:"Bilingual side-by-side mode available",
     footAboutHead:"About", footCity:"Los Angeles, CA", footBuiltBy:"Built by contractors, for contractors", footBeta:"Beta — actively updated",
-    supTitle:"LICENA Assistant", supIntro:"Ask a question, request a course or language, or report a problem. Leave your email and we'll follow up.", supTypeQ:"Question", supTypeR:"Request", supTypeC:"Complaint", supMsgL:"Your message", supMsgPh:"Type your question, request, or the problem you found…", supEmailL:"Email for updates", supSend:"Send", supAgain:"Send another", supErrEmail:"Enter a valid email.", supErrMsg:"Please write a short message first.", supDone:"Got it! We've logged your message and will email {email} as it's handled."},
+    supTitle:"LICENA Assistant", supGreeting:"Hi! I'm the LICENA assistant. Ask about exams, scheduling, or where to take a test — and I can log a request for a new course or language, or a problem you found.", supPh:"Ask a question…", supError:"Something went wrong. Please try again."},
   es:{tag:"Herramienta de práctica", eyebrow:"Exámenes de licencia de California", heroLine:"Aprueba tu examen.", heroSub:"Preguntas de práctica para el CSLB y otros exámenes de licencia de California — en inglés, español y ruso.",
     feat1T:"Estilo del examen real", feat1D:"Preguntas escritas con el formato y la dificultad del examen CSLB.",
     feat2T:"Estudia a tu manera", feat2D:"Exámenes simulados, práctica por tema o en puntos débiles.",
@@ -79,7 +79,7 @@ const T = {
     footExamsHead:"Exámenes", footExam1:"Ley y Negocios CSLB", footExam2:"Oficio HVAC C-20", footExam3:"Certificación de Asbesto",
     footLangsHead:"Idiomas", footBilingualNote:"Modo bilingüe en paralelo disponible",
     footAboutHead:"Acerca de", footCity:"Los Ángeles, CA", footBuiltBy:"Creado por contratistas, para contratistas", footBeta:"Beta — actualizado activamente",
-    supTitle:"Asistente LICENA", supIntro:"Haz una pregunta, solicita un curso o idioma, o reporta un problema. Deja tu correo y te avisamos.", supTypeQ:"Pregunta", supTypeR:"Solicitud", supTypeC:"Queja", supMsgL:"Tu mensaje", supMsgPh:"Escribe tu pregunta, solicitud o el problema que encontraste…", supEmailL:"Correo para avisos", supSend:"Enviar", supAgain:"Enviar otro", supErrEmail:"Ingresa un correo válido.", supErrMsg:"Escribe un mensaje breve primero.", supDone:"¡Listo! Guardamos tu mensaje y te escribiremos a {email} con novedades."},
+    supTitle:"Asistente LICENA", supGreeting:"¡Hola! Soy el asistente de LICENA. Pregunta sobre exámenes, citas o dónde dar una prueba — y puedo registrar una solicitud de un nuevo curso o idioma, o un problema que hayas encontrado.", supPh:"Escribe tu pregunta…", supError:"Algo salió mal. Inténtalo de nuevo."},
   ru:{tag:"Тренажёр", eyebrow:"Лицензионные экзамены Калифорнии", heroLine:"Сдай экзамен.", heroSub:"Практические вопросы для CSLB и других лицензионных экзаменов Калифорнии — на английском, испанском и русском.",
     feat1T:"Формат реального экзамена", feat1D:"Вопросы написаны в стиле и сложности настоящего экзамена CSLB.",
     feat2T:"Учись как удобно", feat2D:"Полный пробный экзамен, тренировка по темам или работа над ошибками.",
@@ -119,5 +119,5 @@ const T = {
     footExamsHead:"Экзамены", footExam1:"Закон и бизнес CSLB", footExam2:"Торговля HVAC C-20", footExam3:"Сертификация по асбесту",
     footLangsHead:"Языки", footBilingualNote:"Доступен двуязычный режим рядом",
     footAboutHead:"О нас", footCity:"Лос-Анджелес, Калифорния", footBuiltBy:"Сделано подрядчиками для подрядчиков", footBeta:"Бета — регулярно обновляется",
-    supTitle:"Ассистент LICENA", supIntro:"Задай вопрос, оставь заявку на курс или язык или сообщи о проблеме. Оставь почту — мы ответим.", supTypeQ:"Вопрос", supTypeR:"Заявка", supTypeC:"Жалоба", supMsgL:"Сообщение", supMsgPh:"Опиши вопрос, заявку или найденную проблему…", supEmailL:"Почта для уведомлений", supSend:"Отправить", supAgain:"Отправить ещё", supErrEmail:"Введите корректную почту.", supErrMsg:"Сначала напишите короткое сообщение.", supDone:"Принято! Мы записали обращение и напишем на {email} по мере обработки."}
+    supTitle:"Ассистент LICENA", supGreeting:"Привет! Я ассистент LICENA. Спроси про экзамены, запись или где сдавать тест — и я могу зафиксировать заявку на новый курс или язык, либо найденную ошибку.", supPh:"Задай вопрос…", supError:"Что-то пошло не так. Попробуйте ещё раз."}
 };
