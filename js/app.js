@@ -73,7 +73,8 @@ supa.auth.getSession().then(({ data: { session } }) => {
 });
 
 // LOGIN
-async function doLogin() {
+async function doLogin(e) {
+  if (e) e.preventDefault();
   const d = T[lang], err = document.getElementById("li_err");
   const emailEl = document.getElementById("li_email");
   const passEl  = document.getElementById("li_pass");
@@ -95,7 +96,8 @@ document.getElementById("li_btn").addEventListener("click", doLogin);
 document.getElementById("li_form").addEventListener("submit", doLogin);
 
 // REGISTER
-async function doRegister() {
+async function doRegister(e) {
+  if (e) e.preventDefault();
   const d = T[lang], err = document.getElementById("rg_err");
   const nameEl  = document.getElementById("rg_name");
   const emailEl = document.getElementById("rg_email");
@@ -141,7 +143,8 @@ document.getElementById("rg_form").addEventListener("submit", doRegister);
 // FORGOT PASSWORD — request a reset link
 document.getElementById("fp_link").addEventListener("click", () => showPanel("forgot"));
 document.getElementById("fp_back").addEventListener("click", () => showPanel("login"));
-async function doForgot() {
+async function doForgot(e) {
+  if (e) e.preventDefault();
   const d = T[lang], err = document.getElementById("fp_err");
   const emailEl = document.getElementById("fp_email");
   const email = emailEl.value.trim().toLowerCase();
@@ -160,7 +163,8 @@ document.getElementById("fp_btn").addEventListener("click", doForgot);
 document.getElementById("fp_form").addEventListener("submit", doForgot);
 
 // RESET PASSWORD — set a new password from the recovery link
-async function doReset() {
+async function doReset(e) {
+  if (e) e.preventDefault();
   const d = T[lang], err = document.getElementById("rs_err");
   const passEl = document.getElementById("rs_pass");
   const pass = passEl.value;

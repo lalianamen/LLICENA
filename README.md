@@ -13,53 +13,50 @@ California **CSLB Law & Business** exam, with more trades and license types
 
 ## Status
 
-Front-end prototype (no backend yet). Accounts, passwords, device binding and
-the email code are **simulated in the browser** so the whole flow can be
-clicked through. None of it is real security — that arrives with the backend.
-
-> **DEMO ONLY — remove before production:** a static test login is hardcoded in
-> `js/app.js`:
->
-> ```
-> Email:    test@licena.app
-> Password: test1234
-> ```
+Live beta on a Supabase backend. Real accounts via Supabase Auth (hashed
+passwords, required email confirmation, password reset), course data and
+entitlements in Postgres behind row-level security, and a few Edge Functions
+(support assistant, ticket status). Courses are free during the beta; payments
+(Stripe) and a couple of pre-paywall hardening items are still to come.
 
 ## How it works
 
-- `index.html` — **Log in / Register**. Login accepts the demo credentials
-  above (or a locally-registered account). On success → opens the cabinet.
+- `index.html` — **Log in / Register** (Supabase Auth). Registration requires
+  email confirmation; there's also a password-reset flow. On success → cabinet.
 - `app.html` — **the cabinet** (requires a session):
-  - **Practice** — study modes + topics. The questions open **only on an added
-    device** (up to 3). First time on a new device → "Use this device" adds it.
-  - **My tests** — your unlocked courses.
-  - **Add a test** — unlock more courses. **Free while testing — no payment yet**
-    (Stripe comes later; the "Add" button just activates the course).
-  - **Account** — your devices, with **Remove** gated by an email code
-    (simulated — the code is shown on screen instead of emailed).
+  - **My courses** — your active courses and study materials.
+  - **Catalog** — add more courses. **Free during the beta — no payment yet**
+    (Stripe comes later; "Add" just activates the course).
+  - **Account** — name, email, study language, and "Leave a review".
+- `course.html` — **the course player** — quiz with blocks/sections,
+  explanations, and a study-language switch.
 
 ### Anti-sharing model
 
-The password opens the **cabinet shell** on any device, but the **questions**
-open only on devices added to the account (max 3, bound by a device token —
-**not** by IP). Removing a device requires an email code, which blocks the
-"unbind / rebind on a loop" trick. There is no password that unlocks content by
-itself. See `docs/access-control.md`. Real enforcement belongs on the backend.
+An account-level device limit, **server-enforced** by the `register_device()`
+Postgres function (security definer): **5 devices per account**, bound by a
+per-device token (**not** by IP). When the limit is reached, swapping in a new
+device is allowed **at most once per 30 days**, and the most-dormant device is
+auto-evicted to make room. The client (`js/devices.js`) is a thin caller that
+**fails open** — a backend hiccup never locks anyone out. At login a new device
+gets an "Add this device?" prompt; if no swap is allowed yet, a neutral "device
+limit reached" screen is shown. See `docs/access-control.md`.
 
 ## Project structure
 
 ```
 licena/
-├── index.html            # log in / register (static demo login)
+├── index.html            # log in / register (Supabase Auth)
 ├── app.html              # cabinet: practice / my tests / add test / account
 ├── css/
 │   ├── styles.css        # base + tokens + auth page
-│   └── cabinet.css       # cabinet + device list + remove modal
+│   └── cabinet.css       # cabinet styles
 ├── js/
 │   ├── i18n.js           # auth-page translations (en/es/ru/vi)
 │   ├── i18n-app.js       # cabinet translations (en/es/ru/vi)
-│   ├── app.js            # auth logic (DEMO static login)
-│   └── app-cabinet.js    # cabinet logic + device gate + email-code removal
+│   ├── app.js            # auth logic (Supabase Auth)
+│   └── app-cabinet.js    # cabinet logic
+│   └── devices.js        # anti-sharing device gate (register_device RPC caller)
 ├── data/
 │   └── questions.example.json   # question schema for the practice bank
 ├── docs/
@@ -75,8 +72,8 @@ Static site — open `index.html`, or serve it:
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 
-Log in with the demo credentials → cabinet → "Use this device" in Practice to
-unlock topics. Try "Add a test" and the device "Remove" flow in Account.
+Register an account (or log in) → cabinet → add a course from the Catalog →
+open it in the course player.
 
 ## Deploy
 
@@ -85,12 +82,10 @@ unlock topics. Try "Add a test" and the device "Remove" flow in Account.
 
 ## Roadmap
 
-1. **Backend** (Supabase): real accounts + hashed passwords, server-side device
-   binding, real email codes. Remove the hardcoded demo login.
-2. **Payments:** Stripe Checkout on "Add a test".
-3. **Practice engine:** quiz UI reading the question bank, feedback + explanations.
-4. **More verticals & full i18n** (incl. VI/KO/ZH question content).
-5. **2FA** (optional) on device removal.
+1. **Payments:** Stripe Checkout on "Add", with server-side entitlement.
+2. **Protect question banks** behind an authenticated endpoint (they're public
+   static files today).
+3. **More verticals & languages.**
 
 ## Disclaimer
 

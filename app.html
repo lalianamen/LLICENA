@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>LICENA — Cabinet</title>
 <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml">
 <link rel="icon" href="favicon.png?v=1" sizes="32x32" type="image/png">
@@ -182,7 +183,7 @@
   </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/vendor/supabase-js-2.110.0.js"></script>
 <script src="js/supabase-client.js?v=14"></script>
 <script src="js/devices.js?v=1"></script>
 <script src="js/catalog.js?v=13"></script>

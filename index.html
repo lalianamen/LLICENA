@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>LICENA — Sign in</title>
 <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml">
 <link rel="icon" href="favicon.png?v=1" sizes="32x32" type="image/png">
@@ -51,7 +52,7 @@
       <div class="authcard">
         <!-- LOGIN -->
         <div class="authpanel on" data-panel="login">
-          <form id="li_form" onsubmit="return false" novalidate>
+          <form id="li_form" novalidate>
           <div class="field">
             <label for="li_email" data-t="emL">Email</label>
             <input id="li_email" type="email" placeholder="you@email.com" autocomplete="username">
@@ -73,7 +74,7 @@
 
         <!-- REGISTER -->
         <div class="authpanel" data-panel="register">
-          <form id="rg_form" onsubmit="return false" novalidate>
+          <form id="rg_form" novalidate>
           <div class="field">
             <label for="rg_name" data-t="nameL">Full name</label>
             <input id="rg_name" type="text" autocomplete="name">
@@ -113,7 +114,7 @@
 
         <!-- FORGOT PASSWORD -->
         <div class="authpanel" data-panel="forgot">
-          <form id="fp_form" onsubmit="return false" novalidate>
+          <form id="fp_form" novalidate>
           <p style="color:var(--steel);font-size:14px;margin:0 0 14px" data-t="fpIntro">Enter your email and we'll send a reset link.</p>
           <div class="field">
             <label for="fp_email" data-t="emL">Email</label>
@@ -129,7 +130,7 @@
 
         <!-- RESET PASSWORD (opened from the email link) -->
         <div class="authpanel" data-panel="reset">
-          <form id="rs_form" onsubmit="return false" novalidate>
+          <form id="rs_form" novalidate>
           <p style="color:var(--steel);font-size:14px;margin:0 0 14px" data-t="rsIntro">Choose a new password for your account.</p>
           <div class="field">
             <label for="rs_pass" data-t="newPassL">New password</label>
@@ -295,11 +296,11 @@
   </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/vendor/supabase-js-2.110.0.js"></script>
 <script src="js/supabase-client.js?v=14"></script>
 <script src="js/devices.js?v=1"></script>
 <script src="js/i18n.js?v=20"></script>
-<script src="js/app.js?v=17"></script>
+<script src="js/app.js?v=18"></script>
 <script src="js/reviews.js?v=2"></script>
 <script src="js/resources.js?v=14"></script>
 <script src="js/resources-render.js?v=14"></script>
