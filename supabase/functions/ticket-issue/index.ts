@@ -18,7 +18,7 @@ const SECRET = Deno.env.get("TICKET_WEBHOOK_SECRET");
 // Owner notification (so you never have to monitor). Reuses the Resend key the
 // email function already uses; OWNER_EMAIL defaults to the owner's address.
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const OWNER_EMAIL = Deno.env.get("OWNER_EMAIL") || "armenlalian@gmail.com";
+const OWNER_EMAIL = Deno.env.get("OWNER_EMAIL") || "licenaus@gmail.com";
 const FROM = "LICENA <noreply@licena.us>";
 const esc = (s: string) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
