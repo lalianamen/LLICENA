@@ -212,51 +212,12 @@
   </section>
 
   <!-- TESTIMONIALS -->
-  <section class="testi">
+  <section class="testi" id="testiSection" style="display:none">
     <div class="eyebrow" data-t="testiEyebrow">Contractors who used it</div>
     <h2 data-t="testiHeadline">What they said.</h2>
-    <div class="testi-grid">
-      <div class="tcard">
-        <div class="tcard-body" data-t="tcard1Body">"I studied the bilingual EN·RU mode every morning before work. Took the C-20 once — passed. The format was almost identical to what I practiced."</div>
-        <div class="tcard-author">
-          <div class="tcard-avatar">AM</div>
-          <div>
-            <div class="tcard-name">Arsen M.</div>
-            <div class="tcard-meta" data-t="tcard1Meta">HVAC · C-20 · Los Angeles</div>
-          </div>
-        </div>
-      </div>
-      <div class="tcard">
-        <div class="tcard-body" data-t="tcard2Body">"Наконец-то нормальный тренажёр на русском. Не пересказ закона, а настоящие вопросы. Сдала B-licence с первого раза."</div>
-        <div class="tcard-author">
-          <div class="tcard-avatar">TK</div>
-          <div>
-            <div class="tcard-name">Tatiana K.</div>
-            <div class="tcard-meta" data-t="tcard2Meta">General Contractor · B · Sacramento</div>
-          </div>
-        </div>
-      </div>
-      <div class="tcard">
-        <div class="tcard-body" data-t="tcard3Body">"Used the Spanish mode for the CSLB Law section. Easier to reason through the legal stuff in your first language. Really helped."</div>
-        <div class="tcard-author">
-          <div class="tcard-avatar">MR</div>
-          <div>
-            <div class="tcard-name">Miguel R.</div>
-            <div class="tcard-meta" data-t="tcard3Meta">Electrical · C-10 · Fresno</div>
-          </div>
-        </div>
-      </div>
-      <div class="tcard">
-        <div class="tcard-body" data-t="tcard4Body">"The wrong-answer filter is the feature. I'd do a full exam, then drill only what I missed. Three rounds of that and the material sticks."</div>
-        <div class="tcard-author">
-          <div class="tcard-avatar">DN</div>
-          <div>
-            <div class="tcard-name">David N.</div>
-            <div class="tcard-meta" data-t="tcard4Meta">Plumbing · C-36 · San Diego</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Filled at runtime from approved user reviews (js/reviews.js); the whole
+         section hides itself when there are none yet — no placeholder content. -->
+    <div class="testi-grid" id="testiGrid"></div>
   </section>
 
   <!-- OFFICIAL RESOURCES -->
@@ -339,6 +300,7 @@
 <script src="js/devices.js?v=1"></script>
 <script src="js/i18n.js?v=20"></script>
 <script src="js/app.js?v=17"></script>
+<script src="js/reviews.js?v=2"></script>
 <script src="js/resources.js?v=14"></script>
 <script src="js/resources-render.js?v=14"></script>
 <script src="js/support.js?v=6"></script>
