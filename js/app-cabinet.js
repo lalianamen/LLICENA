@@ -63,8 +63,14 @@ document.addEventListener("click", e => {
   if (!document.getElementById("statePicker").contains(e.target)) closeStateMenu();
 });
 
+// Launch focus: show only these top-level categories in the cabinet (catalog +
+// my courses). Set to null to show everything again once other verticals are ready.
+const LAUNCH_CATEGORIES = ["construction"];
 // Categories for the currently-selected state
-function statesCatalog(){ return CATALOG.filter(cat => (cat.state || "ca") === selectedState); }
+function statesCatalog(){
+  return CATALOG.filter(cat => (cat.state || "ca") === selectedState
+    && (!LAUNCH_CATEGORIES || LAUNCH_CATEGORIES.indexOf(cat.id) >= 0));
+}
 function statePill(){ const s = stateById(selectedState); return `<span class="state-pill">${s.flag} ${s.abbr}</span>`; }
 
 // ─── Subcategory toggle helper ────────────────────────────────────────────────
