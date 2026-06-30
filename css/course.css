@@ -220,6 +220,147 @@
   border-radius:0 12px 12px 0;padding:13px 15px;font-size:13.5px;line-height:1.6;color:#1f3b30;margin:6px 0 14px}
 .guide-note a{color:var(--gold-deep)}
 
+/* ── Overall (course-wide) progress ────────────────────────────────────────── */
+.overall-prog{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin-bottom:14px;
+  box-shadow:var(--shadow)}
+.op-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px}
+.op-title{font-family:'Archivo';font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--gold-deep)}
+.op-num{font-family:'IBM Plex Mono';font-weight:600;font-size:13px;color:var(--steel)}
+.op-num #opCorrect{color:var(--ink)}
+.op-bar{height:8px;background:var(--paper);border-radius:6px;overflow:hidden}
+.op-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--verify),#3a9b6f);
+  transition:width .4s cubic-bezier(.22,1,.36,1)}
+
+/* ── Final Exam entry card ─────────────────────────────────────────────────── */
+.exam-entry{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,var(--ink) 0%,var(--ink2) 100%);
+  border:1px solid var(--ink);border-radius:16px;padding:16px 18px;margin-bottom:18px;
+  box-shadow:0 10px 26px rgba(21,39,61,.18)}
+.ee-ic{flex:0 0 auto;width:44px;height:44px;border-radius:12px;background:var(--gold);color:var(--ink);
+  display:grid;place-items:center;box-shadow:0 6px 14px rgba(224,161,23,.3)}
+.ee-ic svg{width:24px;height:24px;display:block}
+.ee-txt{display:flex;flex-direction:column;min-width:0;flex:1;gap:2px}
+.ee-title{font-family:'Archivo';font-weight:800;font-size:17px;color:#fff;letter-spacing:-.01em}
+.ee-sub{font-size:12.5px;color:#b9c6d4;line-height:1.4}
+.ee-last{font-family:'IBM Plex Mono';font-size:12px;font-weight:600;color:#9fb2c6;margin-top:3px}
+.ee-last.pass{color:#7fd0a8}
+.ee-last.fail{color:#e8a59b}
+.ee-btn{flex:0 0 auto;min-height:46px}
+
+/* ── Final Exam shell (runner / result / review) ───────────────────────────── */
+.course-shell.exam-mode{grid-template-columns:1fr;max-width:860px;margin:0 auto}
+.exam-shell{animation:qIn .26s cubic-bezier(.22,1,.36,1)}
+
+/* Top bar: quit · timer · answered-count */
+.exam-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.exam-quit{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);color:var(--steel);
+  font-family:'Archivo';font-weight:600;font-size:13px;padding:8px 12px 8px 10px;min-height:42px;border-radius:10px;
+  transition:color .14s ease,background .14s ease,border-color .14s ease}
+.exam-quit svg{width:16px;height:16px;flex:0 0 auto;transition:transform .14s ease}
+.exam-quit:hover{color:var(--ink);border-color:#c2cad0}
+.exam-quit:hover svg{transform:translateX(-2px)}
+.exam-timer{display:inline-flex;align-items:center;gap:8px;margin:0 auto;font-family:'IBM Plex Mono';font-weight:600;
+  font-size:19px;letter-spacing:.02em;color:var(--ink);background:#fff;border:1.5px solid var(--line);
+  padding:7px 16px;min-height:42px;border-radius:11px;box-shadow:var(--shadow)}
+.exam-timer .et-ic{width:18px;height:18px;flex:0 0 auto;color:var(--gold-deep)}
+.exam-timer.low{color:var(--danger);border-color:#e6c3bd;background:var(--danger-soft)}
+.exam-timer.low .et-ic{color:var(--danger)}
+.exam-answered{flex:0 0 auto;font-family:'IBM Plex Mono';font-weight:600;font-size:13px;color:var(--steel);
+  background:var(--paper);border:1px solid var(--line);padding:8px 12px;min-height:42px;border-radius:10px;
+  display:inline-flex;align-items:center;white-space:nowrap}
+
+/* Exam question card reuses .q-card; meta row holds the flag toggle */
+.exam-q .q-meta{justify-content:space-between}
+.exam-flag{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--line);
+  color:var(--steel);font-family:'Archivo';font-weight:600;font-size:12px;padding:6px 11px;min-height:36px;
+  border-radius:20px;transition:color .14s ease,background .14s ease,border-color .14s ease}
+.exam-flag svg{width:14px;height:14px;flex:0 0 auto}
+.exam-flag:hover{color:var(--gold-deep);border-color:#f0dca8;background:#fff7e6}
+.exam-flag.on{color:var(--gold-deep);background:#fff7e6;border-color:#f0dca8;font-weight:700}
+.exam-flag.on svg{fill:var(--gold);stroke:var(--gold-deep)}
+
+/* Selected (but not graded) option in the exam — ink highlight, no correct/wrong */
+.opt-btn.picked{border-color:var(--ink);background:var(--paper);font-weight:600}
+.opt-btn.picked::before{background:var(--ink);color:#fff}
+
+/* Jump grid */
+.exam-grid-wrap{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:18px;
+  box-shadow:var(--shadow)}
+.exam-grid-head{font-family:'Archivo';font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--gold-deep);margin-bottom:12px}
+.exam-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:7px}
+.egc{position:relative;min-height:38px;border:1.5px solid var(--line);border-radius:9px;background:#fff;
+  font-family:'IBM Plex Mono';font-weight:600;font-size:13px;color:var(--steel);cursor:pointer;
+  display:grid;place-items:center;transition:border-color .12s ease,background .12s ease,color .12s ease,transform .12s ease}
+.egc:hover{border-color:var(--ink);color:var(--ink);transform:translateY(-1px)}
+.egc.done{background:var(--ink);border-color:var(--ink);color:#fff}
+.egc.flag{border-color:var(--gold);box-shadow:inset 0 0 0 1.5px var(--gold)}
+.egc.flag::after{content:"";position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.egc.cur{border-color:var(--gold);box-shadow:0 0 0 3px rgba(224,161,23,.25)}
+.egc.cur.done{color:#fff}
+.exam-grid-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.egl{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--steel);font-weight:500}
+.egl-sw{width:14px;height:14px;border-radius:5px;border:1.5px solid var(--line);flex:0 0 auto}
+.egl-sw.done{background:var(--ink);border-color:var(--ink)}
+.egl-sw.flag{border-color:var(--gold);box-shadow:inset 0 0 0 1.5px var(--gold)}
+.egl-sw.cur{border-color:var(--gold);box-shadow:0 0 0 2px rgba(224,161,23,.25)}
+
+.exam-submit-row{display:flex;justify-content:center;margin-top:20px}
+.exam-submit{min-height:50px;min-width:220px}
+
+/* Exam result — reuse .results-card; add comparison + actions */
+.exam-result-compare{font-family:'IBM Plex Mono';font-weight:600;font-size:14px;margin-top:10px;
+  display:inline-flex;align-items:center;padding:6px 14px;border-radius:20px}
+.exam-result-compare.up{color:var(--verify);background:var(--verify-soft);border:1px solid #bfe0cf}
+.exam-result-compare.down{color:var(--danger);background:var(--danger-soft);border:1px solid #e6c3bd}
+.exam-result-compare.same{color:var(--steel);background:var(--paper);border:1px solid var(--line)}
+.exam-result-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px}
+.exam-result-actions .btn{min-height:48px}
+
+/* Exam review (read-only list) */
+.exam-review-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.exam-review-head .btn{min-height:44px}
+.exam-review-title{font-family:'Archivo';font-weight:800;font-size:18px;color:var(--ink)}
+.exam-review-list{display:flex;flex-direction:column;gap:16px}
+.exam-review-q{animation:none}
+.exam-review-q .q-nav{display:none}
+
+/* ── Modals (self-contained — cabinet.css isn't loaded here) ────────────────── */
+.modal-bg{position:fixed;inset:0;background:rgba(21,39,61,.55);
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+  display:grid;place-items:center;z-index:60;padding:18px;animation:examFade .18s ease}
+@keyframes examFade{from{opacity:0}to{opacity:1}}
+.modal-bg .modal{background:#fff;border-radius:18px;max-width:460px;width:100%;padding:26px;
+  box-shadow:0 24px 70px rgba(0,0,0,.34);animation:examModalPop .22s ease}
+@keyframes examModalPop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.modal-bg .modal h3{font-family:'Archivo';font-weight:800;font-size:22px;margin:0 0 6px;letter-spacing:-.01em;color:var(--ink)}
+.modal-bg .modal p{color:var(--steel);font-size:14px;margin:0 0 12px;line-height:1.55}
+.modal-bg .modal-row{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+.modal-bg .modal-row .btn{padding:12px 18px;min-height:44px}
+.es-warn{color:var(--danger);font-weight:600}
+
+/* Warning modal — gold-chip rules list */
+.exam-warn{max-width:480px}
+.ew-ic{width:48px;height:48px;border-radius:13px;background:#fff7e6;color:var(--gold-deep);border:1px solid #f0dca8;
+  display:grid;place-items:center;margin:0 0 14px}
+.ew-ic svg{width:26px;height:26px;display:block}
+.ew-rules{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:9px}
+.ew-rules li{position:relative;padding-left:30px;font-size:14px;line-height:1.5;color:var(--ink);font-weight:500}
+.ew-rules li::before{content:"";position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:6px;
+  background:var(--ink);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%23E0A116' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:center}
+
+/* ── Block-card hover tooltip (per-block breakdown) ────────────────────────── */
+.block-card{position:relative}
+.block-tip{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(4px);
+  background:var(--ink);color:#fff;font-family:'IBM Plex Mono';font-size:11.5px;font-weight:500;white-space:nowrap;
+  padding:7px 11px;border-radius:9px;box-shadow:0 8px 20px rgba(21,39,61,.22);pointer-events:none;
+  opacity:0;visibility:hidden;z-index:15;transition:opacity .16s ease,transform .16s ease}
+.block-tip::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--ink)}
+.block-card:hover .block-tip,.block-card:focus-visible .block-tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.block-card.active .block-tip{background:#0e1c2e}
+.block-card.active .block-tip::after{border-top-color:#0e1c2e}
+
 /* ── Responsive: get the question reachable fast on phones ─────────────────── */
 @media(max-width:760px){
   .course-shell{grid-template-columns:1fr;gap:14px}
@@ -249,10 +390,25 @@
   .guide-sec{max-width:none}
   .results-card{padding:36px 24px}
   .result-score{font-size:60px}
+
+  /* Final exam on phones */
+  .exam-bar{flex-wrap:wrap;gap:8px}
+  .exam-timer{order:-1;flex-basis:100%;margin:0;justify-content:center;font-size:20px}
+  .exam-quit{flex:1 1 auto;justify-content:center}
+  .exam-answered{flex:1 1 auto;justify-content:center}
+  /* The exam q-card sits above the jump grid, so its nav must NOT be sticky. */
+  .exam-q .q-nav{position:static;margin:24px 0 0;padding:0;border-top:none;box-shadow:none}
+  .exam-grid{grid-template-columns:repeat(auto-fill,minmax(40px,1fr))}
+  .exam-submit{width:100%;min-width:0}
+  .exam-result-actions .btn{flex:1 1 100%}
+  /* Tooltip would clip the first row of cards on a tight column — show below instead. */
+  .block-tip{bottom:auto;top:calc(100% + 8px)}
+  .block-tip::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:var(--ink)}
+  .block-card.active .block-tip::after{border-bottom-color:#0e1c2e;border-top-color:transparent}
 }
 
 /* Extend the global reduced-motion guard (in styles.css) with this player's specifics. */
 @media (prefers-reduced-motion:reduce){
-  .q-card,.results-card,.q-explanation,.opt-btn.correct{animation:none}
-  .prog-fill,.block-prog-bar span{transition:none}
+  .q-card,.results-card,.q-explanation,.opt-btn.correct,.exam-shell,.modal-bg,.modal-bg .modal{animation:none}
+  .prog-fill,.block-prog-bar span,.op-fill,.block-tip,.egc{transition:none}
 }

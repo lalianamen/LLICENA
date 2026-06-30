@@ -62,6 +62,8 @@ for (const cat of CATALOG){
 }
 
 function ui(key){ return (TAPP[uiLang] && TAPP[uiLang][key]) || (TAPP.en[key]) || key; }
+// ui() with {placeholder} substitution, e.g. uiFmt("examLast", {pct:68, verdict:"…"})
+function uiFmt(key, vars){ return ui(key).replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars) ? vars[k] : "{" + k + "}"); }
 function esc(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 // ─── Study language ───────────────────────────────────────────────────────────
@@ -131,6 +133,9 @@ function buildStudyLangSwitcher(){
       seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
       buildBlockCards();
       renderQ();
+      // Keep an open exam runner/review in sync with the study language.
+      if (exam && !exam.submitted && document.getElementById("examRun").style.display !== "none") renderExamQ();
+      else if (exam && document.getElementById("examReview").style.display !== "none") renderExamReview();
     });
     seg.appendChild(btn);
   });
@@ -200,8 +205,9 @@ function buildBlockCards(){
   wrap.innerHTML = "";
   nums.forEach(n => {
     const m = meta.find(x => x.n === n);
-    const { total, correct } = blockProgress(n);
+    const { total, answered, correct } = blockProgress(n);
     const pct = total ? Math.round(correct / total * 100) : 0;
+    const tip = `${ui("blockTipAnswered")} ${answered}/${total} · ${ui("blockTipCorrect")} ${correct}`;
 
     const card = document.createElement("button");
     card.className = "block-card" + (n === activeBlock ? " active" : "");
@@ -214,7 +220,8 @@ function buildBlockCards(){
           <span class="block-prog-bar"><span style="width:${pct}%"></span></span>
           <span class="block-prog-num">${correct}/${total}</span>
         </span>
-      </span>`;
+      </span>
+      <span class="block-tip" role="tooltip">${esc(tip)}</span>`;
     card.addEventListener("click", () => {
       activeBlock = n;
       activeSection = null;
@@ -305,6 +312,24 @@ function updateProgress(){
   document.getElementById("progTotal").textContent = total;
   document.getElementById("progFill").style.width = total ? (done / total * 100) + "%" : "0%";
   updateFilterWrongBtn();
+  updateOverallProgress();
+}
+
+// Course-WIDE progress (every question in the bank, never filtered by the active
+// block/section) — a distinct indicator from the sidebar box above.
+function updateOverallProgress(){
+  const wrap = document.getElementById("overallProg");
+  if (!wrap) return;
+  const total   = QUESTIONS.length;
+  if (!total){ wrap.style.display = "none"; return; }
+  const correct = QUESTIONS.filter(q => userAnswers[q.id] === q.correct).length;
+  const pct = Math.round(correct / total * 100);
+  document.getElementById("opTitle").textContent   = ui("overallProg");
+  document.getElementById("opWord").textContent    = ui("overallCorrect");
+  document.getElementById("opCorrect").textContent = correct;
+  document.getElementById("opTotal").textContent   = total;
+  document.getElementById("opFill").style.width    = pct + "%";
+  wrap.style.display = "block";
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
@@ -427,6 +452,420 @@ function showResults(){
   document.getElementById("retryBtn").textContent = ui("courseRetry");
 }
 
+// ─── Final Exam ─────────────────────────────────────────────────────────────────
+// A timed, exam-style test for big banks only. Picks 120 random questions, runs a
+// wall-clock countdown to endsAt (closing the tab never pauses it), gives NO instant
+// feedback, allows free navigation + a jump grid, then grades once on submit/timeout.
+// Persisted so an interrupted attempt resumes the SAME set with the SAME timer.
+const EXAM_COUNT     = 120;
+const EXAM_PASS_PCT  = 75;
+const EXAM_MIN_BANK  = 120;                 // only show the exam for banks this big
+const EXAM_MINUTES   = { DEFAULT: 210 };    // per-course official times (owner fills later)
+
+function examDurationMs(){
+  const m = (courseId in EXAM_MINUTES) ? EXAM_MINUTES[courseId] : EXAM_MINUTES.DEFAULT;
+  return m * 60 * 1000;
+}
+
+const examKey     = () => "lp:final:" + courseId;
+const examLastKey = () => "lp:final_last:" + courseId;
+
+let exam = null;          // active attempt: { qids, startedAt, endsAt, answers, flags, submitted }
+let examCur = 0;          // index into exam.qids
+let examTimerId = null;   // setInterval handle for the countdown
+const examHasBank = () => QUESTIONS.length >= EXAM_MIN_BANK;
+
+function loadExam(){
+  try { return JSON.parse(localStorage.getItem(examKey()) || "null"); } catch(e){ return null; }
+}
+function saveExam(){ if (exam) localStorage.setItem(examKey(), JSON.stringify(exam)); }
+function loadExamLast(){
+  try { return JSON.parse(localStorage.getItem(examLastKey()) || "null"); } catch(e){ return null; }
+}
+
+// Build a fresh attempt: EXAM_COUNT unique random ids from the bank.
+function buildExamAttempt(){
+  const ids = QUESTIONS.map(q => q.id);
+  for (let i = ids.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+  const qids = ids.slice(0, EXAM_COUNT);
+  const startedAt = Date.now();
+  return { qids, startedAt, endsAt: startedAt + examDurationMs(), answers:{}, flags:{}, submitted:false };
+}
+
+// id → question (exam ids reference the same QUESTIONS bank).
+const examQ = id => QUESTIONS.find(q => q.id === id);
+
+// ── Exam-entry card (near the block cards) + last-result line ──────────────────
+function buildExamEntry(){
+  const entry = document.getElementById("examEntry");
+  if (!entry) return;
+  if (!examHasBank()){ entry.style.display = "none"; return; }
+  document.getElementById("eeTitle").textContent = ui("examTitle");
+  document.getElementById("eeSub").textContent   = ui("examSub");
+  document.getElementById("examStartBtn").textContent = ui("examStart");
+  updateExamLastLine();
+  entry.style.display = "flex";
+}
+
+function updateExamLastLine(){
+  const el = document.getElementById("eeLast");
+  if (!el) return;
+  const last = loadExamLast();
+  if (!last){ el.textContent = ui("examLastNever"); el.className = "ee-last"; return; }
+  const verdict = last.pass ? ui("examLastPassed") : ui("examLastFailed");
+  el.textContent = uiFmt("examLast", { pct: last.pct, verdict });
+  el.className = "ee-last " + (last.pass ? "pass" : "fail");
+}
+
+// ── Show / hide the practice UI vs the exam shell ─────────────────────────────
+function showExamShell(on){
+  const shell = document.getElementById("examShell");
+  ["overallProg","examEntry","blockCards","qCard","resultsCard","comingSoon","guideView"].forEach(id => {
+    const el = document.getElementById(id); if (el && on) el.style.display = "none";
+  });
+  const side = document.querySelector(".course-side");
+  if (side) side.style.display = on ? "none" : "";
+  document.getElementById("courseShell").classList.toggle("exam-mode", on);
+  shell.style.display = on ? "block" : "none";
+  if (!on){
+    if (examTimerId){ clearInterval(examTimerId); examTimerId = null; }
+    // Restore the normal player view.
+    document.getElementById("examEntry").style.display = examHasBank() ? "flex" : "none";
+    updateOverallProgress();
+    buildBlockCards();
+    renderQ();
+  }
+}
+
+// ── Warning modal (rules) ─────────────────────────────────────────────────────
+function openExamWarn(){
+  const ul = document.getElementById("ewRules");
+  ul.innerHTML = "";
+  ["examRule1","examRule2","examRule3","examRule4","examRule5"].forEach(k => {
+    const li = document.createElement("li"); li.textContent = ui(k); ul.appendChild(li);
+  });
+  document.getElementById("ewTitle").textContent  = ui("examWarnTitle");
+  document.getElementById("ewIntro").textContent  = ui("examWarnIntro");
+  document.getElementById("examWarnStart").textContent  = ui("examWarnStart");
+  document.getElementById("examWarnCancel").textContent = ui("examWarnCancel");
+  document.getElementById("examWarnModal").style.display = "grid";
+}
+function closeExamWarn(){ document.getElementById("examWarnModal").style.display = "none"; }
+
+// ── Start / resume ────────────────────────────────────────────────────────────
+function startExam(){
+  closeExamWarn();
+  examPrevResult = loadExamLast();   // baseline the result comparison against the last attempt
+  exam = buildExamAttempt();
+  examCur = 0;
+  saveExam();
+  enterExamRun();
+}
+
+// Resume an in-progress attempt (or finalize it as a timeout if the clock ran out
+// while the tab was closed). Never reshuffles or restarts an active attempt.
+function resumeExamIfAny(){
+  const saved = loadExam();
+  if (!saved || saved.submitted) return false;
+  exam = saved;
+  if (!exam.flags) exam.flags = {};
+  examCur = 0;
+  examPrevResult = loadExamLast();   // compare a resumed attempt against the last stored result
+  if (Date.now() >= exam.endsAt){ gradeExam(true); return true; }  // timed out while away → fail
+  enterExamRun();
+  return true;
+}
+
+function enterExamRun(){
+  showExamShell(true);
+  document.getElementById("examRun").style.display = "block";
+  document.getElementById("examResultCard").style.display = "none";
+  document.getElementById("examReview").style.display = "none";
+  // Static labels
+  document.getElementById("examQuitLabel").textContent  = ui("examQuit");
+  document.getElementById("examGridHead").textContent   = ui("examGridHead");
+  document.getElementById("examSubmitBtn").textContent  = ui("examSubmit");
+  document.getElementById("examPrevBtn").textContent    = ui("coursePrev");
+  document.getElementById("examNextBtn").textContent    = ui("courseNext");
+  buildExamGridLegend();
+  renderExamQ();
+  buildExamGrid();
+  startExamTimer();
+}
+
+// ── Countdown timer (wall-clock to endsAt) ────────────────────────────────────
+function fmtClock(ms){
+  if (ms < 0) ms = 0;
+  const t = Math.floor(ms / 1000);
+  const h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = t % 60;
+  return h + ":" + String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+}
+function tickExamTimer(){
+  if (!exam) return;
+  const left = exam.endsAt - Date.now();
+  const el = document.getElementById("examTimer");
+  document.getElementById("examTimerVal").textContent = fmtClock(left);
+  el.classList.toggle("low", left <= 10 * 60 * 1000);   // last 10 min: visual urgency
+  if (left <= 0){ gradeExam(true); }                    // time's up → auto-submit as fail
+}
+function startExamTimer(){
+  if (examTimerId) clearInterval(examTimerId);
+  tickExamTimer();
+  examTimerId = setInterval(tickExamTimer, 1000);
+}
+
+// ── Runner render (NO feedback — just record + highlight the pick) ─────────────
+function renderExamQ(){
+  if (!exam) return;
+  const id = exam.qids[examCur];
+  const q  = examQ(id);
+  if (!q) return;
+  const picked    = exam.answers[id];
+  const bilingual = isBilingual();
+
+  document.getElementById("examQNum").textContent = (examCur + 1) + " / " + exam.qids.length;
+  updateExamAnswered();
+
+  // Flag toggle state
+  const flagBtn = document.getElementById("examFlagBtn");
+  const flagged = !!exam.flags[id];
+  flagBtn.setAttribute("aria-pressed", flagged ? "true" : "false");
+  flagBtn.classList.toggle("on", flagged);
+  document.getElementById("examFlagLabel").textContent = flagged ? ui("examFlagged") : ui("examFlag");
+
+  // Question text (reuse bilingual stacking)
+  const qTextEl = document.getElementById("examQText");
+  if (bilingual){
+    const t = TR[q.id]; const qTrans = t && t.q;
+    qTextEl.innerHTML = `<span class="lx-en">${esc(q.q)}</span>${qTrans ? `<span class="lx-ru">${esc(qTrans)}</span>` : ""}`;
+  } else {
+    qTextEl.textContent = getQText(q);
+  }
+
+  // Options — selectable + highlighted, changeable, never revealing correctness.
+  const optsWrap = document.getElementById("examQOpts");
+  optsWrap.innerHTML = "";
+  const enOpts = q.opts;
+  const localOpts = getOpts(q);
+  enOpts.forEach((_, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn" + (picked === i ? " picked" : "");
+    if (bilingual){
+      const t = TR[q.id]; const transOpts = t && t.opts;
+      if (transOpts && transOpts[i]) btn.innerHTML = `<span class="lx-en">${esc(enOpts[i])}</span><span class="lx-ru">${esc(transOpts[i])}</span>`;
+      else btn.textContent = enOpts[i];
+    } else {
+      btn.textContent = localOpts[i] !== undefined ? localOpts[i] : enOpts[i];
+    }
+    btn.addEventListener("click", () => pickExamAnswer(i));
+    optsWrap.appendChild(btn);
+  });
+
+  document.getElementById("examPrevBtn").disabled = examCur === 0;
+  const nextBtn = document.getElementById("examNextBtn");
+  nextBtn.disabled = examCur === exam.qids.length - 1;
+}
+
+function pickExamAnswer(i){
+  if (!exam || exam.submitted) return;
+  const id = exam.qids[examCur];
+  exam.answers[id] = i;
+  saveExam();
+  // Re-highlight without rebuilding the whole question.
+  const opts = document.getElementById("examQOpts").querySelectorAll(".opt-btn");
+  opts.forEach((b, idx) => b.classList.toggle("picked", idx === i));
+  updateExamAnswered();
+  markExamGridCell(examCur);
+}
+
+function updateExamAnswered(){
+  const n = exam ? exam.qids.filter(id => exam.answers[id] !== undefined).length : 0;
+  document.getElementById("examAnswered").textContent = uiFmt("examAnsweredOf", { n, total: EXAM_COUNT });
+}
+
+// ── Jump grid (1..120) ────────────────────────────────────────────────────────
+function buildExamGrid(){
+  const grid = document.getElementById("examGrid");
+  grid.innerHTML = "";
+  exam.qids.forEach((id, idx) => {
+    const cell = document.createElement("button");
+    cell.className = "egc";
+    cell.textContent = idx + 1;
+    cell.dataset.idx = idx;
+    decorateExamCell(cell, idx);
+    cell.addEventListener("click", () => { examCur = idx; renderExamQ(); buildExamGrid(); scrollExamTop(); });
+    grid.appendChild(cell);
+  });
+}
+function decorateExamCell(cell, idx){
+  const id = exam.qids[idx];
+  cell.classList.toggle("done", exam.answers[id] !== undefined);
+  cell.classList.toggle("flag", !!exam.flags[id]);
+  cell.classList.toggle("cur",  idx === examCur);
+}
+function markExamGridCell(idx){
+  const cell = document.querySelector('#examGrid .egc[data-idx="' + idx + '"]');
+  if (cell) decorateExamCell(cell, idx);
+}
+function buildExamGridLegend(){
+  const wrap = document.getElementById("examGridLegend");
+  wrap.innerHTML =
+    `<span class="egl"><span class="egl-sw done"></span>${esc(ui("examLegendAnswered"))}</span>` +
+    `<span class="egl"><span class="egl-sw flag"></span>${esc(ui("examLegendFlagged"))}</span>` +
+    `<span class="egl"><span class="egl-sw cur"></span>${esc(ui("examLegendCurrent"))}</span>`;
+}
+function scrollExamTop(){
+  const c = document.getElementById("examQCard");
+  if (c) c.scrollIntoView({ block:"start", behavior: prefersReducedMotion() ? "auto" : "smooth" });
+}
+function prefersReducedMotion(){
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+// ── Submit (confirm) ──────────────────────────────────────────────────────────
+function openExamSubmit(){
+  const unanswered = EXAM_COUNT - exam.qids.filter(id => exam.answers[id] !== undefined).length;
+  document.getElementById("esTitle").textContent = ui("examSubmitTitle");
+  document.getElementById("esText").textContent  = ui("examSubmitText");
+  const warn = document.getElementById("esUnanswered");
+  if (unanswered > 0){ warn.textContent = uiFmt("examUnanswered", { n: unanswered }); warn.style.display = "block"; }
+  else warn.style.display = "none";
+  document.getElementById("examSubmitConfirm").textContent = ui("examSubmitConfirm");
+  document.getElementById("examSubmitCancel").textContent  = ui("examSubmitCancel");
+  document.getElementById("examSubmitModal").style.display = "grid";
+}
+function closeExamSubmit(){ document.getElementById("examSubmitModal").style.display = "none"; }
+
+// ── Grade (on submit OR timeout) ──────────────────────────────────────────────
+function gradeExam(timedOut){
+  if (!exam) return;
+  closeExamSubmit();
+  if (examTimerId){ clearInterval(examTimerId); examTimerId = null; }
+
+  const correct = exam.qids.filter(id => { const q = examQ(id); return q && exam.answers[id] === q.correct; }).length;
+  const pct  = Math.round(correct / EXAM_COUNT * 100);
+  const pass = !timedOut && pct >= EXAM_PASS_PCT;
+
+  exam.submitted = true;
+  saveExam();
+  const result = { pct, pass, correct, total: EXAM_COUNT, timedOut: !!timedOut, at: Date.now() };
+  localStorage.setItem(examLastKey(), JSON.stringify(result));
+
+  renderExamResult(result);
+}
+
+function renderExamResult(r){
+  showExamShell(true);
+  document.getElementById("examRun").style.display = "none";
+  document.getElementById("examReview").style.display = "none";
+  const card = document.getElementById("examResultCard"); card.style.display = "block";
+
+  document.getElementById("examResultScore").textContent = r.pct + "%";
+  const labelEl = document.getElementById("examResultLabel");
+  labelEl.textContent = r.timedOut ? ui("examResultTimeout") : (r.pass ? ui("examResultPass") : ui("examResultFail"));
+  labelEl.className = "result-label " + (r.pass ? "pass" : "fail");
+  document.getElementById("examResultStats").textContent =
+    `${ui("examResultCorrect")} ${r.correct} ${ui("examResultOf")} ${EXAM_COUNT}`;
+
+  // Compare to the previous-but-one result if we stored one before this attempt.
+  const cmp = document.getElementById("examResultCompare");
+  if (examPrevResult && typeof examPrevResult.pct === "number"){
+    const d = r.pct - examPrevResult.pct;
+    cmp.textContent = d > 0 ? uiFmt("examCompareBetter", { d, prev: examPrevResult.pct })
+                    : d < 0 ? uiFmt("examCompareWorse",  { d, prev: examPrevResult.pct })
+                            : uiFmt("examCompareSame",   { prev: examPrevResult.pct });
+    cmp.className = "exam-result-compare " + (d > 0 ? "up" : d < 0 ? "down" : "same");
+    cmp.style.display = "block";
+  } else { cmp.style.display = "none"; }
+
+  document.getElementById("examReviewBtn").textContent = ui("examReview");
+  document.getElementById("examNewBtn").textContent    = ui("examNew");
+}
+
+// ── Review (read-only, reuse practice correct/wrong styling) ───────────────────
+function renderExamReview(){
+  document.getElementById("examRun").style.display = "none";
+  document.getElementById("examResultCard").style.display = "none";
+  const wrap = document.getElementById("examReview"); wrap.style.display = "block";
+  document.getElementById("examReviewTitle").textContent    = ui("examReviewTitle");
+  document.getElementById("examReviewBackBtn").textContent  = ui("examReviewBack");
+
+  const list = document.getElementById("examReviewList");
+  list.innerHTML = "";
+  const bilingual = isBilingual();
+  exam.qids.forEach((id, idx) => {
+    const q = examQ(id); if (!q) return;
+    const picked = exam.answers[id];
+
+    const item = document.createElement("div");
+    item.className = "q-card exam-review-q";
+
+    const num = document.createElement("div");
+    num.className = "q-meta";
+    num.innerHTML = `<span class="q-num">${idx + 1} / ${EXAM_COUNT}</span><span class="q-section">${esc(secLabel(q.sec))}</span>`;
+    item.appendChild(num);
+
+    const qt = document.createElement("div");
+    qt.className = "q-text";
+    if (bilingual){
+      const t = TR[q.id]; const qTrans = t && t.q;
+      qt.innerHTML = `<span class="lx-en">${esc(q.q)}</span>${qTrans ? `<span class="lx-ru">${esc(qTrans)}</span>` : ""}`;
+    } else { qt.textContent = getQText(q); }
+    item.appendChild(qt);
+
+    const opts = document.createElement("div");
+    opts.className = "q-opts";
+    const enOpts = q.opts, localOpts = getOpts(q);
+    enOpts.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.className = "opt-btn";
+      b.disabled = true;
+      if (bilingual){
+        const t = TR[q.id]; const transOpts = t && t.opts;
+        if (transOpts && transOpts[i]) b.innerHTML = `<span class="lx-en">${esc(enOpts[i])}</span><span class="lx-ru">${esc(transOpts[i])}</span>`;
+        else b.textContent = enOpts[i];
+      } else { b.textContent = localOpts[i] !== undefined ? localOpts[i] : enOpts[i]; }
+      if (i === q.correct) b.classList.add("correct");
+      else if (i === picked) b.classList.add("wrong");
+      opts.appendChild(b);
+    });
+    item.appendChild(opts);
+
+    // Explanation
+    const exp = getExplanation(q);
+    if (bilingual){
+      const t = TR[q.id]; const rTrans = t && t.re;
+      if (q.re || rTrans){
+        const e = document.createElement("div"); e.className = "q-explanation";
+        e.innerHTML = (q.re ? `<div class="lx-en">${esc(q.re)}</div>` : "") + (rTrans ? `<div class="lx-ru">${esc(rTrans)}</div>` : "");
+        item.appendChild(e);
+      }
+    } else if (exp){
+      const e = document.createElement("div"); e.className = "q-explanation"; e.textContent = exp; item.appendChild(e);
+    }
+
+    list.appendChild(item);
+  });
+  scrollExamTop();
+}
+
+// ── New attempt = fresh random set (keeps lp:final_last for comparison) ────────
+function newExam(){
+  examPrevResult = loadExamLast();     // remember the result we'll compare the next attempt against
+  localStorage.removeItem(examKey());
+  exam = null;
+  openExamWarn();
+}
+
+// Leave the exam back to the course (timer keeps running; attempt stays active).
+function quitExam(){
+  if (!exam || exam.submitted){ showExamShell(false); return; }
+  if (!confirm(ui("examQuitConfirm"))) return;
+  showExamShell(false);
+}
+
+let examPrevResult = null;   // the lp:final_last value captured before the current attempt was graded
+
 // ─── Static UI labels ─────────────────────────────────────────────────────────
 function wrongCount(){
   return QUESTIONS.filter(q => {
@@ -465,6 +904,28 @@ document.getElementById("filterWrongBtn").addEventListener("click", () => {
   resetOrder(); renderQ();
 });
 document.getElementById("resetProgressBtn").addEventListener("click", resetAllProgress);
+
+// Final Exam events
+document.getElementById("examStartBtn").addEventListener("click", () => { examPrevResult = loadExamLast(); openExamWarn(); });
+document.getElementById("examWarnCancel").addEventListener("click", closeExamWarn);
+document.getElementById("examWarnStart").addEventListener("click", startExam);
+document.getElementById("examPrevBtn").addEventListener("click", () => { if (examCur > 0){ examCur--; renderExamQ(); buildExamGrid(); } });
+document.getElementById("examNextBtn").addEventListener("click", () => { if (exam && examCur < exam.qids.length - 1){ examCur++; renderExamQ(); buildExamGrid(); } });
+document.getElementById("examFlagBtn").addEventListener("click", () => {
+  if (!exam) return;
+  const id = exam.qids[examCur];
+  exam.flags[id] = !exam.flags[id];
+  saveExam();
+  renderExamQ();
+  markExamGridCell(examCur);
+});
+document.getElementById("examQuitBtn").addEventListener("click", quitExam);
+document.getElementById("examSubmitBtn").addEventListener("click", openExamSubmit);
+document.getElementById("examSubmitCancel").addEventListener("click", closeExamSubmit);
+document.getElementById("examSubmitConfirm").addEventListener("click", () => gradeExam(false));
+document.getElementById("examReviewBtn").addEventListener("click", renderExamReview);
+document.getElementById("examReviewBackBtn").addEventListener("click", () => renderExamResult(loadExamLast()));
+document.getElementById("examNewBtn").addEventListener("click", newExam);
 
 // ─── Guide (article) rendering ────────────────────────────────────────────────
 // Guide-type courses carry prose, not questions. Content lives in
@@ -605,10 +1066,14 @@ async function initCourse(){
   buildBlockCards();
   buildSections();
   buildSideResources();
+  buildExamEntry();
   resetOrder();
 
   document.getElementById("courseShell").style.display = "grid";
   renderQ();
+
+  // Resume an in-progress final exam (or finalize it if its clock ran out while away).
+  resumeExamIfAny();
 }
 
 initCourse();

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css?v=19">
-<link rel="stylesheet" href="css/course.css?v=19">
+<link rel="stylesheet" href="css/course.css?v=20">
 </head>
 <body>
 
@@ -54,6 +54,26 @@
 
   <!-- Main -->
   <main class="course-main">
+    <!-- Overall (course-wide) progress — distinct from the per-block-filtered sidebar box -->
+    <div class="overall-prog" id="overallProg" style="display:none">
+      <div class="op-row">
+        <span class="op-title" id="opTitle">Overall progress</span>
+        <span class="op-num"><span id="opCorrect">0</span> / <span id="opTotal">0</span> <span id="opWord">correct</span></span>
+      </div>
+      <div class="op-bar"><div class="op-fill" id="opFill" style="width:0%"></div></div>
+    </div>
+
+    <!-- Final Exam entry (only for big banks ≥120 q) -->
+    <div class="exam-entry" id="examEntry" style="display:none">
+      <div class="ee-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div class="ee-txt">
+        <span class="ee-title" id="eeTitle">Final Exam</span>
+        <span class="ee-sub" id="eeSub">A timed, exam-style test under real conditions.</span>
+        <span class="ee-last" id="eeLast"></span>
+      </div>
+      <button class="btn btn-primary ee-btn" id="examStartBtn">Final Exam</button>
+    </div>
+
     <div class="block-cards" id="blockCards" style="display:none"></div>
     <div class="q-card" id="qCard" style="display:none">
       <div class="q-meta">
@@ -84,7 +104,100 @@
     </div>
 
     <article class="guide-view" id="guideView" style="display:none"></article>
+
+    <!-- ── Final Exam shell (runner + result + review) ──────────────────────── -->
+    <section class="exam-shell" id="examShell" style="display:none">
+      <!-- Runner: live exam (no feedback) -->
+      <div class="exam-run" id="examRun" style="display:none">
+        <div class="exam-bar">
+          <button class="exam-quit" id="examQuitBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            <span id="examQuitLabel">Course</span>
+          </button>
+          <div class="exam-timer" id="examTimer" aria-live="off">
+            <svg class="et-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>
+            <span id="examTimerVal">0:00:00</span>
+          </div>
+          <span class="exam-answered" id="examAnswered">0 / 120</span>
+        </div>
+
+        <div class="q-card exam-q" id="examQCard">
+          <div class="q-meta">
+            <span class="q-num" id="examQNum"></span>
+            <button class="exam-flag" id="examFlagBtn" type="button" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+              <span id="examFlagLabel">Flag</span>
+            </button>
+          </div>
+          <div class="q-text" id="examQText"></div>
+          <div class="q-opts" id="examQOpts"></div>
+          <div class="q-nav">
+            <button class="btn btn-ghost" id="examPrevBtn">← Prev</button>
+            <button class="btn btn-primary" id="examNextBtn">Next →</button>
+          </div>
+        </div>
+
+        <!-- Question grid (jump to any of 120) -->
+        <div class="exam-grid-wrap">
+          <div class="exam-grid-head" id="examGridHead">Questions</div>
+          <div class="exam-grid" id="examGrid"></div>
+          <div class="exam-grid-legend" id="examGridLegend"></div>
+        </div>
+
+        <div class="exam-submit-row">
+          <button class="btn btn-gold exam-submit" id="examSubmitBtn">Finish &amp; submit</button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="results-card exam-result" id="examResultCard" style="display:none">
+        <div class="result-score" id="examResultScore"></div>
+        <div class="result-label" id="examResultLabel"></div>
+        <div class="result-stats" id="examResultStats"></div>
+        <div class="exam-result-compare" id="examResultCompare" style="display:none"></div>
+        <div class="exam-result-actions">
+          <button class="btn btn-ghost" id="examReviewBtn">Review answers</button>
+          <button class="btn btn-primary" id="examNewBtn">Start a new exam</button>
+        </div>
+      </div>
+
+      <!-- Review (read-only, with correct/wrong + explanation) -->
+      <div class="exam-review" id="examReview" style="display:none">
+        <div class="exam-review-head">
+          <button class="btn btn-ghost" id="examReviewBackBtn">← Back to result</button>
+          <span class="exam-review-title" id="examReviewTitle">Review</span>
+        </div>
+        <div class="exam-review-list" id="examReviewList"></div>
+      </div>
+    </section>
   </main>
+</div>
+
+<!-- Final Exam — start warning modal (rules) -->
+<div class="modal-bg" id="examWarnModal" style="display:none">
+  <div class="modal exam-warn">
+    <div class="ew-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    <h3 id="ewTitle">Before you start</h3>
+    <p id="ewIntro">This is a timed, exam-style test. Please read the rules:</p>
+    <ul class="ew-rules" id="ewRules"></ul>
+    <div class="modal-row" style="margin-top:16px">
+      <button class="btn btn-ghost" id="examWarnCancel">Cancel</button>
+      <button class="btn btn-primary" id="examWarnStart">Start exam</button>
+    </div>
+  </div>
+</div>
+
+<!-- Final Exam — confirm submit modal -->
+<div class="modal-bg" id="examSubmitModal" style="display:none">
+  <div class="modal">
+    <h3 id="esTitle">Submit exam?</h3>
+    <p id="esText">Once you submit, your exam is graded and can't be changed.</p>
+    <p class="es-warn" id="esUnanswered" style="display:none"></p>
+    <div class="modal-row" style="margin-top:16px">
+      <button class="btn btn-ghost" id="examSubmitCancel">Keep going</button>
+      <button class="btn btn-primary" id="examSubmitConfirm">Submit</button>
+    </div>
+  </div>
 </div>
 
 <!-- Support assistant (AI chat) — shared widget; logic in js/support.js -->
@@ -109,12 +222,12 @@
 <script src="js/catalog.js?v=13"></script>
 <script src="js/catalog/ca.js?v=13"></script>
 <script src="js/catalog/az.js?v=13"></script>
-<script src="js/i18n-app.js?v=14"></script>
+<script src="js/i18n-app.js?v=15"></script>
 <script src="js/course-blocks.js?v=13"></script>
 <!-- Question files are lazy-loaded by app-course.js for the opened course only
      (js/questions/<id>.js). Adding a course never touches this page. -->
 <script src="js/honest-chances.js?v=13"></script>
-<script src="js/app-course.js?v=15"></script>
+<script src="js/app-course.js?v=16"></script>
 <script src="js/support.js?v=6"></script>
 </body>
 </html>
