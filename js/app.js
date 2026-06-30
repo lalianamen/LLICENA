@@ -69,7 +69,7 @@ if (recovering) showPanel("reset");
 
 // Redirect to cabinet if already logged in — but not mid password-reset.
 supa.auth.getSession().then(({ data: { session } }) => {
-  if (session && !recovering) window.location.href = "app.html";
+  if (session && !recovering) proceedAfterAuth();
 });
 
 // LOGIN
@@ -89,7 +89,7 @@ async function doLogin() {
   const { error } = await supa.auth.signInWithPassword({ email, password: pass });
   btn.disabled = false;
   if (error) { err.textContent = d.errCreds; return; }
-  window.location.href = "app.html";
+  await proceedAfterAuth();
 }
 document.getElementById("li_btn").addEventListener("click", doLogin);
 document.getElementById("li_form").addEventListener("submit", doLogin);
@@ -100,7 +100,6 @@ async function doRegister() {
   const nameEl  = document.getElementById("rg_name");
   const emailEl = document.getElementById("rg_email");
   const passEl  = document.getElementById("rg_pass");
-  const ageEl   = document.getElementById("rg_age");
   const consEl  = document.getElementById("rg_consent");
   const name  = nameEl.value.trim();
   const email = emailEl.value.trim().toLowerCase();
@@ -110,7 +109,6 @@ async function doRegister() {
   if (!name) { fieldErr(nameEl, d.errName); bad.push(nameEl); }
   if (!email || !EMAIL_RE.test(email)) { fieldErr(emailEl, d.errEmail); bad.push(emailEl); }
   if (!passOk(pass)) { fieldErr(passEl, null); bad.push(passEl); }
-  if (!ageEl.checked)  { consentErr(ageEl);  if (!err.textContent) err.textContent = d.errAge;     bad.push(ageEl); }
   if (!consEl.checked) { consentErr(consEl); if (!err.textContent) err.textContent = d.errConsent; bad.push(consEl); }
   if (bad.length) { bad[0].focus(); return; }
   const btn = document.getElementById("rg_btn");
@@ -177,6 +175,28 @@ async function doReset() {
 }
 document.getElementById("rs_btn").addEventListener("click", doReset);
 document.getElementById("rs_form").addEventListener("submit", doReset);
+
+// DEVICE GATE (anti-sharing) — after auth, register/confirm this device.
+async function proceedAfterAuth() {
+  if (!window.LICENA_devices) { window.location.href = "app.html"; return; }
+  const status = await LICENA_devices.check(supa);
+  if (status === "ok") { window.location.href = "app.html"; return; }
+  if (status === "blocked") { showPanel("device-limit"); return; }
+  const note = document.getElementById("devSwapNote");
+  if (note) note.style.display = (status === "swap") ? "block" : "none";
+  showPanel("device-ask");
+}
+document.getElementById("dev_add").addEventListener("click", async () => {
+  const err = document.getElementById("dev_err"), btn = document.getElementById("dev_add");
+  err.textContent = ""; btn.disabled = true;
+  const r = await LICENA_devices.commit(supa);
+  btn.disabled = false;
+  if (r === "ok") window.location.href = "app.html";
+  else showPanel("device-limit");
+});
+async function cancelDevice() { try { await supa.auth.signOut(); } catch (_) {} showPanel("login"); }
+document.getElementById("dev_cancel").addEventListener("click", cancelDevice);
+document.getElementById("dev_back").addEventListener("click", cancelDevice);
 
 // Clear a field's error highlight as soon as the user starts fixing it
 document.querySelectorAll("#li_form input, #rg_form input, #fp_form input, #rs_form input").forEach(el => {

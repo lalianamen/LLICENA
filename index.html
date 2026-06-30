@@ -93,13 +93,10 @@
             <div class="pwhint" data-t="passHint">Use Latin letters, at least one uppercase letter and a symbol.</div>
           </div>
           <label class="consent">
-            <input type="checkbox" id="rg_age">
-            <span data-t="ageConsent">I am 18 years of age or older.</span>
-          </label>
-          <label class="consent">
             <input type="checkbox" id="rg_consent">
             <span data-t="consent">I understand LICENA is a practice tool, not a school, and does not guarantee passing any exam.</span>
           </label>
+          <p style="font-size:12px;color:var(--steel);line-height:1.5;margin:4px 0 0" data-t="devReg">This is a personal account, for your own devices. Frequent device switching may temporarily limit access.</p>
           <div class="autherr" id="rg_err"></div>
           <button type="submit" class="btn btn-primary btn-block" id="rg_btn" data-t="createBtn">Create free account</button>
           </form>
@@ -144,6 +141,25 @@
           <div class="autherr" id="rs_err"></div>
           <button type="submit" class="btn btn-primary btn-block" id="rs_btn" data-t="rsSaveBtn">Save new password</button>
           </form>
+        </div>
+
+        <!-- DEVICE GATE — confirm a new device -->
+        <div class="authpanel" data-panel="device-ask" style="text-align:center;padding:12px 0">
+          <div style="font-size:34px;margin-bottom:10px">🔐</div>
+          <h2 style="font-family:'Archivo';font-size:21px;margin:0 0 10px" data-t="devAskT">Add this device?</h2>
+          <p style="color:var(--steel);font-size:14.5px;margin:0 0 6px" data-t="devAskB">Add this device to your account to continue.</p>
+          <p id="devSwapNote" style="color:var(--steel);font-size:13px;margin:0 0 16px;display:none" data-t="devSwapNote">One of your old, unused devices will be signed out.</p>
+          <div class="autherr" id="dev_err"></div>
+          <button class="btn btn-primary btn-block" id="dev_add" data-t="devAddBtn">Add this device</button>
+          <button type="button" class="btn btn-ghost" id="dev_cancel" data-t="devCancelBtn" style="margin:10px auto 0">Cancel</button>
+        </div>
+
+        <!-- DEVICE GATE — limit reached -->
+        <div class="authpanel" data-panel="device-limit" style="text-align:center;padding:12px 0">
+          <div style="font-size:34px;margin-bottom:10px">🔒</div>
+          <h2 style="font-family:'Archivo';font-size:21px;margin:0 0 10px" data-t="devLimitT">Device limit reached</h2>
+          <p style="color:var(--steel);font-size:14.5px;margin:0 0 20px" data-t="devLimitB">You've reached the device limit for this account. You can't sign in on this device right now — please try again later or contact support.</p>
+          <button type="button" class="btn btn-ghost" id="dev_back" data-t="devBackBtn" style="margin:0 auto">← Back to login</button>
         </div>
       </div>
     </div>
@@ -318,8 +334,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=14"></script>
-<script src="js/i18n.js?v=18"></script>
-<script src="js/app.js?v=16"></script>
+<script src="js/devices.js?v=1"></script>
+<script src="js/i18n.js?v=19"></script>
+<script src="js/app.js?v=17"></script>
 <script src="js/resources.js?v=14"></script>
 <script src="js/resources-render.js?v=14"></script>
 <script src="js/support.js?v=6"></script>

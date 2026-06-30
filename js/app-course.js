@@ -14,6 +14,9 @@ let QUESTIONS = [];
 // id -> { q, opts, re } translation overlay for the user's language (empty in English).
 let TR = {};
 
+// Anti-sharing: bounce to login if this session's device isn't registered.
+if (window.LICENA_devices) LICENA_devices.backstop(supa);
+
 function loadScript(src){
   return new Promise(res => {
     const s = document.createElement("script");
