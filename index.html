@@ -64,6 +64,7 @@
           </div>
           <div class="autherr" id="li_err"></div>
           <button type="submit" class="btn btn-primary btn-block" id="li_btn" data-t="loginBtn">Log in</button>
+          <button type="button" id="fp_link" data-t="fpLink" style="display:block;margin:12px auto 0;background:none;border:0;color:var(--steel);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer">Forgot password?</button>
           </form>
         </div>
 
@@ -107,6 +108,39 @@
           <h2 style="font-family:'Archivo';font-size:22px;margin:0 0 10px" data-t="checkEmail">Check your email</h2>
           <p style="color:var(--steel);font-size:14.5px;margin:0 0 20px" data-t="checkEmailSub">We sent a confirmation link to <strong id="sentTo"></strong>. Click the link to activate your account.</p>
           <button class="btn btn-ghost" id="backToRegister" data-t="backToReg" style="margin:0 auto">← Back to register</button>
+        </div>
+
+        <!-- FORGOT PASSWORD -->
+        <div class="authpanel" data-panel="forgot">
+          <form id="fp_form" onsubmit="return false" novalidate>
+          <p style="color:var(--steel);font-size:14px;margin:0 0 14px" data-t="fpIntro">Enter your email and we'll send a reset link.</p>
+          <div class="field">
+            <label for="fp_email" data-t="emL">Email</label>
+            <input id="fp_email" type="email" placeholder="you@email.com" autocomplete="username">
+            <div class="ferr"></div>
+          </div>
+          <div class="autherr" id="fp_err"></div>
+          <button type="submit" class="btn btn-primary btn-block" id="fp_btn" data-t="fpSendBtn">Send reset link</button>
+          </form>
+          <p id="fp_sent" style="display:none;color:var(--steel);font-size:14px;text-align:center;padding:6px 0 0" data-t="fpSent">If an account exists for that email, we've sent a reset link. Check your inbox.</p>
+          <button type="button" class="btn btn-ghost" id="fp_back" data-t="fpBack" style="margin:12px auto 0">← Back to login</button>
+        </div>
+
+        <!-- RESET PASSWORD (opened from the email link) -->
+        <div class="authpanel" data-panel="reset">
+          <form id="rs_form" onsubmit="return false" novalidate>
+          <p style="color:var(--steel);font-size:14px;margin:0 0 14px" data-t="rsIntro">Choose a new password for your account.</p>
+          <div class="field">
+            <label for="rs_pass" data-t="newPassL">New password</label>
+            <div class="pwwrap">
+              <input id="rs_pass" type="password" placeholder="••••••••" autocomplete="new-password">
+              <button type="button" class="pwtoggle" data-target="rs_pass" aria-label="Show password" aria-pressed="false">👁</button>
+            </div>
+            <div class="pwhint" data-t="passHint">Use Latin letters, at least one uppercase letter and a symbol.</div>
+          </div>
+          <div class="autherr" id="rs_err"></div>
+          <button type="submit" class="btn btn-primary btn-block" id="rs_btn" data-t="rsSaveBtn">Save new password</button>
+          </form>
         </div>
       </div>
     </div>
@@ -281,8 +315,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js?v=13"></script>
-<script src="js/i18n.js?v=17"></script>
-<script src="js/app.js?v=14"></script>
+<script src="js/i18n.js?v=18"></script>
+<script src="js/app.js?v=15"></script>
 <script src="js/resources.js?v=14"></script>
 <script src="js/resources-render.js?v=14"></script>
 <script src="js/support.js?v=5"></script>

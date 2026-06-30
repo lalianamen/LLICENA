@@ -59,9 +59,17 @@ document.querySelectorAll(".pwtoggle").forEach(btn => btn.addEventListener("clic
   btn.textContent = show ? "🙈" : "👁";
 }));
 
-// Redirect to cabinet if already logged in
+// If the user arrived from a password-reset email, show the reset panel instead
+// of bouncing them to the cabinet. (Recovery links land with #type=recovery.)
+const recovering = location.hash.includes("type=recovery");
+supa.auth.onAuthStateChange((event) => {
+  if (event === "PASSWORD_RECOVERY") showPanel("reset");
+});
+if (recovering) showPanel("reset");
+
+// Redirect to cabinet if already logged in — but not mid password-reset.
 supa.auth.getSession().then(({ data: { session } }) => {
-  if (session) window.location.href = "app.html";
+  if (session && !recovering) window.location.href = "app.html";
 });
 
 // LOGIN
@@ -129,8 +137,46 @@ async function doRegister() {
 document.getElementById("rg_btn").addEventListener("click", doRegister);
 document.getElementById("rg_form").addEventListener("submit", doRegister);
 
+// FORGOT PASSWORD — request a reset link
+document.getElementById("fp_link").addEventListener("click", () => showPanel("forgot"));
+document.getElementById("fp_back").addEventListener("click", () => showPanel("login"));
+async function doForgot() {
+  const d = T[lang], err = document.getElementById("fp_err");
+  const emailEl = document.getElementById("fp_email");
+  const email = emailEl.value.trim().toLowerCase();
+  clearErrors(emailEl.form); err.textContent = "";
+  if (!email || !EMAIL_RE.test(email)) { fieldErr(emailEl, d.errEmail); emailEl.focus(); return; }
+  const btn = document.getElementById("fp_btn");
+  btn.disabled = true;
+  // redirectTo is built from the current origin, so it works on any domain.
+  await supa.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+  btn.disabled = false;
+  // Anti-enumeration: identical confirmation whether or not the email is registered.
+  document.getElementById("fp_form").style.display = "none";
+  document.getElementById("fp_sent").style.display = "block";
+}
+document.getElementById("fp_btn").addEventListener("click", doForgot);
+document.getElementById("fp_form").addEventListener("submit", doForgot);
+
+// RESET PASSWORD — set a new password from the recovery link
+async function doReset() {
+  const d = T[lang], err = document.getElementById("rs_err");
+  const passEl = document.getElementById("rs_pass");
+  const pass = passEl.value;
+  clearErrors(passEl.form); err.textContent = "";
+  if (!passOk(pass)) { fieldErr(passEl, null); passEl.focus(); return; }
+  const btn = document.getElementById("rs_btn");
+  btn.disabled = true;
+  const { error } = await supa.auth.updateUser({ password: pass });
+  btn.disabled = false;
+  if (error) { err.textContent = d.rsErrLink; return; }
+  window.location.href = "app.html";
+}
+document.getElementById("rs_btn").addEventListener("click", doReset);
+document.getElementById("rs_form").addEventListener("submit", doReset);
+
 // Clear a field's error highlight as soon as the user starts fixing it
-document.querySelectorAll("#li_form input, #rg_form input").forEach(el => {
+document.querySelectorAll("#li_form input, #rg_form input, #fp_form input, #rs_form input").forEach(el => {
   const clear = () => {
     el.classList.remove("invalid");
     const box = el.closest(".field, .consent");
