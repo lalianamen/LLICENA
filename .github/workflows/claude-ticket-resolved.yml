@@ -1,0 +1,69 @@
+name: Notify user — ticket resolved
+
+# When a ticket PR (branch claude/ticket-*) is MERGED, mark the original chat
+# ticket done. That single status change fires the existing support_tickets
+# email trigger, which sends the user the branded "resolved" email (EN/ES/RU)
+# via Resend. Free: no Claude run — just one call to the ticket-status function.
+#
+# Setup (one-time):
+#   Repo → Settings → Secrets and variables → Actions → New repository secret
+#   Name: TICKET_WEBHOOK_SECRET   Value: same as the Supabase TICKET_WEBHOOK_SECRET.
+# Until that secret is added, this job no-ops safely (sends nothing).
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  mark-done:
+    # Only on a real merge of a ticket branch — not a closed-without-merge, and
+    # not ordinary PRs.
+    if: >-
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'claude/ticket-')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_BODY: ${{ github.event.pull_request.body }}
+      TICKET_WEBHOOK_SECRET: ${{ secrets.TICKET_WEBHOOK_SECRET }}
+    steps:
+      - name: Mark linked ticket done (sends the user the resolved email)
+        run: |
+          set -euo pipefail
+          FN_URL="https://vewhmndummfhnbxnrqya.supabase.co/functions/v1/ticket-status"
+          # Public publishable key — only satisfies the Edge gateway; real auth is
+          # the private x-ticket-secret below. (Same key the DB triggers already use.)
+          PUBLISHABLE="sb_publishable_Ljv0fNsQC0qHMzgWE42ccA_hHgGbVzy"
+
+          if [ -z "${TICKET_WEBHOOK_SECRET:-}" ]; then
+            echo "TICKET_WEBHOOK_SECRET not set — skipping. Add it in repo secrets to enable resolved emails."
+            exit 0
+          fi
+
+          # The PR references its source issue (e.g. "Refs #1"); take the first #N.
+          issue=$(printf '%s' "${PR_BODY:-}" | grep -oE '#[0-9]+' | head -n1 | tr -d '#' || true)
+          if [ -z "${issue:-}" ]; then
+            echo "No linked issue in the PR body; nothing to mark done."
+            exit 0
+          fi
+
+          # The ticket id (a UUID) is printed in that issue's body by ticket-issue.
+          ibody=$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json body -q .body || true)
+          tid=$(printf '%s' "$ibody" | grep -oiE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | head -n1 || true)
+          if [ -z "${tid:-}" ]; then
+            echo "No ticket id found on issue #$issue; nothing to mark done."
+            exit 0
+          fi
+
+          echo "Marking ticket $tid done (from issue #$issue)…"
+          curl -fsS -X POST "$FN_URL" \
+            -H "Authorization: Bearer $PUBLISHABLE" \
+            -H "x-ticket-secret: $TICKET_WEBHOOK_SECRET" \
+            -H "Content-Type: application/json" \
+            -d "{\"ticket_id\":\"$tid\",\"status\":\"done\"}"
+          echo
+          echo "Requested. The DB trigger emails the user in their language."
