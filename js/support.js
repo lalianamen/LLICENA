@@ -56,8 +56,8 @@
   }
   refreshAuth();
 
-  const esc = (s) => { const e = document.createElement("div"); e.textContent = s; return e.innerHTML; };
-  // Escape, then linkify bare URLs (safe: escaping runs first).
+  const esc = (s) => { const e = document.createElement("div"); e.textContent = s; return e.innerHTML.replace(/"/g, "&quot;"); };
+  // Escape (incl. " so a URL can't break out of the href), then linkify bare URLs.
   const fmt = (s) => esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 
   function bubble(role, text){
