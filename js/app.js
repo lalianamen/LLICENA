@@ -120,18 +120,21 @@ async function doRegister() {
     options: { data: { name, lang } }
   });
   btn.disabled = false;
-  if (error) { err.textContent = error.message; return; }
-  // Save pending profile data — will be written to DB on first login (session required for RLS)
+  // Never reveal whether an email is already registered (account enumeration):
+  // the "already registered" case shows the SAME check-email screen as a fresh
+  // sign-up. Only genuine errors (e.g. a password the server rejects) are shown.
+  if (error && !/already|registered|exist/i.test(error.message)) { err.textContent = error.message; return; }
+  // Save pending profile data — written to DB on first login (session required for RLS)
   localStorage.setItem("lp:pending_name", name);
   localStorage.setItem("lp:pending_lang", lang);
-  if (!data.session) {
-    // Email confirmation required — show check-email screen
+  if (!error && data && data.session) {
+    window.location.href = "app.html";
+  } else {
+    // Email confirmation required (or an existing email) — show check-email screen
     const sentTo = document.getElementById("sentTo");
     if (sentTo) sentTo.textContent = email;
     history.pushState({ panel: "check-email" }, "");
     showPanel("check-email");
-  } else {
-    window.location.href = "app.html";
   }
 }
 document.getElementById("rg_btn").addEventListener("click", doRegister);
