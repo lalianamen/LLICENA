@@ -49,6 +49,8 @@ const T = {
     footExamsHead:"Exams", footExam1:"CSLB Law & Business", footExam2:"C-20 HVAC Trade", footExam3:"Asbestos Certification",
     footLangsHead:"Languages", footBilingualNote:"Bilingual side-by-side mode available",
     footAboutHead:"About", footCity:"Los Angeles, CA", footBuiltBy:"Built by contractors, for contractors", footBeta:"Beta — actively updated",
+    footTerms:"Terms", footPrivacy:"Privacy",
+    rgAgree:'By creating an account, you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.',
     supTitle:"LICENA Assistant", supGreeting:"Hi! I'm the LICENA assistant. Ask about exams, scheduling, or where to take a test — and I can log a request for a new course or language, or a problem you found.", supPh:"Ask a question…", supError:"Something went wrong. Please try again."},
   es:{tag:"Herramienta de práctica", eyebrow:"Exámenes de licencia de California", heroLine:"Aprueba tu examen.", heroSub:"Preguntas de práctica para el CSLB y otros exámenes de licencia de California — en inglés, español y ruso.",
     feat1T:"Estilo del examen real", feat1D:"Preguntas escritas con el formato y la dificultad del examen CSLB.",
@@ -99,6 +101,8 @@ const T = {
     footExamsHead:"Exámenes", footExam1:"Ley y Negocios CSLB", footExam2:"Oficio HVAC C-20", footExam3:"Certificación de Asbesto",
     footLangsHead:"Idiomas", footBilingualNote:"Modo bilingüe en paralelo disponible",
     footAboutHead:"Acerca de", footCity:"Los Ángeles, CA", footBuiltBy:"Creado por contratistas, para contratistas", footBeta:"Beta — actualizado activamente",
+    footTerms:"Términos", footPrivacy:"Privacidad",
+    rgAgree:'Al crear una cuenta, aceptas nuestros <a href="terms.html">Términos</a> y la <a href="privacy.html">Política de privacidad</a>.',
     supTitle:"Asistente LICENA", supGreeting:"¡Hola! Soy el asistente de LICENA. Pregunta sobre exámenes, citas o dónde dar una prueba — y puedo registrar una solicitud de un nuevo curso o idioma, o un problema que hayas encontrado.", supPh:"Escribe tu pregunta…", supError:"Algo salió mal. Inténtalo de nuevo."},
   ru:{tag:"Тренажёр", eyebrow:"Лицензионные экзамены Калифорнии", heroLine:"Сдай экзамен.", heroSub:"Практические вопросы для CSLB и других лицензионных экзаменов Калифорнии — на английском, испанском и русском.",
     feat1T:"Формат реального экзамена", feat1D:"Вопросы написаны в стиле и сложности настоящего экзамена CSLB.",
@@ -149,5 +153,7 @@ const T = {
     footExamsHead:"Экзамены", footExam1:"Закон и бизнес CSLB", footExam2:"Торговля HVAC C-20", footExam3:"Сертификация по асбесту",
     footLangsHead:"Языки", footBilingualNote:"Доступен двуязычный режим рядом",
     footAboutHead:"О нас", footCity:"Лос-Анджелес, Калифорния", footBuiltBy:"Сделано подрядчиками для подрядчиков", footBeta:"Бета — регулярно обновляется",
+    footTerms:"Условия", footPrivacy:"Конфиденциальность",
+    rgAgree:'Создавая аккаунт, вы соглашаетесь с <a href="terms.html">Условиями</a> и <a href="privacy.html">Политикой конфиденциальности</a>.',
     supTitle:"Ассистент LICENA", supGreeting:"Привет! Я ассистент LICENA. Спроси про экзамены, запись или где сдавать тест — и я могу зафиксировать заявку на новый курс или язык, либо найденную ошибку.", supPh:"Задай вопрос…", supError:"Что-то пошло не так. Попробуйте ещё раз."}
 };
