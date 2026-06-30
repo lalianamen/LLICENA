@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css?v=19">
-<link rel="stylesheet" href="css/cabinet.css?v=20">
+<link rel="stylesheet" href="css/cabinet.css?v=21">
 </head>
 <body>
 
@@ -89,6 +89,7 @@
           <span class="k" data-a="chooseLang">Language</span>
           <div class="acct-lang-picker" id="acctLangPicker"></div>
         </div>
+        <button class="btn btn-ghost" id="editProfileBtn" data-a="editProfile" style="margin-top:16px">Edit details</button>
       </div>
     </section>
   </main>
@@ -127,6 +128,31 @@
     <button class="btn btn-primary" id="payConfirm" style="width:100%;margin-top:8px" data-a="activateBtn" disabled>Activate for free</button>
     <div class="modal-row" style="margin-top:10px">
       <button class="btn btn-ghost" id="payCancel" data-a="cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- edit profile modal -->
+<div class="modal-bg" id="editProfileModal" style="display:none">
+  <div class="modal">
+    <h3 data-a="editProfile">Edit details</h3>
+    <div id="editForm">
+      <label class="rv-label" for="edName" data-a="acctName">Name</label>
+      <input id="edName" type="text" maxlength="80" autocomplete="name">
+      <label class="rv-label" for="edEmail" data-a="acctEmail">Email</label>
+      <input id="edEmail" type="email" maxlength="200" autocomplete="email">
+      <p class="ed-note" data-a="editEmailNote">Changing your email needs confirmation — we'll send a link to the new address.</p>
+      <div id="edErr" class="ed-err" role="alert"></div>
+      <button class="btn btn-primary" id="edSave" style="width:100%;margin-top:6px" data-a="editSave">Save</button>
+      <div class="modal-row" style="margin-top:10px">
+        <button class="btn btn-ghost" id="edCancel" data-a="cancel">Cancel</button>
+      </div>
+    </div>
+    <div id="edDone" style="display:none;text-align:center;padding:6px 0">
+      <p id="edDoneMsg">Saved.</p>
+      <div class="modal-row" style="margin-top:8px;justify-content:center">
+        <button class="btn btn-ghost" id="edClose" data-a="reviewDone">Done</button>
+      </div>
     </div>
   </div>
 </div>
@@ -189,9 +215,9 @@
 <script src="js/catalog.js?v=13"></script>
 <script src="js/catalog/ca.js?v=13"></script>
 <script src="js/catalog/az.js?v=13"></script>
-<script src="js/i18n-app.js?v=17"></script>
+<script src="js/i18n-app.js?v=18"></script>
 <script src="js/honest-chances.js?v=13"></script>
-<script src="js/app-cabinet.js?v=17"></script>
+<script src="js/app-cabinet.js?v=18"></script>
 <script src="js/resources.js?v=14"></script>
 <script src="js/resources-render.js?v=14"></script>
 <script src="js/support.js?v=6"></script>
