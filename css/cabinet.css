@@ -304,6 +304,18 @@
 .pay-consent input{width:20px;height:20px;margin:1px 0 0;padding:0;border:0;flex-shrink:0;box-shadow:none;accent-color:var(--ink)}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 
+/* ── Review modal ─────────────────────────────────────────────────────────── */
+.rv-card-h{font-family:'Archivo';font-weight:800;font-size:16px;color:var(--ink);margin-bottom:4px}
+.rv-card-l{color:var(--steel);font-size:13.5px;line-height:1.5;margin:0 0 14px}
+.rv-label{display:block;font-family:'Archivo';font-size:12.5px;font-weight:700;color:var(--ink);margin:12px 0 5px}
+#reviewModal textarea,#reviewModal input[type=text]{width:100%;box-sizing:border-box;padding:12px 13px;
+  border:1px solid var(--line);border-radius:10px;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;
+  background:#fff;letter-spacing:normal;text-align:left;margin:0;resize:vertical}
+#reviewModal textarea:focus,#reviewModal input[type=text]:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(21,39,61,.12)}
+.rv-row{display:flex;gap:12px}
+.rv-row .rv-col{flex:1;min-width:0}
+@media(max-width:420px){.rv-row{flex-direction:column;gap:0}}
+
 /* ── Lang picker (generic, e.g. course chooser) ───────────────────────────── */
 .lang-choices{display:flex;flex-direction:column;gap:8px}
 .lang-choice-btn{width:100%;text-align:left;padding:13px 16px;border:1.5px solid var(--line);border-radius:12px;

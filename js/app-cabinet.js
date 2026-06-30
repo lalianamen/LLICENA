@@ -304,6 +304,60 @@ document.getElementById("payConfirm").addEventListener("click", async () => {
   if (await grantCourseAccess(course)){ renderMyTests(); renderCatalog(); }
 });
 
+// ─── Leave a review ───────────────────────────────────────────────────────────
+// Logged-in users submit a real review. It is inserted as 'pending' (the reviews
+// RLS insert policy forces that) and only appears on the landing after the owner
+// approves it in Supabase. Submit is gated on a non-empty body + the consent box.
+function rvEl(id){ return document.getElementById(id); }
+
+function refreshReviewSubmit(){
+  const ok = rvEl("rvBody").value.trim() && rvEl("rvConsent").checked;
+  rvEl("rvSubmit").disabled = !ok;
+}
+
+function openReview(){
+  const d = TAPP[lang];
+  rvEl("rvBody").value = ""; rvEl("rvExam").value = ""; rvEl("rvCity").value = "";
+  rvEl("rvConsent").checked = false;
+  rvEl("rvSubmit").disabled = true;
+  rvEl("rvBody").setAttribute("placeholder", d.reviewBodyPh || "");
+  rvEl("rvExam").setAttribute("placeholder", d.reviewExamPh || "");
+  rvEl("rvCity").setAttribute("placeholder", d.reviewCityPh || "");
+  rvEl("reviewForm").style.display = "";
+  rvEl("rvThanks").style.display = "none";
+  rvEl("reviewModal").style.display = "grid";
+}
+function closeReview(){ rvEl("reviewModal").style.display = "none"; }
+
+rvEl("reviewOpenBtn").addEventListener("click", openReview);
+rvEl("rvCancel").addEventListener("click", closeReview);
+rvEl("rvClose").addEventListener("click", closeReview);
+rvEl("rvBody").addEventListener("input", refreshReviewSubmit);
+rvEl("rvConsent").addEventListener("change", refreshReviewSubmit);
+
+rvEl("rvSubmit").addEventListener("click", async () => {
+  const btn = rvEl("rvSubmit");
+  if (btn.disabled) return;
+  const body = rvEl("rvBody").value.trim();
+  if (!body) return;
+  btn.disabled = true;
+  const { data: { user } } = await supa.auth.getUser();
+  if (!user){ closeReview(); return; }
+  // No .select() on purpose: a 'pending' row isn't readable under RLS, so reading
+  // it back would error. We only need the insert to succeed.
+  const { error } = await supa.from("reviews").insert([{
+    user_id: user.id,
+    name: profile?.name || null,
+    exam: rvEl("rvExam").value.trim() || null,
+    city: rvEl("rvCity").value.trim() || null,
+    body,
+    consent: true
+  }]);
+  if (error){ btn.disabled = false; console.warn("review submit failed:", error.message); return; }
+  rvEl("reviewForm").style.display = "none";
+  rvEl("rvThanks").style.display = "";
+});
+
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 document.querySelectorAll(".side button").forEach(b => b.addEventListener("click", () => {
   document.querySelectorAll(".side button").forEach(x => x.setAttribute("aria-current", x === b ? "true" : "false"));
