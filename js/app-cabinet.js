@@ -4,6 +4,9 @@ let lang = "en", accountLang = "en";
 let profile = null, courses = [], pendingAdd = null;
 let selectedState = localStorage.getItem("lp:state") || "ca";
 
+// Anti-sharing: bounce to login if this session's device isn't registered.
+if (window.LICENA_devices) LICENA_devices.backstop(supa);
+
 function tr(){
   const d = TAPP[lang];
   document.querySelectorAll("[data-a]").forEach(el => { const k = el.getAttribute("data-a"); if (d[k] !== undefined) el.textContent = d[k]; });
