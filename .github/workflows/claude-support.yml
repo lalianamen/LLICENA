@@ -32,7 +32,10 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          claude_args: "--max-turns 40"
+          claude_args: |
+            --max-turns 50
+            --permission-mode acceptEdits
+            --allowedTools "Bash,Edit,Write,Read,Grep,Glob,WebFetch,WebSearch"
           prompt: |
             A LICENA support ticket was submitted through the in-app chat and
             promoted to this GitHub issue. Treat it as a work request.
@@ -47,15 +50,17 @@ jobs:
                questions, answers, fees, dates, or URLs, and stay in the correct
                lane (content / design / resources). For Construction banks keep the
                5 blocks x 100 questions shape.
-            2. Implement the request on a new branch.
+            2. Create a new branch with `git checkout -b claude/ticket-<short-slug>` and
+               implement the request there. Never commit to main.
             3. Verify the project's way: run `node --check` on any JS you touch, and
                grep that every id / class / data-* hook the JS relies on still
                exists after any HTML/CSS edit. Render the affected page if the
                runner allows it; otherwise state clearly in the PR what still needs
                a human visual check (desktop + 360px, EN + RU).
-            4. Open a Pull Request describing what you changed, what you verified,
-               and any facts you could NOT confirm from an official source — leave
-               those out and flag them rather than guessing.
+            4. Commit, push with `git push -u origin <branch>`, then open a Pull
+               Request using `gh pr create` — title + body describing what you changed,
+               what you verified, and any facts you could NOT confirm from an official
+               source (leave those out and flag them). Reference this issue in the body.
             5. Do NOT merge and do NOT touch main. A human reviews and merges. If
                the request can't be done safely or needs a product decision, open
                the PR as a draft (or comment on the issue) explaining why instead of
