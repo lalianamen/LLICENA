@@ -322,13 +322,15 @@
 
 /* ── Review modal ─────────────────────────────────────────────────────────── */
 .rv-label{display:block;font-family:'Archivo';font-size:12.5px;font-weight:700;color:var(--ink);margin:12px 0 5px}
-#reviewModal textarea,#reviewModal input[type=text]{width:100%;box-sizing:border-box;padding:12px 13px;
+#reviewModal textarea,#reviewModal input[type=text],#editProfileModal input[type=text],#editProfileModal input[type=email]{width:100%;box-sizing:border-box;padding:12px 13px;
   border:1px solid var(--line);border-radius:10px;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;
   background:#fff;letter-spacing:normal;text-align:left;margin:0;resize:vertical}
-#reviewModal textarea:focus,#reviewModal input[type=text]:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(21,39,61,.12)}
+#reviewModal textarea:focus,#reviewModal input[type=text]:focus,#editProfileModal input[type=text]:focus,#editProfileModal input[type=email]:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(21,39,61,.12)}
 .rv-row{display:flex;gap:12px}
 .rv-row .rv-col{flex:1;min-width:0}
 @media(max-width:420px){.rv-row{flex-direction:column;gap:0}}
+.ed-note{color:var(--steel);font-size:12.5px;line-height:1.45;margin:10px 0 0}
+.ed-err{color:var(--danger);font-size:13px;line-height:1.4;margin-top:10px}
 
 /* ── Lang picker (generic, e.g. course chooser) ───────────────────────────── */
 .lang-choices{display:flex;flex-direction:column;gap:8px}

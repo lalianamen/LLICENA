@@ -388,6 +388,60 @@ function maybeNudgeReview(){
   }
 }
 
+// ─── Edit profile (name + email) ──────────────────────────────────────────────
+// Name is a plain profiles update (own-update RLS). Email goes through Supabase
+// Auth, which emails a confirmation link — the change only lands once the user
+// confirms it, so we never touch the displayed email here, just show the notice.
+const EMAIL_RE_APP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function openEditProfile(){
+  document.getElementById("edName").value = profile?.name || "";
+  document.getElementById("edEmail").value = profile?.email || "";
+  document.getElementById("edErr").textContent = "";
+  document.getElementById("edSave").disabled = false;
+  document.getElementById("editForm").style.display = "";
+  document.getElementById("edDone").style.display = "none";
+  document.getElementById("editProfileModal").style.display = "grid";
+}
+function closeEditProfile(){ document.getElementById("editProfileModal").style.display = "none"; }
+
+document.getElementById("editProfileBtn").addEventListener("click", openEditProfile);
+document.getElementById("edCancel").addEventListener("click", closeEditProfile);
+document.getElementById("edClose").addEventListener("click", closeEditProfile);
+
+document.getElementById("edSave").addEventListener("click", async () => {
+  const d = TAPP[lang];
+  const btn = document.getElementById("edSave"), err = document.getElementById("edErr");
+  const name  = document.getElementById("edName").value.trim();
+  const email = document.getElementById("edEmail").value.trim().toLowerCase();
+  err.textContent = "";
+  if (!name){ err.textContent = d.editErrName; return; }
+  if (!EMAIL_RE_APP.test(email)){ err.textContent = d.editErrEmail; return; }
+  const nameChanged  = name !== (profile?.name || "");
+  const emailChanged = email !== String(profile?.email || "").toLowerCase();
+  if (!nameChanged && !emailChanged){ closeEditProfile(); return; }
+  btn.disabled = true;
+
+  if (nameChanged){
+    const { error } = await supa.from("profiles").update({ name }).eq("id", profile.id);
+    if (error){ btn.disabled = false; err.textContent = d.editErrFail; console.warn("name update failed:", error.message); return; }
+    profile.name = name;
+    const nm = document.getElementById("aName"); if (nm) nm.textContent = name;
+  }
+
+  let msg = d.editSaved;
+  if (emailChanged){
+    const { error } = await supa.auth.updateUser({ email });
+    if (error){ btn.disabled = false; err.textContent = error.message || d.editErrFail; return; }
+    msg = String(d.editEmailSent || "").replace("{email}", email);
+  }
+
+  btn.disabled = false;
+  document.getElementById("edDoneMsg").textContent = msg;
+  document.getElementById("editForm").style.display = "none";
+  document.getElementById("edDone").style.display = "";
+});
+
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 document.querySelectorAll(".side button").forEach(b => b.addEventListener("click", () => {
   document.querySelectorAll(".side button").forEach(x => x.setAttribute("aria-current", x === b ? "true" : "false"));
