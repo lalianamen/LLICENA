@@ -578,14 +578,14 @@ window.COURSE_RESOURCES["c20-exam"] = {
       en: "ACCA Manual J (Residential Load Calc)",
       ru: "ACCA Manual J (Расчёт нагрузок для жилых домов)",
       es: "ACCA Manual J (Cálculo de carga residencial)",
-      url: "https://www.acca.org/standards/manualj"
+      url: "https://www.acca.org/standards/technical-manuals/manual-j"
     },
     {
       icon: "📐",
       en: "ACCA Manual D (Duct Design)",
       ru: "ACCA Manual D (Проектирование воздуховодов)",
       es: "ACCA Manual D (Diseño de ductos)",
-      url: "https://www.acca.org/standards/manuald"
+      url: "https://www.acca.org/standards/technical-manuals/manual-d"
     },
     {
       icon: "🌡",
