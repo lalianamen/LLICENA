@@ -555,6 +555,9 @@ async function initGuideView(){
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function initCourse(){
+  // Defense-in-depth: only proceed for a course id that resolves in the catalog,
+  // so an unknown or crafted ?id= never flows into a loaded script path.
+  if (!courseMeta){ window.location.replace("app.html"); return; }
   const { data: { session } } = await supa.auth.getSession();
   if (!session){ window.location.replace("index.html"); return; }
 
