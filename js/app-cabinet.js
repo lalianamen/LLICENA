@@ -10,6 +10,8 @@ if (window.LICENA_devices) LICENA_devices.backstop(supa);
 function tr(){
   const d = TAPP[lang];
   document.querySelectorAll("[data-a]").forEach(el => { const k = el.getAttribute("data-a"); if (d[k] !== undefined) el.textContent = d[k]; });
+  const rh = document.getElementById("reviewHeaderBtn");
+  if (rh && d.reviewOpen) rh.setAttribute("aria-label", d.reviewOpen);   // icon-only on mobile needs a name
   document.documentElement.lang = lang;
 }
 
@@ -329,7 +331,7 @@ function openReview(){
 }
 function closeReview(){ rvEl("reviewModal").style.display = "none"; }
 
-rvEl("reviewOpenBtn").addEventListener("click", openReview);
+rvEl("reviewHeaderBtn").addEventListener("click", openReview);
 rvEl("rvCancel").addEventListener("click", closeReview);
 rvEl("rvClose").addEventListener("click", closeReview);
 rvEl("rvBody").addEventListener("input", refreshReviewSubmit);
@@ -354,9 +356,37 @@ rvEl("rvSubmit").addEventListener("click", async () => {
     consent: true
   }]);
   if (error){ btn.disabled = false; console.warn("review submit failed:", error.message); return; }
+  try { localStorage.setItem("lp:review_done", "1"); } catch (_) {}   // stop nudging once they've reviewed
   rvEl("reviewForm").style.display = "none";
   rvEl("rvThanks").style.display = "";
 });
+
+// Occasional, low-key hint in the header to leave a review. Deliberately rare:
+// only for a settled-in user (≥3 cabinet visits), at most ~once/6 days, ~45% of
+// the time, and never once they've left one. ?nudge in the URL force-previews it.
+function maybeNudgeReview(){
+  const btn = rvEl("reviewHeaderBtn");
+  if (!btn) return;
+  let doIt = location.search.indexOf("nudge") >= 0 || location.hash.indexOf("nudge") >= 0;
+  if (!doIt){
+    try {
+      const visits = (parseInt(localStorage.getItem("lp:cab_visits") || "0", 10) || 0) + 1;
+      localStorage.setItem("lp:cab_visits", String(visits));
+      if (!localStorage.getItem("lp:review_done")){
+        const now = Date.now(), DAY = 86400000;
+        const last = parseInt(localStorage.getItem("lp:review_nudge_last") || "0", 10) || 0;
+        if (visits >= 3 && (now - last) >= 6 * DAY && Math.random() < 0.45){
+          doIt = true;
+          localStorage.setItem("lp:review_nudge_last", String(now));
+        }
+      }
+    } catch (_) {}
+  }
+  if (doIt){
+    btn.classList.add("rev-hdr-nudge");
+    setTimeout(() => btn.classList.remove("rev-hdr-nudge"), 7200);
+  }
+}
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 document.querySelectorAll(".side button").forEach(b => b.addEventListener("click", () => {
@@ -478,6 +508,7 @@ async function init(){
   renderAcctLangPicker();
   document.getElementById("shell").style.display = "grid";
   renderAll();
+  maybeNudgeReview();
 }
 
 init();
