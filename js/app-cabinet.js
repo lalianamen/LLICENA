@@ -215,14 +215,25 @@ function openPayModal(course){
   pendingAdd = course;
   document.getElementById("payModalTitle").textContent = course.name[lang] || course.name.en;
   document.getElementById("payCourseInfo").innerHTML = "";
-  // Honest-chances: mandatory read + acknowledgment before a course can be activated.
-  const g = window.HONEST_CHANCES_GENERAL || {};
-  const titles = window.HONEST_CHANCES_TITLE || {};
-  const gl = g[lang] ? lang : "en";
-  document.getElementById("payHonestTitle").textContent = titles[gl] || titles.en || "★ Honest chances";
-  document.getElementById("payHonestBody").innerHTML = g[gl] || g.en || "";
-  document.getElementById("payHonest").open = true;
-  const chk = document.getElementById("payHonestChk");
+  const isGuide = course.type === "guide";
+  const honest  = document.getElementById("payHonest");
+  const chk     = document.getElementById("payHonestChk");
+  const ackText = chk.closest(".pay-consent").querySelector("span");
+  // The "honest chances" exam disclaimer applies to exams only; a guide gets a
+  // guide-specific acknowledgment instead. Either way the checkbox is mandatory.
+  honest.style.display = isGuide ? "none" : "";
+  if (ackText){
+    ackText.setAttribute("data-a", isGuide ? "guideAck" : "honestAck");
+    ackText.textContent = (TAPP[lang] && TAPP[lang][isGuide ? "guideAck" : "honestAck"]) || ackText.textContent;
+  }
+  if (!isGuide){
+    const g = window.HONEST_CHANCES_GENERAL || {};
+    const titles = window.HONEST_CHANCES_TITLE || {};
+    const gl = g[lang] ? lang : "en";
+    document.getElementById("payHonestTitle").textContent = titles[gl] || titles.en || "★ Honest chances";
+    document.getElementById("payHonestBody").innerHTML = g[gl] || g.en || "";
+    honest.open = true;
+  }
   chk.checked = false;
   document.getElementById("payConfirm").disabled = true;
   document.getElementById("payModal").style.display = "grid";

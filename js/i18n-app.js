@@ -16,6 +16,7 @@ const TAPP = {
     cancel:"Cancel", chooseLang:"Choose your study language:",
     betaFree:"Free access during beta — no payment needed.", activateBtn:"Activate for free",
     honestAck:"I have read the above and understand that LICENA is a practice tool that does not guarantee passing.",
+    guideAck:"I understand this guide is a curated set of useful links and information, and that the details can vary by state — and often by city.",
     removeBtn:"Remove", removeCourseConfirm:"Remove course", removeCourseText:"This will remove the course from your account. You can add it again anytime.", removeYes:"Remove",
     stateLabel:"State", chooseState:"Choose your state", stateSoon:"Coming soon", stateEmpty:"No courses for this state yet — coming soon.",
     /* Course player */
@@ -44,6 +45,7 @@ const TAPP = {
     cancel:"Cancelar", chooseLang:"Elige el idioma de estudio:",
     betaFree:"Acceso gratuito durante la beta — sin pago.", activateBtn:"Activar gratis",
     honestAck:"He leído lo anterior y entiendo que LICENA es una herramienta de práctica que no garantiza aprobar.",
+    guideAck:"Entiendo que esta guía es un conjunto de enlaces e información útiles, y que los detalles pueden variar según el estado — y a menudo según la ciudad.",
     removeBtn:"Eliminar", removeCourseConfirm:"Eliminar curso", removeCourseText:"Esto eliminará el curso de tu cuenta. Puedes volver a añadirlo en cualquier momento.", removeYes:"Eliminar",
     stateLabel:"Estado", chooseState:"Elige tu estado", stateSoon:"Próximamente", stateEmpty:"Aún no hay cursos para este estado — próximamente.",
     /* Course player */
@@ -72,6 +74,7 @@ const TAPP = {
     cancel:"Отмена", chooseLang:"Выбери язык для учёбы:",
     betaFree:"Бесплатный доступ в период бета-тестирования — оплата не нужна.", activateBtn:"Активировать бесплатно",
     honestAck:"Я прочитал(а) выше и понимаю, что LICENA — тренажёр, который не гарантирует сдачу.",
+    guideAck:"Я понимаю, что этот гайд — это подборка полезных ссылок и информации, и что детали могут отличаться в зависимости от штата, а часто и города.",
     removeBtn:"Удалить", removeCourseConfirm:"Удалить курс", removeCourseText:"Курс будет удалён из твоего аккаунта. Ты сможешь добавить его снова в любой момент.", removeYes:"Удалить",
     stateLabel:"Штат", chooseState:"Выбери свой штат", stateSoon:"Скоро", stateEmpty:"Для этого штата пока нет курсов — скоро добавим.",
     /* Course player */
