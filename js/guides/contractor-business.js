@@ -4,10 +4,10 @@
 window.COURSE_GUIDE = window.COURSE_GUIDE || {};
 window.COURSE_GUIDE["contractor-business"] = {
   en: [
-    { t:"A — Do you need a CSLB license?", h:`<p>In California, anyone who builds or improves property for <strong>$500 or more</strong> (combined labor and materials) must hold a license from the Contractors State License Board (CSLB). Working unlicensed above that limit is a misdemeanor.</p>
+    { t:"A — Do you need a CSLB license?", h:`<p>In California, anyone who builds or improves property for <strong>$1,000 or more</strong> (combined labor and materials) must hold a license from the Contractors State License Board (CSLB). As of January 1, 2025 (AB 2622, B&amp;P Code §7048), the unlicensed "minor work" limit rose from $500 to $1,000. Working unlicensed above that limit is a misdemeanor.</p>
 <ul>
-<li><strong>Under $500:</strong> small jobs may fall under the "handyman" exemption — but you may <em>not</em> advertise as a contractor or split a larger job to stay under the limit.</li>
-<li><strong>$500 and up:</strong> you need a CSLB license before you bid, contract, or advertise.</li>
+<li><strong>Under $1,000:</strong> a job may fall under the "handyman" exemption only if it is casual/minor, needs <em>no building permit</em>, and you hire <em>no employees</em> — and you may <em>not</em> advertise as a contractor or split a larger job to stay under the limit.</li>
+<li><strong>$1,000 and up:</strong> you need a CSLB license before you bid, contract, or advertise.</li>
 <li>Your license number must appear on contracts, bids, business cards, trucks, and ads.</li>
 </ul>
 <p class="guide-note">Fees and dollar thresholds change over time. Always confirm the current numbers at <a href="https://www.cslb.ca.gov" target="_blank" rel="noopener">cslb.ca.gov</a>.</p>` },
@@ -93,10 +93,10 @@ window.COURSE_GUIDE["contractor-business"] = {
 </ul>` }
   ],
   es: [
-    { t:"A — ¿Necesitas una licencia del CSLB?", h:`<p>En California, cualquier persona que construya o mejore una propiedad por <strong>$500 o más</strong> (mano de obra y materiales combinados) debe tener una licencia de la Junta Estatal de Licencias de Contratistas (CSLB). Trabajar sin licencia por encima de ese monto es un delito menor.</p>
+    { t:"A — ¿Necesitas una licencia del CSLB?", h:`<p>En California, cualquier persona que construya o mejore una propiedad por <strong>$1,000 o más</strong> (mano de obra y materiales combinados) debe tener una licencia de la Junta Estatal de Licencias de Contratistas (CSLB). Desde el 1 de enero de 2025 (AB 2622, Código B&amp;P §7048), el límite de "trabajo menor" sin licencia subió de $500 a $1,000. Trabajar sin licencia por encima de ese monto es un delito menor.</p>
 <ul>
-<li><strong>Menos de $500:</strong> los trabajos pequeños pueden caer en la exención de "handyman" — pero <em>no</em> puedes anunciarte como contratista ni dividir un trabajo grande para quedarte por debajo del límite.</li>
-<li><strong>$500 o más:</strong> necesitas una licencia del CSLB antes de cotizar, contratar o anunciarte.</li>
+<li><strong>Menos de $1,000:</strong> un trabajo puede caer en la exención de "handyman" solo si es casual/menor, <em>no requiere permiso de construcción</em> y <em>no</em> contratas empleados — y <em>no</em> puedes anunciarte como contratista ni dividir un trabajo grande para quedarte por debajo del límite.</li>
+<li><strong>$1,000 o más:</strong> necesitas una licencia del CSLB antes de cotizar, contratar o anunciarte.</li>
 <li>Tu número de licencia debe aparecer en contratos, cotizaciones, tarjetas, camiones y anuncios.</li>
 </ul>
 <p class="guide-note">Las tarifas y los montos cambian con el tiempo. Confirma siempre las cifras vigentes en <a href="https://www.cslb.ca.gov" target="_blank" rel="noopener">cslb.ca.gov</a>.</p>` },
@@ -182,10 +182,10 @@ window.COURSE_GUIDE["contractor-business"] = {
 </ul>` }
   ],
   ru: [
-    { t:"A — Нужна ли вам лицензия CSLB?", h:`<p>В Калифорнии любой, кто строит или улучшает недвижимость на сумму <strong>$500 и более</strong> (работа и материалы вместе), обязан иметь лицензию Совета по лицензированию подрядчиков штата (CSLB). Работать без лицензии сверх этой суммы — уголовный проступок (misdemeanor).</p>
+    { t:"A — Нужна ли вам лицензия CSLB?", h:`<p>В Калифорнии любой, кто строит или улучшает недвижимость на сумму <strong>$1,000 и более</strong> (работа и материалы вместе), обязан иметь лицензию Совета по лицензированию подрядчиков штата (CSLB). С 1 января 2025 года (AB 2622, Кодекс B&amp;P §7048) порог «мелких работ» без лицензии вырос с $500 до $1,000. Работать без лицензии сверх этой суммы — уголовный проступок (misdemeanor).</p>
 <ul>
-<li><strong>До $500:</strong> мелкие работы могут попадать под исключение «handyman» — но вы <em>не</em> вправе рекламироваться как подрядчик или дробить крупный заказ, чтобы остаться ниже лимита.</li>
-<li><strong>$500 и выше:</strong> лицензия CSLB нужна до того, как вы делаете смету, заключаете договор или рекламируетесь.</li>
+<li><strong>До $1,000:</strong> работа попадает под исключение «handyman», только если она незначительная, <em>не требует разрешения на строительство</em> (building permit) и вы <em>не</em> нанимаете работников — и вы <em>не</em> вправе рекламироваться как подрядчик или дробить крупный заказ, чтобы остаться ниже лимита.</li>
+<li><strong>$1,000 и выше:</strong> лицензия CSLB нужна до того, как вы делаете смету, заключаете договор или рекламируетесь.</li>
 <li>Номер лицензии должен быть на договорах, сметах, визитках, машинах и в рекламе.</li>
 </ul>
 <p class="guide-note">Сборы и пороги со временем меняются. Всегда сверяйте актуальные цифры на <a href="https://www.cslb.ca.gov" target="_blank" rel="noopener">cslb.ca.gov</a>.</p>` },
