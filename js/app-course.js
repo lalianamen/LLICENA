@@ -147,6 +147,14 @@ function buildStudyLangSwitcher(){
 // bilingual rendering pulls both sides directly in renderQ.
 const isBilingual = () => studyLang.includes("+");
 
+// Keep <html lang> in sync with the language the questions are actually shown in, so
+// the browser's auto-translate doesn't kick in and mangle our already-localized text
+// (declaring lang="en" while showing Russian made Chrome/Safari re-translate it into
+// garbage). Bilingual mode reflects the UI language. Mirrors the landing/cabinet fix.
+function syncHtmlLang(){
+  document.documentElement.lang = studyLang.includes("+") ? uiLang : studyLang;
+}
+
 function getQText(q){
   if (studyLang === "en") return q.q;
   const t = TR[q.id];
@@ -334,6 +342,7 @@ function updateOverallProgress(){
 
 // ─── Render ───────────────────────────────────────────────────────────────────
 function renderQ(){
+  syncHtmlLang();
   const qCard       = document.getElementById("qCard");
   const resultsCard = document.getElementById("resultsCard");
   const cs          = document.getElementById("comingSoon");
@@ -616,6 +625,7 @@ function startExamTimer(){
 
 // ── Runner render (NO feedback — just record + highlight the pick) ─────────────
 function renderExamQ(){
+  syncHtmlLang();
   if (!exam) return;
   const id = exam.qids[examCur];
   const q  = examQ(id);
