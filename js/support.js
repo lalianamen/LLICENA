@@ -157,7 +157,7 @@
     if (supHintHideT){ clearTimeout(supHintHideT); supHintHideT = null; }
   }
   (function setupHint(){
-    const DELAY = 60000, DURATION = 60000, MAX = 6;
+    const DELAY = 10000, DURATION = 60000, MAX = 6;
     let seen = false, count = 0;
     try { seen = !!localStorage.getItem("lp:sup_seen"); count = parseInt(localStorage.getItem("lp:sup_hint_n") || "0", 10) || 0; } catch(_){}
     if (seen || count >= MAX) return;
