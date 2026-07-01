@@ -121,11 +121,23 @@ Deno.serve(async (req) => {
   const newImages: string[] = Array.isArray(payload?.newImages) ? payload.newImages.filter(isShotUrl).slice(0, 4) : [];
   const sessionImages: string[] = Array.isArray(payload?.sessionImages) ? payload.sessionImages.filter(isShotUrl).slice(0, 12) : [];
 
-  // Sanitize the conversation we forward to the model.
-  const messages = incoming
+  // Sanitize the conversation we forward to the model. Two things the Messages API
+  // rejects with a 400 must be prevented no matter what the browser sent:
+  //   • empty content — an image-only turn can leave a blank text message in history
+  //   • two messages of the same role in a row — can happen after a failed turn
+  const raw = incoming
     .slice(-MAX_MESSAGES)
     .filter((m: any) => (m?.role === "user" || m?.role === "assistant") && typeof m?.content === "string")
-    .map((m: any) => ({ role: m.role, content: String(m.content).slice(0, MAX_CHARS) }));
+    .map((m: any) => {
+      const c = String(m.content).slice(0, MAX_CHARS);
+      return { role: m.role, content: c.trim() ? c : "[screenshot]" };
+    });
+  const messages: any[] = [];
+  for (const m of raw) {
+    const prev = messages[messages.length - 1];
+    if (prev && prev.role === m.role) prev.content += "\n" + m.content;   // merge same-role
+    else messages.push(m);
+  }
   if (!messages.length || messages[0].role !== "user") return json({ error: "bad_request" }, 400);
 
   // Attach this turn's screenshots to the latest user message as vision blocks.
