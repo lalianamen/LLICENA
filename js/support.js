@@ -21,9 +21,9 @@
 
   // Self-contained copy (mirrors the sup* keys in i18n.js) so no page i18n is needed.
   const STR = {
-    en:{ title:"LICENA Assistant", hello:"Hi", intro:"I'm the LICENA assistant. Ask about exams, scheduling, or where to take a test — and I can log a request for a new course or language, or a problem you found.", ph:"Ask a question…", error:"Something went wrong. Please try again." },
-    es:{ title:"Asistente LICENA", hello:"¡Hola", intro:"Soy el asistente de LICENA. Pregunta sobre exámenes, citas o dónde dar una prueba — y puedo registrar una solicitud de un nuevo curso o idioma, o un problema que hayas encontrado.", ph:"Escribe tu pregunta…", error:"Algo salió mal. Inténtalo de nuevo." },
-    ru:{ title:"Ассистент LICENA", hello:"Привет", intro:"Я ассистент LICENA. Спроси про экзамены, запись или где сдавать тест — и я могу зафиксировать заявку на новый курс или язык, либо найденную ошибку.", ph:"Задай вопрос…", error:"Что-то пошло не так. Попробуйте ещё раз." },
+    en:{ title:"LICENA Assistant", hello:"Hi", intro:"I'm the LICENA assistant. Ask about exams, scheduling, or where to take a test — and I can log a request for a new course or language, or a problem you found.", ph:"Ask a question…", error:"Something went wrong. Please try again.", hint:"Need help? Ask me about exams or courses — or report a problem." },
+    es:{ title:"Asistente LICENA", hello:"¡Hola", intro:"Soy el asistente de LICENA. Pregunta sobre exámenes, citas o dónde dar una prueba — y puedo registrar una solicitud de un nuevo curso o idioma, o un problema que hayas encontrado.", ph:"Escribe tu pregunta…", error:"Algo salió mal. Inténtalo de nuevo.", hint:"¿Necesitas ayuda? Pregúntame sobre exámenes o cursos — o reporta un problema." },
+    ru:{ title:"Ассистент LICENA", hello:"Привет", intro:"Я ассистент LICENA. Спроси про экзамены, запись или где сдавать тест — и я могу зафиксировать заявку на новый курс или язык, либо найденную ошибку.", ph:"Задай вопрос…", error:"Что-то пошло не так. Попробуйте ещё раз.", hint:"Нужна помощь? Спроси про экзамены и курсы — или сообщи о проблеме." },
   };
   // UI language across pages: course exposes `uiLang`, landing/cabinet expose `lang`,
   // all persist lp:ui_lang. typeof-guarded so an undefined global never throws.
@@ -42,6 +42,7 @@
 
   const history = [];   // [{role:'user'|'assistant', content}] sent to the model
   let greeted = false, busy = false;
+  let supHint = null, supHintHideT = null;   // discovery-hint bubble by the FAB
   // A signed-in user's email/id/name so the assistant never asks logged-in users for
   // their email and can address them by name.
   let authEmail = null, authId = null, authName = null;
@@ -86,6 +87,8 @@
   async function open(){
     panel.hidden = false;
     fab.setAttribute("aria-expanded", "true");
+    try { localStorage.setItem("lp:sup_seen", "1"); } catch(_){}   // opened once → stop the discovery hint
+    hideSupHint();
     localize();
     await refreshAuth();
     if (!greeted){ bubble("assistant", greetingText()); greeted = true; }
@@ -142,4 +145,41 @@
       if (greeted && history.length === 0){ log.innerHTML = ""; bubble("assistant", greetingText()); }
     }, 0);
   });
+
+  // ── Discovery hint ────────────────────────────────────────────────────────
+  // A small teaser bubble by the FAB, shown a while after each page load and
+  // repeated on the next navigation — so people notice the assistant is live and
+  // what it does. Stops once the user opens the chat (lp:sup_seen), or after a
+  // small appearance cap (so a user who ignores it isn't nagged forever). Never
+  // shows while the panel is open. Tunable via DELAY / DURATION / MAX below.
+  function hideSupHint(){
+    if (supHint) supHint.classList.remove("on");
+    if (supHintHideT){ clearTimeout(supHintHideT); supHintHideT = null; }
+  }
+  (function setupHint(){
+    const DELAY = 60000, DURATION = 60000, MAX = 6;
+    let seen = false, count = 0;
+    try { seen = !!localStorage.getItem("lp:sup_seen"); count = parseInt(localStorage.getItem("lp:sup_hint_n") || "0", 10) || 0; } catch(_){}
+    if (seen || count >= MAX) return;
+
+    const el = document.createElement("div");
+    el.className = "sup-hint"; el.setAttribute("role", "button"); el.setAttribute("tabindex", "0");
+    const t = document.createElement("span"); t.className = "sup-hint-txt";
+    const x = document.createElement("button"); x.type = "button"; x.className = "sup-hint-x"; x.setAttribute("aria-label", "Close"); x.textContent = "✕";
+    el.appendChild(t); el.appendChild(x);
+    document.body.appendChild(el);
+    supHint = el;
+
+    x.addEventListener("click", (e) => { e.stopPropagation(); hideSupHint(); });
+    el.addEventListener("click", () => { hideSupHint(); if (panel.hidden) open(); });
+    el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); el.click(); } });
+
+    setTimeout(() => {
+      if (!panel.hidden) return;                 // chat already open — skip this appearance
+      t.textContent = d().hint;                  // localize at show time
+      el.classList.add("on");
+      try { localStorage.setItem("lp:sup_hint_n", String(count + 1)); } catch(_){}
+      supHintHideT = setTimeout(hideSupHint, DURATION);
+    }, DELAY);
+  })();
 })();
