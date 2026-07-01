@@ -191,7 +191,11 @@
         newImages = await uploadShots(shots);
         newImages.forEach((u) => sessionShots.push(u));
       }
-      history.push({ role: "user", content: text });
+      // Never store empty content: an image-only turn would otherwise leave a blank
+      // user message that the model API rejects on the NEXT turn. The placeholder is
+      // only sent to the model (the bubble already shows the real image) — the model
+      // still has context from its own prior description of the screenshot.
+      history.push({ role: "user", content: text || "[screenshot]" });
       const { data, error } = await supa.functions.invoke("assistant", {
         body: { messages: history, locale: curLang(), userEmail: authEmail, userId: authId, userName: authName, newImages: newImages, sessionImages: sessionShots },
       });
