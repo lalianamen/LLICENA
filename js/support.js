@@ -18,6 +18,9 @@
   const input  = document.getElementById("supMsg");
   const sendBtn= document.getElementById("supSend");
   const titleEl= document.getElementById("supTitle");
+  const shotsWrap = document.getElementById("supShots");
+  const fileInput = document.getElementById("supFile");
+  const attachBtn = document.getElementById("supAttach");
 
   // Self-contained copy (mirrors the sup* keys in i18n.js) so no page i18n is needed.
   const STR = {
@@ -42,6 +45,9 @@
 
   const history = [];   // [{role:'user'|'assistant', content}] sent to the model
   let greeted = false, busy = false;
+  const MAX_SHOTS = 3;          // screenshots stageable per message
+  let pending = [];             // [{blob, dataUrl}] staged for the next send
+  const sessionShots = [];      // signed URLs uploaded this chat → attached to any ticket
   let supHint = null, supHintHideT = null;   // discovery-hint bubble by the FAB
   // A signed-in user's email/id/name so the assistant never asks logged-in users for
   // their email and can address them by name.
@@ -54,6 +60,7 @@
       authId    = u ? (u.id || null) : null;
       authName  = u && u.user_metadata ? (u.user_metadata.name || null) : null;
     } catch (_) { authEmail = null; authId = null; authName = null; }
+    if (attachBtn) attachBtn.hidden = !authId;   // screenshots only for signed-in users
   }
   refreshAuth();
 
@@ -61,10 +68,13 @@
   // Escape (incl. " so a URL can't break out of the href), then linkify bare URLs.
   const fmt = (s) => esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 
-  function bubble(role, text){
+  function bubble(role, text, imgs){
     const el = document.createElement("div");
     el.className = "sup-msg " + (role === "user" ? "user" : "bot");
-    el.innerHTML = fmt(text);
+    let html = "";
+    if (imgs && imgs.length) html += '<div class="sup-msg-shots">' + imgs.map((u) => `<img src="${esc(u)}" alt="">`).join("") + "</div>";
+    if (text) html += '<div class="sup-msg-txt">' + fmt(text) + "</div>";
+    el.innerHTML = html || fmt(text);
     log.appendChild(el);
     log.scrollTop = log.scrollHeight;
     return el;
@@ -105,15 +115,85 @@
     if (e.key === "Enter" && !e.shiftKey){ e.preventDefault(); form.requestSubmit(); }
   });
 
-  async function send(text){
+  // ── Screenshots (signed-in only): compress client-side, preview, upload on send ──
+  function readDataUrl(file){
+    return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(file); });
+  }
+  // Downscale to <=1280px and re-encode as JPEG so an upload stays ~200–400 KB.
+  function compress(file){
+    return readDataUrl(file).then((durl) => new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1280; let w = img.width, h = img.height;
+        if (w > MAX || h > MAX){ const r = Math.min(MAX / w, MAX / h); w = Math.round(w * r); h = Math.round(h * r); }
+        const c = document.createElement("canvas"); c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        c.toBlob((b) => b ? resolve({ blob: b, dataUrl: c.toDataURL("image/jpeg", 0.6) }) : reject(new Error("encode")), "image/jpeg", 0.72);
+      };
+      img.onerror = () => reject(new Error("decode"));
+      img.src = durl;   // data: URL — allowed by our img-src CSP
+    }));
+  }
+  function renderShots(){
+    shotsWrap.innerHTML = "";
+    shotsWrap.hidden = pending.length === 0;
+    pending.forEach((s, i) => {
+      const chip = document.createElement("div"); chip.className = "sup-shot";
+      const im = document.createElement("img"); im.src = s.dataUrl; im.alt = "";
+      const x = document.createElement("button"); x.type = "button"; x.className = "sup-shot-x"; x.setAttribute("aria-label", "Remove"); x.textContent = "✕";
+      x.addEventListener("click", () => { pending.splice(i, 1); renderShots(); });
+      chip.appendChild(im); chip.appendChild(x); shotsWrap.appendChild(chip);
+    });
+  }
+  async function addFiles(files){
+    for (const f of files){
+      if (pending.length >= MAX_SHOTS) break;
+      if (!/^image\/(png|jpe?g|webp)$/.test(f.type) || f.size > 12 * 1024 * 1024) continue;
+      try { pending.push(await compress(f)); } catch (_){}
+    }
+    renderShots();
+  }
+  async function uploadShots(shots){
+    const urls = [];
+    for (const s of shots){
+      try {
+        const id = (self.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now();
+        const path = authId + "/" + id + ".jpg";
+        const up = await supa.storage.from("support-uploads").upload(path, s.blob, { contentType: "image/jpeg" });
+        if (up.error) continue;
+        const sg = await supa.storage.from("support-uploads").createSignedUrl(path, 60 * 60 * 24 * 30);
+        if (sg.data && sg.data.signedUrl) urls.push(sg.data.signedUrl);
+      } catch (_){}
+    }
+    return urls;
+  }
+  if (attachBtn && fileInput){
+    attachBtn.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => { addFiles([...fileInput.files]); fileInput.value = ""; });
+    input.addEventListener("paste", (e) => {
+      if (!authId) return;
+      const imgs = [...((e.clipboardData && e.clipboardData.items) || [])].filter((i) => i.type.indexOf("image/") === 0).map((i) => i.getAsFile()).filter(Boolean);
+      if (imgs.length){ e.preventDefault(); addFiles(imgs); }
+    });
+  }
+
+  async function send(text, shots){
+    shots = shots || [];
     busy = true; sendBtn.disabled = true;
-    bubble("user", text);
-    history.push({ role: "user", content: text });
+    bubble("user", text, shots.map((s) => s.dataUrl));
     typing(true);
     try {
       await refreshAuth();
+      // Upload staged screenshots → signed URLs: the model reads them this turn
+      // (newImages); the full session list rides along so any ticket can link them.
+      let newImages = [];
+      if (shots.length && authId){
+        newImages = await uploadShots(shots);
+        newImages.forEach((u) => sessionShots.push(u));
+      }
+      history.push({ role: "user", content: text });
       const { data, error } = await supa.functions.invoke("assistant", {
-        body: { messages: history, locale: curLang(), userEmail: authEmail, userId: authId, userName: authName },
+        body: { messages: history, locale: curLang(), userEmail: authEmail, userId: authId, userName: authName, newImages: newImages, sessionImages: sessionShots },
       });
       typing(false);
       if (error || !data || !data.reply) throw (error || new Error("no reply"));
@@ -130,9 +210,10 @@
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const text = input.value.trim();
-    if (!text || busy) return;
+    if ((!text && !pending.length) || busy) return;
+    const shots = pending; pending = []; renderShots();
     input.value = ""; grow();
-    send(text);
+    send(text, shots);
   });
 
   // Re-localize when the UI language changes. Landing uses `.langs`, the cabinet a
@@ -157,7 +238,7 @@
     if (supHintHideT){ clearTimeout(supHintHideT); supHintHideT = null; }
   }
   (function setupHint(){
-    const DELAY = 60000, DURATION = 60000, MAX = 6;
+    const DELAY = 10000, DURATION = 60000, MAX = 6;
     let seen = false, count = 0;
     try { seen = !!localStorage.getItem("lp:sup_seen"); count = parseInt(localStorage.getItem("lp:sup_hint_n") || "0", 10) || 0; } catch(_){}
     if (seen || count >= MAX) return;

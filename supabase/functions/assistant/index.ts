@@ -40,6 +40,7 @@ How to answer:
   link it, rather than stating a specific address you are not certain of.
 - If you cannot confirm something from an official source, say so plainly instead of guessing.
 - Do not give legal advice or guarantees about passing.
+- Users may attach screenshots (e.g. a question that looks wrong, or a page that won't load). Look at the image and use it to help; when it shows a real problem, log a complaint and describe what the screenshot shows so the team can find it.
 
 Requests and complaints — use the create_ticket tool:
 - If the user asks to ADD a language to a course, ADD a new course/exam, or otherwise requests something
@@ -113,12 +114,30 @@ Deno.serve(async (req) => {
   const userId = (typeof payload?.userId === "string" && payload.userId) ? payload.userId.slice(0, 64) : null;
   const userName = (typeof payload?.userName === "string" && payload.userName.trim()) ? payload.userName.trim().slice(0, 80) : null;
 
+  // Screenshot URLs (Supabase Storage signed URLs). `newImages` are attached to THIS
+  // turn for the model to read; `sessionImages` is everything uploaded this chat, linked
+  // to any ticket so the team can see it. We only accept our own storage host.
+  const isShotUrl = (u: any) => typeof u === "string" && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//i.test(u) && u.length < 1200;
+  const newImages: string[] = Array.isArray(payload?.newImages) ? payload.newImages.filter(isShotUrl).slice(0, 4) : [];
+  const sessionImages: string[] = Array.isArray(payload?.sessionImages) ? payload.sessionImages.filter(isShotUrl).slice(0, 12) : [];
+
   // Sanitize the conversation we forward to the model.
   const messages = incoming
     .slice(-MAX_MESSAGES)
     .filter((m: any) => (m?.role === "user" || m?.role === "assistant") && typeof m?.content === "string")
     .map((m: any) => ({ role: m.role, content: String(m.content).slice(0, MAX_CHARS) }));
   if (!messages.length || messages[0].role !== "user") return json({ error: "bad_request" }, 400);
+
+  // Attach this turn's screenshots to the latest user message as vision blocks.
+  if (newImages.length) {
+    const last = messages[messages.length - 1];
+    if (last && last.role === "user") {
+      (last as any).content = [
+        ...(last.content ? [{ type: "text", text: String(last.content) }] : []),
+        ...newImages.map((url) => ({ type: "image", source: { type: "url", url } })),
+      ];
+    }
+  }
 
   const anthropic = new Anthropic({ apiKey });
   const supa = createClient(
@@ -168,7 +187,7 @@ Deno.serve(async (req) => {
             .insert([{
               kind: t.kind === "complaint" ? "complaint" : "request",
               email: (userEmail || String(t.email || "")).toLowerCase(),
-              message: String(t.summary || ""),
+              message: String(t.summary || "") + (sessionImages.length ? "\n\nScreenshots:\n" + sessionImages.join("\n") : ""),
               locale,
               user_id: userId,
               course_id: t.course_id || null,
