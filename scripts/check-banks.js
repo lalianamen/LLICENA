@@ -32,6 +32,10 @@ const errors = [];
 const warns = [];
 const err = (m) => errors.push(m);
 const warn = (m) => warns.push(m);
+// Word-level normalization for prose stems. NOT for options: stripping symbols
+// would collapse formula options like "V × R" vs "V / R" into false duplicates.
+const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9а-яё ]+/gi, " ").replace(/\s+/g, " ").trim();
+const normOpt = (s) => String(s).toLowerCase().replace(/\s+/g, " ").trim();
 
 for (const [course, items] of Object.entries(REG)) {
   const withBlock = items.filter((it) => "block" in it).length;
@@ -54,6 +58,8 @@ for (const [course, items] of Object.entries(REG)) {
       err(`${tag}: expected 4 options, got ${Array.isArray(it.opts) ? it.opts.length : typeof it.opts}`);
     } else if (it.opts.some((o) => !o || !String(o).trim())) {
       err(`${tag}: empty option`);
+    } else if (new Set(it.opts.map(normOpt)).size !== 4) {
+      err(`${tag}: duplicate options within the question`);
     }
     if (!Number.isInteger(it.correct) || it.correct < 0 || it.correct >= (it.opts || []).length) {
       err(`${tag}: correct index out of range (${it.correct})`);
@@ -94,6 +100,28 @@ for (const [course, items] of Object.entries(REG)) {
     if (items.length !== 50) warn(`${course}: ${items.length} questions (expected 50)`);
     const secs = new Set(items.map((i) => i.sec));
     if (secs.size !== 6) warn(`${course}: ${secs.size} sections (expected 6)`);
+  }
+
+  // Repeats across the whole course (all blocks): identical stems are errors,
+  // high word-overlap stems are warnings. Semantic repeats need human review.
+  const seenStem = new Map();
+  for (const it of items) {
+    const n = norm(it.q);
+    if (!n) continue;
+    if (seenStem.has(n)) err(`${course}#${it.id}: duplicate stem of #${seenStem.get(n)}`);
+    else seenStem.set(n, it.id);
+  }
+  const stemWords = items.map((it) => new Set(norm(it.q).split(" ").filter((w) => w.length > 2)));
+  for (let i = 0; i < items.length; i++) {
+    for (let j = i + 1; j < items.length; j++) {
+      const a = stemWords[i], b = stemWords[j];
+      if (a.size < 5 || b.size < 5) continue;
+      let inter = 0;
+      for (const w of a) if (b.has(w)) inter++;
+      if (inter / (a.size + b.size - inter) >= 0.75) {
+        warn(`${course}#${items[j].id}: near-duplicate stem of #${items[i].id}`);
+      }
+    }
   }
 
   // Correct-answer position balance.

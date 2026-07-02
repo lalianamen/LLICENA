@@ -83,6 +83,19 @@ Every new or edited question must pass these. `scripts/check-banks.js` warns on 
 measurable ones; the rest are review criteria for the content agent.
 - **One verified key.** Exactly one defensibly correct option, checked against an
   official source. If a distractor is "partly true" in some configuration, rewrite it.
+- **Sources: open official only; wording: original.** Every fact comes from open
+  official / primary sources (federal & state statutes, agency handbooks, code
+  publications — OSHA, EPA, CSLB, DMV, FMCSA…; US federal government works are public
+  domain, 17 U.S.C. § 105). NEVER copy items from real exams or commercial prep banks —
+  those are proprietary. Question and option wording is written from scratch: the owner
+  claims IP rights on this bank, so verbatim copying both infringes and destroys
+  protectability. The content agent cites the source for every fact.
+- **No repeats within a course.** Every question tests a distinct fact or skill —
+  across ALL five blocks, not just its own (blocks exist for coverage, not repetition).
+  Asking the same fact forward and backward ("open run cap → symptom" and
+  "symptom → open run cap") counts as a repeat unless it drills a genuinely different
+  skill. The checker errors on identical stems and warns on textual near-duplicates;
+  *semantic* duplicates it cannot see — checking for those is part of content review.
 - **Distractors on-topic and plausible.** Wrong options are real misconceptions or
   adjacent facts from the same domain — never absurd fillers ("Be unaffected",
   "Smell it", "Filled with oil"). Litmus test: a person with zero domain knowledge
