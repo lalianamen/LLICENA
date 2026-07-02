@@ -37,9 +37,17 @@ Define a success criterion, then check it.
   means the project's real checks, not unit tests:
   - Render the page (Playwright screenshot) and actually look at it — desktop **and**
     360px, in EN **and** a long-string language (RU).
+  - When rendering, also fail on any browser-console error and click through one flow
+    (pick an answer → Next → Back, switch a block): a perfect screenshot can hide a dead
+    handler. The quiz shuffles question order (`js/app-course.js`), so locate a question
+    by `id`, not by its on-screen number.
   - `node --check` any JS you touch; grep that every id / class / `data-*` hook the
-    JS depends on still exists after an HTML or CSS edit.
+    JS depends on still exists after an HTML or CSS edit — and the reverse: after a JS
+    edit, grep that every hook the JS reads exists in the HTML.
   - Confirm any new CSS class is defined and any inline `<svg>` has an explicit size.
+  - `node scripts/verify.js` runs the mechanical part in one shot: bank invariants
+    (`scripts/check-banks.js`) + `node --check` over all non-vendor JS. Always run it
+    after touching `js/questions/*`.
   - Reading the diff is not verification — render it. (An unsized icon once shipped
     oversized to prod; only rendering caught it.)
 
@@ -69,3 +77,29 @@ the selected block whenever items carry `block`. Keep `sec` too for the in-block
 Applies to the CSLB trade & related exams under Construction (`c10`, `c20`, `c36`, `c7`,
 `c16`, `cslb-law`, `asbestos`, `osha-construction`). Other verticals (driving, CDL, EPA,
 beauty, …) stay 50 questions / 6 sections unless stated otherwise.
+
+## Question authoring (banks & translations)
+Every new or edited question must pass these. `scripts/check-banks.js` warns on the
+measurable ones; the rest are review criteria for the content agent.
+- **One verified key.** Exactly one defensibly correct option, checked against an
+  official source. If a distractor is "partly true" in some configuration, rewrite it.
+- **Distractors on-topic and plausible.** Wrong options are real misconceptions or
+  adjacent facts from the same domain — never absurd fillers ("Be unaffected",
+  "Smell it", "Filled with oil"). Litmus test: a person with zero domain knowledge
+  should not be able to eliminate a single option; if they can strike two, rewrite.
+- **No test-taking giveaways.** Options are grammatically parallel, continue the stem,
+  and are of comparable length — the correct one must not be the only long, detailed
+  option (checker flags the length cue). Spread correct answers roughly evenly across
+  A–D (checker flags skew). Avoid "all/none of the above" and absolutes (always/never)
+  that mark options as wrong.
+- **Expand abbreviations and formulas on first use.** In the stem or the `re`
+  explanation: "SEER (Seasonal Energy Efficiency Ratio)", "EER = BTU/h ÷ watts".
+  The `re` must define every abbreviation/formula it relies on and say WHY the key is
+  right — not just restate it. A reader who doesn't know the term must be able to
+  learn it from the explanation alone.
+- **Translations (RU/ES).** Never reorder `opts`: the player pairs translated options
+  with EN by index and `correct` lives only in the EN file, so a reorder silently marks
+  wrong answers and no render check will catch it. Options must grammatically continue
+  the translated stem (not "приводит к тому, что он: Не затронут"). Keep the English
+  exam term next to the translation on first use — «рабочий конденсатор (run
+  capacitor)» — the real exam is in English. Edit EN + RU + ES in one commit.
